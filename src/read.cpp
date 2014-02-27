@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Thu Feb 27 16:26:51 2014 +0800
+//Date: Thu Feb 27 16:49:19 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -25,13 +25,23 @@ void read_data(const string& dir) {
 	fgets(buf, MAX_LINE_LEN, fin);
 	int pid, maxid = 0;
 	while (fscanf(fin, "%d|", &pid) == 1) {
-		fgets(buf, MAX_LINE_LEN, fin);
 		update_max(maxid, pid);
+		fgets(buf, MAX_LINE_LEN, fin);
 	}
-	fclose(fin);
 	P("Max id of Nodes: "); P(maxid);P("\n");
 	Data::allocate(maxid);
 
+	// read birthday
+	rewind(fin);
+	fgets(buf, MAX_LINE_LEN, fin);
+	int year, month, day;
+	while (fscanf(fin, "%d|", &pid) == 1) {
+		for (int i = 0; i < 3; i ++) while (fgetc(fin) != '|') {}
+		fscanf(fin, "%d-%d-%d", &year, &month, &day);
+		fgets(buf, MAX_LINE_LEN, fin);
+		Data::birthday[pid] = year * 10000 + month * 100 + day;
+	}
+	fclose(fin);
 
 	// read person knows person
 	fin = safe_open(dir + "/person_knows_person.csv");

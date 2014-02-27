@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Thu Feb 27 16:25:20 2014 +0800
+//Date: Thu Feb 27 16:45:21 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -28,6 +28,7 @@ public:
 
 	static bool ** pp_map;
 	static std::vector<std::vector<ConnectedPerson> > friends;
+	static int *birthday;
 
 	static void allocate(int max_person_id);
 

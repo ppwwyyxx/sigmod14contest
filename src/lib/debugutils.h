@@ -5,6 +5,11 @@
 
 #pragma once
 
+#ifdef __cplusplus
+#include <iterator>
+#include <type_traits>
+#endif
+
 void __m_assert_check__(bool val, const char *expr,
 		const char *file, const char *func, int line);
 

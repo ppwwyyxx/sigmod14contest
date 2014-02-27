@@ -1,6 +1,6 @@
 
 # $File: Makefile
-# $Date: Thu Feb 27 15:20:02 2014 +0800
+# $Date: Thu Feb 27 16:21:52 2014 +0800
 
 OBJ_DIR = build
 TARGET = main
@@ -12,7 +12,7 @@ OPTFLAGS = -Wall -Wextra -Wconversion -O3
 #OPTFLAGS = -O3
 
 CXXFLAGS = $(INCLUDE_DIR)
-CXXFLAGS += -fopenmp # -std=c++11
+CXXFLAGS += -fopenmp  -std=c++11
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
 LDFLAGS += -fopenmp
 
@@ -29,13 +29,13 @@ all: $(TARGET)
 sinclude $(DEPFILES)
 
 $(OBJ_DIR)/%.o: %.cpp
-	@echo "[cc] $< ..."
+	@echo "[cpp] $< ..."
 	@$(CC) -c $< -o $@ $(CXXFLAGS)
 
 $(OBJ_DIR)/%.d: %.cpp  Makefile
 	@mkdir -p $(dir $@)
 	@echo "[dep] $< ..."
-	@$(CC) $(CXXFLAGS) $(INCLUDE_DIR) $(DEFINES) -MM -MT "$(OBJ_DIR)/$(<:.cc=.o) $(OBJ_DIR)/$(<:.cc=.d)" "$<"  > "$@"
+	@$(CC) $(CXXFLAGS) $(INCLUDE_DIR) $(DEFINES) -MM -MT "$(OBJ_DIR)/$(<:.cpp=.o) $(OBJ_DIR)/$(<:.cpp=.d)" "$<"  > "$@"
 
 
 $(TARGET): $(OBJS)

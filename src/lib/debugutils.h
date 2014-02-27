@@ -5,7 +5,7 @@
 
 #pragma once
 
-#ifdef __cplusplus
+#if __cplusplus > 199711L
 #include <iterator>
 #include <type_traits>
 #endif
@@ -32,12 +32,17 @@ void __print_debug__(const char *file, const char *func, int line, const char *f
 #include <iostream>
 #define P(a) std::cout << (a)
 #define PP(a) std::cout << #a << ": " << (a) << std::endl
+
+#if __cplusplus > 199711L
 #define PA(arr) \
 	do { \
 		std::cout << #arr << ": "; \
 		std::copy(begin(arr), end(arr), std::ostream_iterator<std::remove_reference<decltype(arr)>::type::value_type>(std::cout, " ")); \
 		std::cout << std::endl;  \
 	} while (0)
+#else
+#define PA(arr)
+#endif
 
 #else
 

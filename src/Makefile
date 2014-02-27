@@ -1,6 +1,6 @@
 
 # $File: Makefile
-# $Date: Thu Feb 27 16:21:52 2014 +0800
+# $Date: Thu Feb 27 22:53:21 2014 +0800
 
 OBJ_DIR = build
 TARGET = main
@@ -47,6 +47,12 @@ $(TARGET): $(OBJS)
 clean:
 	@rm -rf $(OBJ_DIR) $(TARGET)
 
+TEST_DATA = ../outputDir-1k
+
 run: $(TARGET)
-	./$(TARGET) ../outputDir-1k
+	./$(TARGET) $(TEST_DATA)
+
+# test memory usage
+mem: $(TARGET)
+	../memusg ./$(TARGET) $(TEST_DATA)
 

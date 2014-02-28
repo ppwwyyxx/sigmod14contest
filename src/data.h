@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Fri Feb 28 11:56:11 2014 +0800
+//Date: Fri Feb 28 12:14:25 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -89,6 +89,9 @@ public:
 	static std::tr1::unordered_map<std::string, int> placeid;		// id of each place
 	static std::vector<PlaceNode> places;			// each place indexed by id
 
+#ifdef DEBUG
+	static std::vector<int> real_tag_id;		// continuous id -> real id
+#endif
 
 	static void allocate(int max_person_id);
 	static void free();

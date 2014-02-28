@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Fri Feb 28 12:02:50 2014 +0800
+//Date: Fri Feb 28 15:29:17 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -79,7 +79,8 @@ void read_comments(const string& dir) {
 	fgets(buf, MAX_LINE_LEN, fin);
 
 	int ** comment_map = new int*[Data::nperson];
-	for (int i = 0; i < Data::nperson; i ++) comment_map[i] = new int[Data::nperson]();
+	for (int i = 0; i < Data::nperson; i ++)
+		comment_map[i] = new int[Data::nperson]();
 
 	int cid1, cid2;
 	while (fscanf(fin, "%d|%d", &cid1, &cid2) == 2) {
@@ -117,6 +118,9 @@ void read_tags_forums(const string & dir) {
 				buf[k++] = c;
 			string tag_name(buf, k);
 			id_map[tid] = (int)Data::tag_name.size();
+#ifdef DEBUG
+			Data::real_tag_id.push_back(tid);
+#endif
 			Data::tag_name.push_back(tag_name);
 			Data::tagid[tag_name] = (int)Data::tag_name.size() - 1;
 			fgets(buf, MAX_LINE_LEN, fin);
@@ -144,7 +148,7 @@ void read_tags_forums(const string & dir) {
 			if (itr != forum_idmap.end()) {
 				itr->second->persons.push_back(PersonInForum(pid));
 			} else {
-				Forum* forum = new Forum();
+				Forum* forum = new Forum();		// XXX these memory will never be free until program exited.
 #ifdef DEBUG
 				forum->id = fid;
 #endif

@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Fri Feb 28 11:55:07 2014 +0800
+//Date: Fri Feb 28 15:22:45 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -22,6 +22,9 @@ unordered_map<std::string, int> Data::tagid;
 vector<vector<Forum*> > Data::tag_forums;
 unordered_map<string, int> Data::placeid;
 vector<PlaceNode> Data::places;
+#ifdef DEBUG
+vector<int> Data::real_tag_id;
+#endif
 
 void Data::allocate(int max_pid) {
 	m_assert(nperson == 0);
@@ -38,7 +41,7 @@ void Data::allocate(int max_pid) {
 
 void Data::free() {
 	free_2d<bool>(pp_map, nperson);
-	::free(birthday);
+	delete[] birthday;
 }
 
 PersonSet PlaceNode::get_all_persons() {

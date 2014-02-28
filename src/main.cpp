@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Fri Feb 28 12:03:05 2014 +0800
+//Date: Fri Feb 28 16:10:05 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/Timer.h"

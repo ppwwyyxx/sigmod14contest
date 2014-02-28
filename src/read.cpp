@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Fri Feb 28 21:34:37 2014 +0800
+//Date: Fri Feb 28 21:38:56 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -13,57 +13,56 @@
 using namespace std;
 using namespace std::tr1;
 
-const int BUFFER_LEN = 1024 * 1024 * 5;
 
 namespace {
+	const int BUFFER_LEN = 1024 * 1024 * 5;
 	char buffer[BUFFER_LEN];
 	char tmpBuf[1024];
 	char *ptr, *buf_end;
+
+	inline FILE* safe_open(const string& fname) {
+		FILE* fin = fopen(fname.c_str(), "r");
+		ptr = buffer, buf_end = ptr + 1;
+		m_assert(fin != NULL);
+		return fin;
+	}
 }
 
-inline FILE* safe_open(const string& fname) {
-	FILE* fin = fopen(fname.c_str(), "r");
-	ptr = buffer, buf_end = ptr + 1;
-	m_assert(fin != NULL);
-	return fin;
-}
 
 #define PTR_NEXT() \
+{ \
+	ptr ++; \
+	if (ptr == buf_end) \
 	{ \
-		ptr ++; \
-		if (ptr == buf_end) \
-		{ \
-			ptr = buffer; \
-			buf_end = buffer + fread(buffer, 1, BUFFER_LEN, fin); \
-		} \
-	}
+		ptr = buffer; \
+		buf_end = buffer + fread(buffer, 1, BUFFER_LEN, fin); \
+	} \
+}
 #define READ_INT(_x_) \
+{ \
+	while ((*ptr < '0' || *ptr > '9') && *ptr != '-') \
+	PTR_NEXT(); \
+	int register _n_ = 0; \
+	while (*ptr >= '0' && *ptr <= '9') \
 	{ \
-		while ((*ptr < '0' || *ptr > '9') && *ptr != '-') \
-			PTR_NEXT(); \
-		int register _n_ = 0; \
-		while (*ptr >= '0' && *ptr <= '9') \
-		{ \
-			_n_ = _n_ * 10 + *ptr - '0'; \
-			PTR_NEXT(); \
-		} \
-		(_x_) = (_n_); \
-	}
+		_n_ = _n_ * 10 + *ptr - '0'; \
+		PTR_NEXT(); \
+	} \
+	(_x_) = (_n_); \
+}
 #define READ_STR(_s_) \
+{ \
+	char *_p_ = (_s_); \
+	while (*ptr != '|') \
 	{ \
-		char *_p_ = (_s_); \
-		while (*ptr != '|') \
-		{ \
-			*(_p_ ++) = *ptr; \
-			PTR_NEXT(); \
-		} \
-		*_p_ = 0; \
-	}
+		*(_p_ ++) = *ptr; \
+		PTR_NEXT(); \
+	} \
+	*_p_ = 0; \
+}
 
 #define READ_TILL_EOL() \
-	{ \
-		while ((*ptr != '\n') and (buf_end != buffer)) PTR_NEXT(); \
-	}
+	while (*ptr != '\n') PTR_NEXT();
 
 void read_person_file(const string& dir) {
 	FILE* fin = safe_open(dir + "/person.csv");
@@ -75,7 +74,7 @@ void read_person_file(const string& dir) {
 		update_max(maxid, pid);
 		READ_TILL_EOL();
 	}
-	P("Max id of Nodes: "); P(maxid);P("\n");
+	print_debug("Number of Person: %d\n", maxid);
 	Data::allocate(maxid);
 
 	// read birthday
@@ -113,7 +112,6 @@ void read_person_knows_person(const string& dir) {
 
 void read_comments(const string& dir) {
 	Timer timer;
-	print_debug("%lf\n", timer.get_time());
 	FILE* fin = safe_open(dir + "/comment_hasCreator_person.csv");
 	READ_TILL_EOL();
 	unsigned cid, pid;
@@ -129,7 +127,6 @@ void read_comments(const string& dir) {
 	}
 	fclose(fin);
 
-	print_debug("After Read comment creator: %lf seconds\n", timer.get_time());
 	// read comment->comment
 	fin = safe_open(dir + "/comment_replyOf_comment.csv");
 	READ_TILL_EOL();
@@ -150,7 +147,6 @@ void read_comments(const string& dir) {
 		else comment_map[p2][p1] += 1;
 	}
 	fclose(fin);
-	print_debug("After Read comment replyOf: %lf seconds\n", timer.get_time());
 
 	for (int i = 0; i < Data::nperson; i ++) {
 		for (int j = i + 1; j < Data::nperson; j ++) {
@@ -186,6 +182,7 @@ void read_tags_forums(const string & dir) {
 		Data::ntag = (int)Data::tag_name.size();
 		fclose(fin);
 	}
+	print_debug("Number of tags: %d\n", Data::ntag);
 
 	{		// read person->tags
 		FILE* fin = safe_open(dir + "/person_hasInterest_tag.csv");
@@ -320,9 +317,7 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 	read_person_file(dir);
 	read_person_knows_person(dir);
 	read_comments(dir);
-	PP(timer.get_time());
 	read_tags_forums(dir);
-	PP(timer.get_time());
 	read_places(dir);
-	PP(timer.get_time());
+	print_debug("Read spent %lf secs", timer.get_time());
 }

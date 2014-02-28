@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Fri Feb 28 16:10:05 2014 +0800
+//Date: Fri Feb 28 21:39:14 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/Timer.h"
@@ -30,6 +30,5 @@ int main(int argc, char* argv[]) {
 	 *    P("\n");
 	 *}
 	 */
-	PP(timer.get_time());
 	Data::free();
 }

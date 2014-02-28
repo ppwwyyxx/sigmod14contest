@@ -1,6 +1,6 @@
 
 # $File: Makefile
-# $Date: Fri Feb 28 12:03:54 2014 +0800
+# $Date: Fri Feb 28 16:29:14 2014 +0800
 
 OBJ_DIR = build
 TARGET = main
@@ -8,7 +8,7 @@ TARGET = main
 INCLUDE_DIR = -Iinclude
 DEFINES = -DDEBUG
 
-OPTFLAGS = -Wall -Wextra -Wconversion
+OPTFLAGS = -Wall -Wextra -Wconversion -Wno-unused-result
 #OPTFLAGS += -g
 OPTFLAGS += -O3
 

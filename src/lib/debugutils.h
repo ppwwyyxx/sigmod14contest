@@ -37,7 +37,8 @@ void __print_debug__(const char *file, const char *func, int line, const char *f
 #define PA(arr) \
 	do { \
 		std::cout << #arr << ": "; \
-		std::copy(begin(arr), end(arr), std::ostream_iterator<std::remove_reference<decltype(arr)>::type::value_type>(std::cout, " ")); \
+		auto x__long__long = (arr); \
+		std::copy(begin(x__long__long), end(x__long__long), std::ostream_iterator<std::remove_reference<decltype(x__long__long)>::type::value_type>(std::cout, " ")); \
 		std::cout << std::endl;  \
 	} while (0)
 #else

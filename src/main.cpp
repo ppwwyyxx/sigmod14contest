@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Thu Feb 27 22:53:54 2014 +0800
+//Date: Fri Feb 28 10:46:02 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/Timer.h"
@@ -14,6 +14,13 @@ int main(int argc, char* argv[]) {
 	read_data(string(argv[1]));
 
 
+	/*
+	 *int id = Data::placeid["South_America"];
+	 *PlaceNode& p = Data::places[id];
+	 *PP(p.sub_places.size());
+	 *PA(p.persons);
+	 *PA(p.get_all_persons());
+	 */
 	PP(timer.get_time());
 	Data::free();
 }

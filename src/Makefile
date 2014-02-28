@@ -1,6 +1,6 @@
 
 # $File: Makefile
-# $Date: Thu Feb 27 22:53:21 2014 +0800
+# $Date: Fri Feb 28 10:55:16 2014 +0800
 
 OBJ_DIR = build
 TARGET = main
@@ -12,7 +12,7 @@ OPTFLAGS = -Wall -Wextra -Wconversion -O3
 #OPTFLAGS = -O3
 
 CXXFLAGS = $(INCLUDE_DIR)
-CXXFLAGS += -fopenmp  -std=c++11
+CXXFLAGS += -fopenmp  #-std=c++11
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
 LDFLAGS += -fopenmp
 
@@ -47,7 +47,7 @@ $(TARGET): $(OBJS)
 clean:
 	@rm -rf $(OBJ_DIR) $(TARGET)
 
-TEST_DATA = ../outputDir-1k
+TEST_DATA = ../10k
 
 run: $(TARGET)
 	./$(TARGET) $(TEST_DATA)

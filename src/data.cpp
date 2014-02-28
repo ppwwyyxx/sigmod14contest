@@ -1,11 +1,13 @@
 //File: data.cpp
-//Date: Thu Feb 27 22:53:40 2014 +0800
+//Date: Fri Feb 28 10:57:10 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
 #include "lib/debugutils.h"
 #include "lib/utils.h"
 #include <stdlib.h>
+#include <algorithm>
+#include <iterator>
 using namespace std;
 
 int Data::nperson= 0;
@@ -15,6 +17,8 @@ int * Data::birthday = NULL;
 vector<vector<ConnectedPerson> > Data::friends;
 vector<TagSet> Data::tags;
 vector<string> Data::tagname;
+map<string, int> Data::placeid;
+vector<PlaceNode> Data::places;
 
 void Data::allocate(int max_pid) {
 	m_assert(nperson == 0);
@@ -33,3 +37,21 @@ void Data::free() {
 	free_2d<bool>(pp_map, nperson);
 	::free(birthday);
 }
+
+PersonSet PlaceNode::get_all_persons() {
+	PersonSet ret = persons;
+	for (vector<PlaceNode*>::iterator it = sub_places.begin();
+			it != sub_places.end(); it++) {
+		PersonSet sub = (*it)->get_all_persons();
+		PersonSet tmp; tmp.swap(ret);
+		ret.resize(tmp.size() + sub.size());
+		PersonSet::iterator ret_end = set_union(
+				sub.begin(), sub.end(),
+				tmp.begin(), tmp.end(), ret.begin());
+		ret.resize(std::distance(ret.begin(), ret_end));
+	}
+	return ret;
+}
+
+PersonInPlace::PersonInPlace(int _pid):
+	pid(_pid), ntags(int(Data::tags[_pid].size())) {}

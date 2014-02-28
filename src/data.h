@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Fri Feb 28 10:57:02 2014 +0800
+//Date: Fri Feb 28 11:56:11 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -7,12 +7,12 @@
 #include <vector>
 #include <iostream>
 #include <string>
-#include <map>
+#include <tr1/unordered_map>
 #include <set>
 
 struct ConnectedPerson {
-	// Data structure to store a connected person for a specific person
-	// store person_id and number of reciprocal comments(for query1)
+// Data structure to store a connected person for a specific person
+// store person_id, and number of reciprocal comments(for query1)
 
 	int pid;
 	int ncmts;		// number of comments
@@ -53,9 +53,21 @@ class PlaceNode {
 public:
 	std::vector<PlaceNode*> sub_places;
 	PersonSet persons;		// sorted
+
 	PersonSet get_all_persons();		// sorted
+	// TODO the result of this func may need to be cached
 };
-// TODO may need to cache place->set of person
+
+typedef int PersonInForum;
+// Data structure to store a person in a forum
+// now it is only implemented as person id
+
+struct Forum {
+#ifdef DEBUG
+	int id;
+#endif
+	std::vector<PersonInForum> persons;
+};
 
 class Data {
 public:
@@ -70,9 +82,11 @@ public:
 	static std::vector<TagSet> tags;
 	// tags[i] is a TagSet containing interest tags(continuous id) for the person with id=i
 
-	static std::vector<std::string> tagname;		// name of each tags, indexed by continuous id
+	static std::vector<std::string> tag_name;		// name of each tags, indexed by continuous id
+	static std::tr1::unordered_map<std::string, int> tagid;			// tag name -> tag id
+	static std::vector<std::vector<Forum*> > tag_forums;			// related forums for each tag
 
-	static std::map<std::string, int> placeid;		// id of each place
+	static std::tr1::unordered_map<std::string, int> placeid;		// id of each place
 	static std::vector<PlaceNode> places;			// each place indexed by id
 
 

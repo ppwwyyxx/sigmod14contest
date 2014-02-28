@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Fri Feb 28 10:54:55 2014 +0800
+//Date: Fri Feb 28 12:02:50 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <stdio.h>
 using namespace std;
+using namespace std::tr1;
 
 inline FILE* safe_open(const string& fname) {
 	FILE* fin = fopen(fname.c_str(), "r");
@@ -104,9 +105,9 @@ void read_comments(const string& dir) {
 	free_2d<int>(comment_map, Data::nperson);
 }
 
-void read_tags(const string & dir) {
-	map<int, int> id_map; // map from real id to continuous id
-	int tid, pid;
+void read_tags_forums(const string & dir) {
+	unordered_map<int, int> id_map; // map from real id to continuous id
+	int tid, pid, fid;
 	{		// read tag and tag names
 		FILE* fin = safe_open(dir + "/tag.csv");
 		fgets(buf, MAX_LINE_LEN, fin);
@@ -115,11 +116,12 @@ void read_tags(const string & dir) {
 			while ((c = (char)fgetc(fin)) != '|')
 				buf[k++] = c;
 			string tag_name(buf, k);
-			id_map[tid] = (int)Data::tagname.size();
-			Data::tagname.push_back(tag_name);
+			id_map[tid] = (int)Data::tag_name.size();
+			Data::tag_name.push_back(tag_name);
+			Data::tagid[tag_name] = (int)Data::tag_name.size() - 1;
 			fgets(buf, MAX_LINE_LEN, fin);
 		}
-		Data::ntag = (int)Data::tagname.size();
+		Data::ntag = (int)Data::tag_name.size();
 		fclose(fin);
 	}
 
@@ -128,6 +130,39 @@ void read_tags(const string & dir) {
 		fgets(buf, MAX_LINE_LEN, fin);
 		while (fscanf(fin, "%d|%d", &pid, &tid) == 2) {
 			Data::tags[pid].insert(id_map[tid]);
+		}
+		fclose(fin);
+	}
+
+	unordered_map<int, Forum*> forum_idmap;
+	Data::tag_forums.resize(Data::ntag);
+	{
+		FILE* fin = safe_open(dir + "/forum_hasMember_person.csv");
+		fgets(buf, MAX_LINE_LEN, fin);
+		while (fscanf(fin, "%d|%d", &fid, &pid) == 2) {
+			unordered_map<int, Forum*>::const_iterator itr = forum_idmap.find(fid);
+			if (itr != forum_idmap.end()) {
+				itr->second->persons.push_back(PersonInForum(pid));
+			} else {
+				Forum* forum = new Forum();
+#ifdef DEBUG
+				forum->id = fid;
+#endif
+				forum->persons.push_back(PersonInForum(pid));
+				forum_idmap[fid] = forum;
+			}
+			fgets(buf, MAX_LINE_LEN, fin);
+		}
+		fclose(fin);
+	}
+	{
+		FILE* fin = safe_open(dir + "/forum_hasTag_tag.csv");
+		fgets(buf, MAX_LINE_LEN, fin);
+		while (fscanf(fin, "%d|%d", &fid, &tid) == 2) {
+			m_assert(id_map.find(tid) != id_map.end());
+			if (forum_idmap.find(fid) == forum_idmap.end()) continue;		// forums with no person in
+			int c_tid = id_map[tid];
+			Data::tag_forums[c_tid].push_back(forum_idmap[fid]);
 		}
 		fclose(fin);
 	}
@@ -215,6 +250,6 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 	read_person_file(dir);
 	read_person_knows_person(dir);
 	read_comments(dir);
-	read_tags(dir);
+	read_tags_forums(dir);
 	read_places(dir);
 }

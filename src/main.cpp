@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Fri Feb 28 10:46:02 2014 +0800
+//Date: Fri Feb 28 12:03:05 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/Timer.h"
@@ -20,6 +20,15 @@ int main(int argc, char* argv[]) {
 	 *PP(p.sub_places.size());
 	 *PA(p.persons);
 	 *PA(p.get_all_persons());
+	 */
+	/*
+	 *int tagid = Data::tagid["Jet_Li"];
+	 *PP(tagid);
+	 *for (auto &k : Data::tag_forums[tagid]) {
+	 *    P(k->id);
+	 *    PA(k->persons);
+	 *    P("\n");
+	 *}
 	 */
 	PP(timer.get_time());
 	Data::free();

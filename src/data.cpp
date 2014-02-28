@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Fri Feb 28 10:57:10 2014 +0800
+//Date: Fri Feb 28 11:55:07 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iterator>
 using namespace std;
+using namespace std::tr1;
 
 int Data::nperson= 0;
 int Data::ntag = 0;
@@ -16,8 +17,10 @@ bool ** Data::pp_map = NULL;
 int * Data::birthday = NULL;
 vector<vector<ConnectedPerson> > Data::friends;
 vector<TagSet> Data::tags;
-vector<string> Data::tagname;
-map<string, int> Data::placeid;
+vector<string> Data::tag_name;
+unordered_map<std::string, int> Data::tagid;
+vector<vector<Forum*> > Data::tag_forums;
+unordered_map<string, int> Data::placeid;
 vector<PlaceNode> Data::places;
 
 void Data::allocate(int max_pid) {

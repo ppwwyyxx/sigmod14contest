@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Fri Feb 28 21:38:56 2014 +0800
+//Date: Sat Mar 01 11:00:44 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -7,27 +7,24 @@
 #include "lib/Timer.h"
 #include "data.h"
 #include <stdlib.h>
-#include <map>
 #include <algorithm>
 #include <stdio.h>
 using namespace std;
 using namespace std::tr1;
-
 
 namespace {
 	const int BUFFER_LEN = 1024 * 1024 * 5;
 	char buffer[BUFFER_LEN];
 	char tmpBuf[1024];
 	char *ptr, *buf_end;
-
-	inline FILE* safe_open(const string& fname) {
-		FILE* fin = fopen(fname.c_str(), "r");
-		ptr = buffer, buf_end = ptr + 1;
-		m_assert(fin != NULL);
-		return fin;
-	}
 }
 
+inline FILE* safe_open(const string& fname) {
+	FILE* fin = fopen(fname.c_str(), "r");
+	m_assert(fin != NULL);
+	ptr = buffer, buf_end = ptr + 1;
+	return fin;
+}
 
 #define PTR_NEXT() \
 { \
@@ -38,6 +35,7 @@ namespace {
 		buf_end = buffer + fread(buffer, 1, BUFFER_LEN, fin); \
 	} \
 }
+
 #define READ_INT(_x_) \
 { \
 	while ((*ptr < '0' || *ptr > '9') && *ptr != '-') \
@@ -50,6 +48,7 @@ namespace {
 	} \
 	(_x_) = (_n_); \
 }
+
 #define READ_STR(_s_) \
 { \
 	char *_p_ = (_s_); \

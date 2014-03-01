@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Sat Mar 01 13:28:54 2014 +0800
+//Date: Sat Mar 01 13:31:13 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/Timer.h"
@@ -48,7 +48,7 @@ void read_query(const string& fname) {
 					int k, h;
 					fscanf(fin, "%d, %d, %s", &k, &h, buf);
 					string place(buf, strlen(buf) - 1);
-					// TODO
+					q3.add_query(k, h, place);
 					break;
 				}
 			case 4:
@@ -56,7 +56,7 @@ void read_query(const string& fname) {
 					int k;
 					fscanf(fin, "%d, %s", &k, buf);
 					string tag_name(buf, strlen(buf) - 1);
-					// TODO
+					q4.add_query(k, tag_name);
 					break;
 				}
 			default:
@@ -72,5 +72,19 @@ int main(int argc, char* argv[]) {
 	read_query(string(argv[2]));
 
 
+	/*
+	 *q1.work();
+	 *q2.work();
+	 *q3.work();
+	 *q4.work();
+	 */
+
+
+	/*
+	 *q1.print_result();
+	 *q2.print_result();
+	 *q3.print_result();
+	 *q4.print_result();
+	 */
 	Data::free();
 }

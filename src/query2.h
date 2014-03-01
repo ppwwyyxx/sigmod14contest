@@ -1,5 +1,5 @@
 //File: query2.h
-//Date: Sat Mar 01 13:24:57 2014 +0800
+//Date: Sat Mar 01 19:16:20 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -19,6 +19,8 @@ class Query2Handler {
 			queries.push_back(Query2(k, d));
 			// TODO
 		}
+
+		void work();
 
 		void print_result();		// TODO
 

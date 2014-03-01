@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Sat Mar 01 13:28:42 2014 +0800
+//Date: Sat Mar 01 19:16:31 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -20,6 +20,8 @@ class Query4Handler {
 			queries.push_back(Query4(k, s));
 			// TODO
 		}
+
+		void work();
 
 		void print_result();		// TODO
 

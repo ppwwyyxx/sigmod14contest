@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Sat Mar 01 20:02:44 2014 +0800
+//Date: Sun Mar 02 00:48:31 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -29,7 +29,7 @@ struct ConnectedPerson {
 
 typedef std::set<int> TagSet;
 // Data structure to store all the interest tag of a person
-// could be implemented as bitset later
+// could be implemented as vector<bool> later
 
 struct PersonInPlace {
 // Data structure to store a single person in a place
@@ -83,6 +83,7 @@ public:
 
 	static std::vector<TagSet> tags;
 	// tags[i] is a TagSet containing interest tags(continuous id) for the person with id=i
+
 	static std::vector<std::vector<int> > person_in_tags;
 
 	static std::vector<std::string> tag_name;		// name of each tags, indexed by continuous id

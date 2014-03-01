@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Mar 01 20:42:15 2014 +0800
+//Date: Sun Mar 02 01:08:54 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -36,10 +36,11 @@ inline FILE* safe_open(const string& fname) {
 	} \
 }
 
+// only read non-negative int
 #define READ_INT(_x_) \
 { \
-	while ((*ptr < '0' || *ptr > '9') && *ptr != '-') \
-	PTR_NEXT(); \
+	while (*ptr < '0' || *ptr > '9') \
+		PTR_NEXT(); \
 	int register _n_ = 0; \
 	while (*ptr >= '0' && *ptr <= '9') \
 	{ \
@@ -85,11 +86,19 @@ void read_person_file(const string& dir) {
 		READ_INT(pid);
 		if (buffer == buf_end) break;
 		PTR_NEXT();
-		READ_STR(tmpBuf); READ_STR(tmpBuf); READ_STR(tmpBuf);
+		READ_STR(tmpBuf); PTR_NEXT();
+		READ_STR(tmpBuf); PTR_NEXT();
+		READ_STR(tmpBuf);
 		READ_INT(year);PTR_NEXT();
 		READ_INT(month);PTR_NEXT();
 		READ_INT(day);
 		READ_TILL_EOL();
+		if (pid == 996) {
+			PP(tmpBuf);
+			PP(year);
+			PP(month);
+			PP(day);
+		}
 		Data::birthday[pid] = year * 10000 + month * 100 + day;
 	}
 	fclose(fin);

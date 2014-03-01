@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Sat Mar 01 19:16:31 2014 +0800
+//Date: Sat Mar 01 19:33:13 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -16,10 +16,7 @@ struct Query4 {
 
 class Query4Handler {
 	public:
-		void add_query(int k, const std::string& s) {
-			queries.push_back(Query4(k, s));
-			// TODO
-		}
+		void add_query(int k, const std::string& s);
 
 		void work();
 

@@ -1,6 +1,5 @@
 //File: query1.h
-//Date: Sat Mar 01 19:16:13 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+//Date: Sat Mar 01 19:23:51 2014 +0800
 
 #pragma once
 #include <vector>
@@ -13,10 +12,7 @@ struct Query1 {
 
 class Query1Handler {
 	public:
-		void add_query(int p1, int p2, int x) {
-			queries.push_back(Query1(p1, p2, x));
-			// TODO
-		}
+		void add_query(int p1, int p2, int x);
 
 		void work();
 

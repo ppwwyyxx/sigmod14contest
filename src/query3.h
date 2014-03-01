@@ -1,6 +1,5 @@
 //File: query3.h
-//Date: Sat Mar 01 19:16:26 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+//Date: Sat Mar 01 19:25:44 2014 +0800
 
 #pragma once
 
@@ -17,10 +16,7 @@ struct Query3 {
 
 class Query3Handler {
 	public:
-		void add_query(int k, int h, const std::string& p) {
-			queries.push_back(Query3(k, h, p));
-			// TODO
-		}
+		void add_query(int k, int h, const std::string& p);
 
 		void work();
 

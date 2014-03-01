@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Mar 01 11:00:44 2014 +0800
+//Date: Sat Mar 01 19:43:18 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -181,6 +181,7 @@ void read_tags_forums(const string & dir) {
 		Data::ntag = (int)Data::tag_name.size();
 		fclose(fin);
 	}
+	Data::person_in_tags.resize(Data::ntag);
 	print_debug("Number of tags: %d\n", Data::ntag);
 
 	{		// read person->tags
@@ -188,6 +189,7 @@ void read_tags_forums(const string & dir) {
 		fgets(buffer, BUFFER_LEN, fin);
 		while (fscanf(fin, "%d|%d", &pid, &tid) == 2) {
 			Data::tags[pid].insert(id_map[tid]);
+			Data::person_in_tags[tid].push_back(pid);
 		}
 		fclose(fin);
 	}

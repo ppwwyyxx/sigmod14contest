@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Fri Feb 28 12:14:25 2014 +0800
+//Date: Sat Mar 01 19:37:38 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -81,6 +81,7 @@ public:
 
 	static std::vector<TagSet> tags;
 	// tags[i] is a TagSet containing interest tags(continuous id) for the person with id=i
+	static std::vector<std::vector<int> > person_in_tags;
 
 	static std::vector<std::string> tag_name;		// name of each tags, indexed by continuous id
 	static std::tr1::unordered_map<std::string, int> tagid;			// tag name -> tag id

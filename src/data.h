@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Sat Mar 01 19:37:38 2014 +0800
+//Date: Sat Mar 01 20:02:44 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -9,6 +9,7 @@
 #include <string>
 #include <tr1/unordered_map>
 #include <set>
+#include <bitset>
 
 struct ConnectedPerson {
 // Data structure to store a connected person for a specific person
@@ -16,7 +17,8 @@ struct ConnectedPerson {
 
 	int pid;
 	int ncmts;		// number of comments
-	ConnectedPerson(int _pid, int _ncmts): pid(_pid), ncmts(_ncmts){}
+	ConnectedPerson(int _pid, int _ncmts):
+		pid(_pid), ncmts(_ncmts){}
 
 	bool operator < (const ConnectedPerson& r) const
 	{ return ncmts < r.ncmts; }

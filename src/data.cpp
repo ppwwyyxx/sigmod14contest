@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Fri Feb 28 15:22:45 2014 +0800
+//Date: Sat Mar 01 19:52:35 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -17,6 +17,7 @@ bool ** Data::pp_map = NULL;
 int * Data::birthday = NULL;
 vector<vector<ConnectedPerson> > Data::friends;
 vector<TagSet> Data::tags;
+vector<vector<int> > Data::person_in_tags;
 vector<string> Data::tag_name;
 unordered_map<std::string, int> Data::tagid;
 vector<vector<Forum*> > Data::tag_forums;

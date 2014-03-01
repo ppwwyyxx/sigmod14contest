@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Mar 01 19:43:18 2014 +0800
+//Date: Sat Mar 01 20:42:15 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -188,8 +188,9 @@ void read_tags_forums(const string & dir) {
 		FILE* fin = safe_open(dir + "/person_hasInterest_tag.csv");
 		fgets(buffer, BUFFER_LEN, fin);
 		while (fscanf(fin, "%d|%d", &pid, &tid) == 2) {
-			Data::tags[pid].insert(id_map[tid]);
-			Data::person_in_tags[tid].push_back(pid);
+			int c_id = id_map[tid];
+			Data::tags[pid].insert(c_id);
+			Data::person_in_tags[c_id].push_back(pid);
 		}
 		fclose(fin);
 	}
@@ -320,5 +321,5 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 	read_comments(dir);
 	read_tags_forums(dir);
 	read_places(dir);
-	print_debug("Read spent %lf secs", timer.get_time());
+	print_debug("Read spent %lf secs\n", timer.get_time());
 }

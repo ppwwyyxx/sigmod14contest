@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sun Mar 02 01:08:54 2014 +0800
+//Date: Sun Mar 02 13:15:16 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -151,17 +151,15 @@ void read_comments(const string& dir) {
 
 		int p1 = owner[cid1 / 10], p2 = owner[cid2 / 10];
 		if (not Data::pp_map[p1][p2]) continue;
-		if (p1 < p2) comment_map[p1][p2] += 1;
-		else comment_map[p2][p1] += 1;
+		comment_map[p1][p2] += 1;		// p1 reply to p2
 	}
 	fclose(fin);
 
 	for (int i = 0; i < Data::nperson; i ++) {
-		for (int j = i + 1; j < Data::nperson; j ++) {
+		for (int j = 0; j < Data::nperson; j ++) {
 			if (not Data::pp_map[i][j]) continue;
-			int nc = comment_map[i][j];		// i < j
-			Data::friends[i].push_back(ConnectedPerson(j, nc));
-			Data::friends[j].push_back(ConnectedPerson(i, nc));
+			Data::friends[i].push_back(ConnectedPerson(j, comment_map[i][j]));		// i reply to j
+			Data::friends[j].push_back(ConnectedPerson(i, comment_map[j][i]));		// j reply to i
 		}
 		sort(Data::friends[i].begin(), Data::friends[i].end());
 	}

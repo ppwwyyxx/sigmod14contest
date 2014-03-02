@@ -1,14 +1,16 @@
 //File: query1.h
-//Date: Sun Mar 02 14:29:43 2014 +0800
+//Date: Sun Mar 02 21:31:59 2014 +0800
 
 #pragma once
 #include <vector>
 
-struct Query1 {
-	int p1, p2, x;
-	Query1(int _p1, int _p2, int _x):
-		p1(_p1), p2(_p2), x(_x){}
-};
+/*
+ *struct Query1 {
+ *    int p1, p2, x;
+ *    Query1(int _p1, int _p2, int _x):
+ *        p1(_p1), p2(_p2), x(_x){}
+ *};
+ */
 
 class Query1Handler {
 	public:
@@ -20,5 +22,4 @@ class Query1Handler {
 
 	protected:
 		std::vector<int> ans;
-		std::vector<Query1> queries;
 };

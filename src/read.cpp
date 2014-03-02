@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sun Mar 02 13:15:16 2014 +0800
+//Date: Sun Mar 02 14:30:24 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -93,12 +93,6 @@ void read_person_file(const string& dir) {
 		READ_INT(month);PTR_NEXT();
 		READ_INT(day);
 		READ_TILL_EOL();
-		if (pid == 996) {
-			PP(tmpBuf);
-			PP(year);
-			PP(month);
-			PP(day);
-		}
 		Data::birthday[pid] = year * 10000 + month * 100 + day;
 	}
 	fclose(fin);
@@ -158,8 +152,9 @@ void read_comments(const string& dir) {
 	for (int i = 0; i < Data::nperson; i ++) {
 		for (int j = 0; j < Data::nperson; j ++) {
 			if (not Data::pp_map[i][j]) continue;
-			Data::friends[i].push_back(ConnectedPerson(j, comment_map[i][j]));		// i reply to j
-			Data::friends[j].push_back(ConnectedPerson(i, comment_map[j][i]));		// j reply to i
+			int ncmt = std::min(comment_map[i][j], comment_map[j][i]);
+			Data::friends[i].push_back(ConnectedPerson(j, ncmt));		// i reply to j
+			Data::friends[j].push_back(ConnectedPerson(i, ncmt));		// j reply to i
 		}
 		sort(Data::friends[i].begin(), Data::friends[i].end());
 	}
@@ -267,7 +262,7 @@ void build_places_tree(const string& dir) {
 			while ((c = (char)fgetc(fin)) != '|')
 				buffer[k++] = c;
 			string place_name(buffer, k);
-			Data::placeid[place_name] = pid;
+			Data::placeid[place_name].push_back(pid);
 			update_max(max_pid, pid);
 			fgets(buffer, BUFFER_LEN, fin);
 		}

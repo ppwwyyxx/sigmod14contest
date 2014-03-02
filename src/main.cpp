@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Sun Mar 02 01:07:18 2014 +0800
+//Date: Sun Mar 02 13:32:10 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/Timer.h"
@@ -80,8 +80,6 @@ int main(int argc, char* argv[]) {
 	q2.print_result();
 	q3.print_result();
 	q4.print_result();
-
-
 
 	Data::free();
 }

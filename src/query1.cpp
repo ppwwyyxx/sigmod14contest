@@ -1,1 +1,1 @@
-query1_example.cc
+query1_force.cc

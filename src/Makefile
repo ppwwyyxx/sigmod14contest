@@ -1,6 +1,6 @@
 
 # $File: Makefile
-# $Date: Sun Mar 02 00:32:08 2014 +0800
+# $Date: Sun Mar 02 14:04:44 2014 +0800
 
 OBJ_DIR = build
 TARGET = main
@@ -48,7 +48,7 @@ $(TARGET): $(OBJS)
 clean:
 	@rm -rf $(OBJ_DIR) $(TARGET)
 
-TEST_DATA = ../1k
+TEST_DATA = ../10k
 
 run: $(TARGET)
 	./$(TARGET) $(TEST_DATA) $(TEST_DATA)-queries.txt

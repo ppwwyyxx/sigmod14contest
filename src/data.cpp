@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Sat Mar 01 19:52:35 2014 +0800
+//Date: Sun Mar 02 13:30:23 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -21,7 +21,7 @@ vector<vector<int> > Data::person_in_tags;
 vector<string> Data::tag_name;
 unordered_map<std::string, int> Data::tagid;
 vector<vector<Forum*> > Data::tag_forums;
-unordered_map<string, int> Data::placeid;
+unordered_map<string, vector<int> > Data::placeid;
 vector<PlaceNode> Data::places;
 #ifdef DEBUG
 vector<int> Data::real_tag_id;

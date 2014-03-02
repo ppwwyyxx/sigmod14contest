@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Sun Mar 02 00:48:31 2014 +0800
+//Date: Sun Mar 02 13:31:05 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -90,7 +90,8 @@ public:
 	static std::tr1::unordered_map<std::string, int> tagid;			// tag name -> tag id
 	static std::vector<std::vector<Forum*> > tag_forums;			// related forums for each tag
 
-	static std::tr1::unordered_map<std::string, int> placeid;		// id of each place
+	static std::tr1::unordered_map<std::string, std::vector<int> > placeid;
+	// id of each place. note that for a specific name, there might be several places
 	static std::vector<PlaceNode> places;			// each place indexed by id
 
 #ifdef DEBUG

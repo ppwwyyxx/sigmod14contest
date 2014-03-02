@@ -1,5 +1,5 @@
 //File: query1.h
-//Date: Sat Mar 01 19:23:51 2014 +0800
+//Date: Sun Mar 02 14:29:43 2014 +0800
 
 #pragma once
 #include <vector>
@@ -19,5 +19,6 @@ class Query1Handler {
 		void print_result();		// TODO
 
 	protected:
+		std::vector<int> ans;
 		std::vector<Query1> queries;
 };

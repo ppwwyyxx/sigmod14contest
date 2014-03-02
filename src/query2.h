@@ -1,8 +1,6 @@
 //File: query2.h
 
 #pragma once
-
-#pragma once
 #include <vector>
 
 struct Query2 {
@@ -21,4 +19,5 @@ class Query2Handler {
 
 	protected:
 		std::vector<Query2> queries;
+        std::vector< std::vector<int> > ans;
 };

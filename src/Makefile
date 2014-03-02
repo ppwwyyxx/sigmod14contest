@@ -1,6 +1,6 @@
 
 # $File: Makefile
-# $Date: Sun Mar 02 14:04:44 2014 +0800
+# $Date: Sun Mar 02 18:45:25 2014 +0800
 
 OBJ_DIR = build
 TARGET = main
@@ -9,11 +9,11 @@ INCLUDE_DIR = -Iinclude
 DEFINES = -DDEBUG
 
 OPTFLAGS = -Wall -Wextra -Wconversion -Wno-unused-result
-OPTFLAGS += -g
-#OPTFLAGS += -O3
+#OPTFLAGS += -g
+OPTFLAGS += -O3
 
 CXXFLAGS = $(INCLUDE_DIR)
-CXXFLAGS += -fopenmp # -std=c++11
+CXXFLAGS += -fopenmp  -std=c++0x
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
 LDFLAGS += -fopenmp
 

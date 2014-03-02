@@ -1,5 +1,5 @@
 //File: query1_force.cc
-//Date: Sun Mar 02 14:39:31 2014 +0800
+//Date: Sun Mar 02 18:48:48 2014 +0800
 
 #include "query1.h"
 #include "lib/common.h"
@@ -23,7 +23,7 @@ int force(int p1, int p2, int x) {
 			for (vector<ConnectedPerson>::iterator it = friends.begin();
 					it != friends.end(); it ++) {
 				int person = it->pid;
-				if (it->ncmts <= x) continue;
+				if (it->ncmts <= x) break;		// because friends are sorted by ncmts
 				if (not vst[person]) {
 					if (person == p2) return depth;
 					q.push_back(person);
@@ -45,9 +45,7 @@ void Query1Handler::add_query(int p1, int p2, int x) {
 //	queries.push_back(Query1(p1, p2, x));
 }
 
-void Query1Handler::work() {
-
-}
+void Query1Handler::work() {}
 
 void Query1Handler::print_result() {
 	REP(k, ans.size()) {

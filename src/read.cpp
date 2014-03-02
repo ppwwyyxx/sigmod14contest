@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sun Mar 02 14:30:24 2014 +0800
+//Date: Sun Mar 02 18:43:34 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -74,7 +74,6 @@ void read_person_file(const string& dir) {
 		update_max(maxid, pid);
 		READ_TILL_EOL();
 	}
-	print_debug("Number of Person: %d\n", maxid);
 	Data::allocate(maxid);
 
 	// read birthday
@@ -156,6 +155,7 @@ void read_comments(const string& dir) {
 			Data::friends[i].push_back(ConnectedPerson(j, ncmt));		// i reply to j
 			Data::friends[j].push_back(ConnectedPerson(i, ncmt));		// j reply to i
 		}
+		// sort by ncmts
 		sort(Data::friends[i].begin(), Data::friends[i].end());
 	}
 	free_2d<int>(comment_map, Data::nperson);
@@ -184,7 +184,6 @@ void read_tags_forums(const string & dir) {
 		fclose(fin);
 	}
 	Data::person_in_tags.resize(Data::ntag);
-	print_debug("Number of tags: %d\n", Data::ntag);
 
 	{		// read person->tags
 		FILE* fin = safe_open(dir + "/person_hasInterest_tag.csv");
@@ -276,6 +275,7 @@ void build_places_tree(const string& dir) {
 		int p1, p2;
 		while (fscanf(fin, "%d|%d", &p1, &p2) == 2) {
 			Data::places[p2].sub_places.push_back(&Data::places[p1]);
+			Data::places[p1].parent = &Data::places[p2];
 		}
 		fclose(fin);
 	}
@@ -320,8 +320,12 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 	Timer timer;
 	read_person_file(dir);
 	read_person_knows_person(dir);
+	print_debug("Read person spent %lf secs\n", timer.get_time());
+	timer.reset();
 	read_comments(dir);
+	print_debug("Read comment spent %lf secs\n", timer.get_time());
+	timer.reset();
 	read_tags_forums(dir);
 	read_places(dir);
-	print_debug("Read spent %lf secs\n", timer.get_time());
+	print_debug("Read tags and places spent %lf secs\n", timer.get_time());
 }

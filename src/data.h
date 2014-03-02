@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Sun Mar 02 13:31:05 2014 +0800
+//Date: Sun Mar 02 18:47:09 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -21,7 +21,7 @@ struct ConnectedPerson {
 		pid(_pid), ncmts(_ncmts){}
 
 	bool operator < (const ConnectedPerson& r) const
-	{ return ncmts < r.ncmts; }
+	{ return ncmts > r.ncmts; }
 
 	friend std::ostream& operator << (std::ostream& os, const ConnectedPerson& cp)
 	{ os << cp.pid << " " << cp.ncmts; return os; }
@@ -53,6 +53,7 @@ typedef std::vector<PersonInPlace> PersonSet;	// must be sorted
 
 class PlaceNode {
 public:
+	PlaceNode* parent = NULL;
 	std::vector<PlaceNode*> sub_places;
 	PersonSet persons;		// sorted
 

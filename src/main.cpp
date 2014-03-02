@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Sun Mar 02 13:32:10 2014 +0800
+//Date: Sun Mar 02 18:42:29 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/Timer.h"
@@ -21,12 +21,16 @@ Query2Handler q2;
 Query3Handler q3;
 Query4Handler q4;
 
+double tot_time[5];
+int query_cnt[5];
+
 void read_query(const string& fname) {
 	FILE* fin = fopen(fname.c_str(), "r");
 	m_assert(fin != NULL);
 	int type;
 	char buf[1024];
 	while (fscanf(fin, "query%d(", &type) == 1) {
+		Timer timer;
 		switch (type) {
 			case 1:
 				{
@@ -62,24 +66,49 @@ void read_query(const string& fname) {
 			default:
 				m_assert(false);
 		}
+		tot_time[type] += timer.get_time();
+		query_cnt[type] ++;
 		fgets(buf, 1024, fin);
 	}
 }
 
 int main(int argc, char* argv[]) {
+	memset(tot_time, 0, 5 * sizeof(double));
+	memset(query_cnt, 0, 5 * sizeof(int));
 	Timer timer;
 	read_data(string(argv[1]));
+	print_debug("Read all spent %lf secs\n", timer.get_time());
+	print_debug("nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);
 	read_query(string(argv[2]));
 
+	timer.reset();
 	q1.work();
+	tot_time[1] += timer.get_time();
+	timer.reset();
 	q2.work();
+	tot_time[2] += timer.get_time();
+	timer.reset();
 	q3.work();
+	tot_time[3] += timer.get_time();
+	timer.reset();
 	q4.work();
+	tot_time[4] += timer.get_time();
 
+	timer.reset();
 	q1.print_result();
+	tot_time[1] += timer.get_time();
+	timer.reset();
 	q2.print_result();
+	tot_time[2] += timer.get_time();
+	timer.reset();
 	q3.print_result();
+	tot_time[3] += timer.get_time();
+	timer.reset();
 	q4.print_result();
+	tot_time[4] += timer.get_time();
+
+	for (int i = 1; i <= 4; i ++)
+		print_debug("%d queries of type %d spent %lf secs in total\n", query_cnt[i], i, tot_time[i]);
 
 	Data::free();
 }

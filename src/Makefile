@@ -9,11 +9,11 @@ INCLUDE_DIR = -Iinclude
 DEFINES = -DDEBUG
 
 OPTFLAGS = -Wall -Wextra -Wconversion -Wno-unused-result
-#OPTFLAGS += -g
-OPTFLAGS += -O3
+OPTFLAGS += -g
+#OPTFLAGS += -O3
 
 CXXFLAGS = $(INCLUDE_DIR)
-CXXFLAGS += -fopenmp  -std=c++11
+CXXFLAGS += -fopenmp # -std=c++11
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
 LDFLAGS += -fopenmp
 

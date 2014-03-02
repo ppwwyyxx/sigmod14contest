@@ -4,6 +4,7 @@
 #include "query1.h"
 #include "lib/common.h"
 #include "data.h"
+#include <cstdio>
 #include <queue>
 #include <vector>
 using namespace std;

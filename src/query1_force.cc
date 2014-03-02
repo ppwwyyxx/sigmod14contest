@@ -1,5 +1,5 @@
-//File: query1_example.cc
-//Date: Sun Mar 02 14:35:14 2014 +0800
+//File: query1_force.cc
+//Date: Sun Mar 02 14:39:31 2014 +0800
 
 #include "query1.h"
 #include "lib/common.h"
@@ -35,7 +35,10 @@ int force(int p1, int p2, int x) {
 }
 
 void Query1Handler::add_query(int p1, int p2, int x) {
-	m_assert(p1 != p2);
+	if (p1 == p2) {
+		this->ans.push_back(0);
+		return;
+	}
 	int ans = force(p1, p2, x);
 	this->ans.push_back(ans);
 //	queries.push_back(Query1(p1, p2, x));

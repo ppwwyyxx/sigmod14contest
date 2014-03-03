@@ -91,9 +91,10 @@ void Query3Handler::add_query(int k, int h, const string& p) {
 		bfs(it->pid, h);
 	//sort and output
 	sort(answers.begin(), answers.begin() + answers.size());
+	vector<Answer3> tmp;
 	for (vector<Answer3>::iterator it = answers.begin(); it != answers.end() && (k--); ++it)
-		printf("%d|%d ", it->p1, it->p2);
-	printf("\n");
+		tmp.push_back(*it);
+	global_answer.push_back(tmp);
 }
 
 void Query3Handler::work() {
@@ -101,5 +102,10 @@ void Query3Handler::work() {
 }
 
 void Query3Handler::print_result() {
-
+	for (auto it = global_answer.begin(); it != global_answer.end(); ++it)
+	{
+		for (auto it1 = it->begin(); it1 != it->end(); ++it1)
+			printf("%d|%d ", it1->p1, it1->p2);
+		printf("\n");
+	}
 }

@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sun Mar 02 18:43:34 2014 +0800
+//Date: Sun Mar 02 23:47:25 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -177,6 +177,7 @@ void read_tags_forums(const string & dir) {
 			Data::real_tag_id.push_back(tid);
 #endif
 			Data::tag_name.push_back(tag_name);
+			m_assert(Data::tagid.count(tag_name) == 0);		//  no repeated tag name
 			Data::tagid[tag_name] = (int)Data::tag_name.size() - 1;
 			fgets(buffer, BUFFER_LEN, fin);
 		}
@@ -209,13 +210,13 @@ void read_tags_forums(const string & dir) {
 
 			unordered_map<int, Forum*>::const_iterator itr = forum_idmap.find(fid);
 			if (itr != forum_idmap.end()) {
-				itr->second->persons.push_back(PersonInForum(pid));
+				itr->second->persons.insert(PersonInForum(pid));
 			} else {
 				Forum* forum = new Forum();		// XXX these memory will never be free until program exited.
 #ifdef DEBUG
 				forum->id = fid;
 #endif
-				forum->persons.push_back(PersonInForum(pid));
+				forum->persons.insert(PersonInForum(pid));
 				forum_idmap[fid] = forum;
 			}
 		}

@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Sat Mar 01 19:33:13 2014 +0800
+//Date: Mon Mar 03 10:40:04 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -24,4 +24,5 @@ class Query4Handler {
 
 	protected:
 		std::vector<Query4> queries;
+		std::vector<std::vector<int> > ans;
 };

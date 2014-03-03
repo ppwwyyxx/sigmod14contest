@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Sun Mar 02 18:42:29 2014 +0800
+//Date: Sun Mar 02 23:53:28 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/Timer.h"
@@ -95,10 +95,10 @@ int main(int argc, char* argv[]) {
 	tot_time[4] += timer.get_time();
 
 	timer.reset();
-	q1.print_result();
+//	q1.print_result();
 	tot_time[1] += timer.get_time();
 	timer.reset();
-	q2.print_result();
+//	q2.print_result();
 	tot_time[2] += timer.get_time();
 	timer.reset();
 	q3.print_result();

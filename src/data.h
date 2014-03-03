@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Sun Mar 02 18:47:09 2014 +0800
+//Date: Sun Mar 02 23:46:53 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -69,7 +69,7 @@ struct Forum {
 #ifdef DEBUG
 	int id;
 #endif
-	std::vector<PersonInForum> persons;
+	std::set<PersonInForum> persons;
 };
 
 class Data {

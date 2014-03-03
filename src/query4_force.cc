@@ -1,12 +1,16 @@
-//File: query4_example.cc
-//Date: Mon Mar 03 11:29:30 2014 +0800
+//File: query4_force.cc
+//Date: Mon Mar 03 18:08:38 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "query4.h"
 #include "data.h"
 #include "lib/common.h"
 #include "lib/utils.h"
+#ifdef __linux__
 #include <tr1/unordered_set>
+#else
+#include <unordered_set>
+#endif
 #include <omp.h>
 #include <queue>
 #include <algorithm>

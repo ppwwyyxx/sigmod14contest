@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Mon Mar 03 17:32:14 2014 +0800
+//Date: Mon Mar 03 18:09:53 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -7,7 +7,14 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#ifdef __linux__
 #include <tr1/unordered_map>
+using std::tr1::unordered_map;
+#else
+#include <unordered_map>
+using std::unordered_map;
+#endif
+
 #include <set>
 #include <bitset>
 
@@ -90,10 +97,10 @@ public:
 	static std::vector<std::vector<int> > person_in_tags;
 
 	static std::vector<std::string> tag_name;		// name of each tags, indexed by continuous id
-	static std::tr1::unordered_map<std::string, int> tagid;			// tag name -> tag id
+	static unordered_map<std::string, int> tagid;			// tag name -> tag id
 	static std::vector<std::vector<Forum*> > tag_forums;			// related forums for each tag
 
-	static std::tr1::unordered_map<std::string, std::vector<int> > placeid;
+	static unordered_map<std::string, std::vector<int> > placeid;
 	// id of each place. note that for a specific name, there might be several places
 	static std::vector<PlaceNode> places;			// each place indexed by id
 

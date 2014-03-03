@@ -1,6 +1,6 @@
 
 # $File: Makefile
-# $Date: Mon Mar 03 16:36:30 2014 +0800
+# $Date: Mon Mar 03 17:34:42 2014 +0800
 
 OBJ_DIR = build
 TARGET = ../main
@@ -13,13 +13,13 @@ OPTFLAGS = -Wall -Wextra -Wconversion -Wno-unused-result
 OPTFLAGS += -O3
 
 CXXFLAGS = $(INCLUDE_DIR)
-CXXFLAGS += -fopenmp  -std=c++11
+CXXFLAGS += -fopenmp  -std=c++0x
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
 LDFLAGS += -fopenmp
 
 CC = g++
 SHELL = bash
-ccSOURCES = $(shell find -name "*.cpp" | sed 's/^\.\///g')
+ccSOURCES = $(shell find . -name "*.cpp" | sed 's/^\.\///g')
 OBJS = $(addprefix $(OBJ_DIR)/,$(ccSOURCES:.cpp=.o))
 DEPFILES = $(OBJS:.o=.d)
 

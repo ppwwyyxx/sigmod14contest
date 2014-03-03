@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Sun Mar 02 23:46:53 2014 +0800
+//Date: Mon Mar 03 17:32:14 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -53,12 +53,14 @@ typedef std::vector<PersonInPlace> PersonSet;	// must be sorted
 
 class PlaceNode {
 public:
-	PlaceNode* parent = NULL;
+	PlaceNode* parent;
 	std::vector<PlaceNode*> sub_places;
 	PersonSet persons;		// sorted
 
 	PersonSet get_all_persons();		// sorted
 	// TODO the result of this func may need to be cached
+
+	PlaceNode(): parent(NULL){}
 };
 
 typedef int PersonInForum;

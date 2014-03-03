@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # File: test.sh
-# Date: Mon Mar 03 16:38:44 2014 +0800
+# Date: Mon Mar 03 17:25:27 2014 +0800
 # Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 [[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/" && exit 1)
@@ -18,5 +18,5 @@ TIME=`date "+%m%d-%H:%M:%S"`
 OUTPUT=ans-"$TIME".txt
 
 make -C src
-./run.sh "$1" $QUERY > $OUTPUT
-diff $OUTPUT $ANS
+./memusg ./run.sh "$1" $QUERY > $OUTPUT
+diff $OUTPUT $ANS && echo "Accepted" || echo "Wrong Answer"

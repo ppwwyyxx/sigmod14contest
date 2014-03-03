@@ -1,6 +1,6 @@
 
 # $File: Makefile
-# $Date: Mon Mar 03 17:34:42 2014 +0800
+# $Date: Mon Mar 03 18:43:19 2014 +0800
 
 OBJ_DIR = build
 TARGET = ../main
@@ -17,6 +17,7 @@ CXXFLAGS += -fopenmp  -std=c++0x
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
 LDFLAGS += -fopenmp
 
+GCC = gcc
 CC = g++
 SHELL = bash
 ccSOURCES = $(shell find . -name "*.cpp" | sed 's/^\.\///g')
@@ -33,15 +34,20 @@ $(OBJ_DIR)/%.o: %.cpp
 	@echo "[cpp] $< ..."
 	@$(CC) -c $< -o $@ $(CXXFLAGS)
 
+$(OBJ_DIR)/memcpy.o: lib/memcpy.c
+	@echo "[memcpy.o] ..."
+	@$(GCC) -c $< -o $@
+
+
 $(OBJ_DIR)/%.d: %.cpp  Makefile
 	@mkdir -p $(dir $@)
 	@echo "[dep] $< ..."
 	@$(CC) $(CXXFLAGS) $(INCLUDE_DIR) $(DEFINES) -MM -MT "$(OBJ_DIR)/$(<:.cpp=.o) $(OBJ_DIR)/$(<:.cpp=.d)" "$<"  > "$@"
 
 
-$(TARGET): $(OBJS)
+$(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
 	@echo "Linking ..."
-	@$(CC) $(OBJS) -o $@ $(LDFLAGS)
+	@$(CC) $^ -o $@ $(LDFLAGS) -Wl,--wrap=memcpy
 	@echo "done."
 
 

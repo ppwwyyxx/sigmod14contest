@@ -1,0 +1,1511 @@
+4 % path 4576-2536-2181-3548-5400 (other shortest paths may exist)
+-1 % path none
+3 % path 266-265-2067-2106 (other shortest paths may exist)
+4 % path 8313-811-2407-2997-9523 (other shortest paths may exist)
+-1 % path none
+3 % path 2155-1902-3244-5355 (other shortest paths may exist)
+4 % path 4947-2249-2110-2946-8771 (other shortest paths may exist)
+-1 % path none
+3 % path 7128-5815-6254-5751 (other shortest paths may exist)
+3 % path 2814-3194-793-4641 (other shortest paths may exist)
+3 % path 8287-1321-4209-9776 (other shortest paths may exist)
+3 % path 9048-9064-1344-3894 (other shortest paths may exist)
+3 % path 9304-6071-6390-4776 (other shortest paths may exist)
+3 % path 7007-4937-6361-5764 (other shortest paths may exist)
+4 % path 7912-2968-211-8954-447 (other shortest paths may exist)
+4 % path 7805-1141-650-667-6806 (other shortest paths may exist)
+3 % path 4075-1512-9776-4775 (other shortest paths may exist)
+3 % path 4092-4087-4229-1724 (other shortest paths may exist)
+3 % path 6251-6641-6714-1306 (other shortest paths may exist)
+4 % path 1419-7004-5872-1028-2026 (other shortest paths may exist)
+4 % path 5375-5155-1864-1886-2546 (other shortest paths may exist)
+4 % path 9110-819-1327-2968-5836 (other shortest paths may exist)
+4 % path 4900-5330-1474-9924-9914 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 657-568-362-2740-1755 (other shortest paths may exist)
+3 % path 463-530-4937-8003 (other shortest paths may exist)
+5 % path 2882-1225-40-9130-7366-4064 (other shortest paths may exist)
+4 % path 7217-5099-7401-6793-7821 (other shortest paths may exist)
+4 % path 287-590-505-9669-9494 (other shortest paths may exist)
+4 % path 2521-610-350-5675-1577 (other shortest paths may exist)
+3 % path 7086-6646-7558-6779 (other shortest paths may exist)
+-1 % path none
+4 % path 6903-1555-2631-2817-3436 (other shortest paths may exist)
+-1 % path none
+3 % path 5476-196-162-1151 (other shortest paths may exist)
+3 % path 2914-780-675-194 (other shortest paths may exist)
+3 % path 3452-24-2951-2135 (other shortest paths may exist)
+3 % path 4595-1013-1040-9972 (other shortest paths may exist)
+4 % path 9026-6955-2290-6719-6856 (other shortest paths may exist)
+2 % path 4761-4741-9750 (other shortest paths may exist)
+2 % path 7062-5303-3957 (other shortest paths may exist)
+3 % path 1485-808-4364-4304 (other shortest paths may exist)
+3 % path 7578-5631-7115-486 (other shortest paths may exist)
+3 % path 7803-6706-2674-2482 (other shortest paths may exist)
+3 % path 2850-438-8279-4760 (other shortest paths may exist)
+4 % path 7336-4980-38-5496-7028 (other shortest paths may exist)
+3 % path 1463-870-4708-1446 (other shortest paths may exist)
+-1 % path none
+4 % path 8085-421-728-3547-2554 (other shortest paths may exist)
+4 % path 9073-1058-9645-377-3130 (other shortest paths may exist)
+3 % path 657-633-1110-1307 (other shortest paths may exist)
+3 % path 1961-1794-4243-1162 (other shortest paths may exist)
+4 % path 4662-3889-7364-5791-6702 (other shortest paths may exist)
+4 % path 1376-5563-6844-6857-7369 (other shortest paths may exist)
+-1 % path none
+3 % path 699-654-2840-3254 (other shortest paths may exist)
+4 % path 7702-5610-1293-3711-5114 (other shortest paths may exist)
+4 % path 2723-5-73-8892-1282 (other shortest paths may exist)
+4 % path 6580-5542-8004-8667-302 (other shortest paths may exist)
+2 % path 2754-3434-3069 (other shortest paths may exist)
+3 % path 3835-141-3078-3565 (other shortest paths may exist)
+3 % path 3324-2034-1773-8008 (other shortest paths may exist)
+3 % path 5328-2051-2840-1772 (other shortest paths may exist)
+-1 % path none
+3 % path 2857-2239-3337-1507 (other shortest paths may exist)
+-1 % path none
+4 % path 3013-2840-5014-7237-1876 (other shortest paths may exist)
+4 % path 4646-1137-4831-3520-9571 (other shortest paths may exist)
+3 % path 4708-1734-953-3577 (other shortest paths may exist)
+-1 % path none
+5 % path 5342-5238-10-225-9750-4850 (other shortest paths may exist)
+3 % path 1155-162-194-3556 (other shortest paths may exist)
+3 % path 5832-394-334-5743 (other shortest paths may exist)
+4 % path 7671-152-8002-4176-1083 (other shortest paths may exist)
+3 % path 3323-3302-4173-9186 (other shortest paths may exist)
+3 % path 1469-654-5915-6715 (other shortest paths may exist)
+4 % path 8580-4991-7880-7867-2339 (other shortest paths may exist)
+4 % path 2063-4633-6639-6486-1379 (other shortest paths may exist)
+-1 % path none
+3 % path 4311-146-871-6005 (other shortest paths may exist)
+4 % path 279-8004-3617-2340-1238 (other shortest paths may exist)
+-1 % path none
+3 % path 3267-2181-1830-3581 (other shortest paths may exist)
+3 % path 6882-5591-6239-9283 (other shortest paths may exist)
+3 % path 6197-4163-9683-2831 (other shortest paths may exist)
+2 % path 7139-7471-5414 (other shortest paths may exist)
+2 % path 2134-3512-3237 (other shortest paths may exist)
+-1 % path none
+4 % path 5892-5588-6239-5845-6162 (other shortest paths may exist)
+4 % path 342-283-8908-6829-6962 (other shortest paths may exist)
+3 % path 7957-8229-1499-1494 (other shortest paths may exist)
+3 % path 9728-5562-6342-6170 (other shortest paths may exist)
+3 % path 6118-2529-3424-5872 (other shortest paths may exist)
+3 % path 1576-698-7916-6747 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 5906-4052-4768-4832-1204 (other shortest paths may exist)
+4 % path 536-6477-458-305-3668 (other shortest paths may exist)
+3 % path 5827-4793-4646-1557 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 420-8434-6916-6580 (other shortest paths may exist)
+4 % path 7121-1348-1352-3486-1833 (other shortest paths may exist)
+3 % path 7146-7403-7550-8571 (other shortest paths may exist)
+4 % path 7987-2449-1898-2127-2308 (other shortest paths may exist)
+3 % path 1172-404-2711-3039 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+2 % path 7751-7659-8980 (other shortest paths may exist)
+3 % path 510-4940-4919-4921 (other shortest paths may exist)
+-1 % path none
+3 % path 8464-7708-6529-7552 (other shortest paths may exist)
+4 % path 8941-1155-2475-4659-8887 (other shortest paths may exist)
+3 % path 7667-265-8178-5891 (other shortest paths may exist)
+3 % path 6001-5581-7110-8252 (other shortest paths may exist)
+3 % path 704-7936-7112-5891 (other shortest paths may exist)
+3 % path 5486-6520-8292-8226 (other shortest paths may exist)
+-1 % path none
+4 % path 8954-618-437-3053-3440 (other shortest paths may exist)
+0 % path 6204 (other shortest paths may exist)
+3 % path 9725-2269-3142-3644 (other shortest paths may exist)
+4 % path 7258-5615-7549-4572-1410 (other shortest paths may exist)
+3 % path 7552-5715-3914-3714 (other shortest paths may exist)
+5 % path 9195-9140-251-9162-3792-3870 (other shortest paths may exist)
+4 % path 9789-5928-7601-6016-4464 (other shortest paths may exist)
+3 % path 9707-9512-5063-8399 (other shortest paths may exist)
+4 % path 1757-283-1756-6796-6176 (other shortest paths may exist)
+4 % path 3839-2209-2091-2388-7871 (other shortest paths may exist)
+3 % path 193-107-849-9043 (other shortest paths may exist)
+4 % path 9601-193-100-699-647 (other shortest paths may exist)
+4 % path 5448-5958-693-659-779 (other shortest paths may exist)
+-1 % path none
+3 % path 8250-8180-2981-2585 (other shortest paths may exist)
+4 % path 5723-6679-6829-1963-1948 (other shortest paths may exist)
+3 % path 2311-1904-6583-6007 (other shortest paths may exist)
+3 % path 1506-6425-752-493 (other shortest paths may exist)
+3 % path 7543-6702-6263-4914 (other shortest paths may exist)
+4 % path 9168-9119-5066-4056-222 (other shortest paths may exist)
+3 % path 4341-4352-8234-8068 (other shortest paths may exist)
+4 % path 7538-9905-2253-1985-3732 (other shortest paths may exist)
+-1 % path none
+4 % path 1285-7205-5563-1099-8905 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 1657-9079-1818-9996-3794 (other shortest paths may exist)
+-1 % path none
+3 % path 3926-1545-6230-5529 (other shortest paths may exist)
+-1 % path none
+3 % path 9650-4949-2481-3124 (other shortest paths may exist)
+-1 % path none
+4 % path 8016-9213-795-965-9013 (other shortest paths may exist)
+2 % path 4702-1736-9872 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+4 % path 3999-3708-1055-9404-5237 (other shortest paths may exist)
+-1 % path none
+3 % path 9638-953-4547-6714 (other shortest paths may exist)
+3 % path 4072-4030-4822-9666 (other shortest paths may exist)
+3 % path 1635-814-804-6145 (other shortest paths may exist)
+3 % path 5706-2502-1959-224 (other shortest paths may exist)
+3 % path 1323-8533-8523-7047 (other shortest paths may exist)
+3 % path 942-941-4750-4626 (other shortest paths may exist)
+-1 % path none
+3 % path 81-1082-1116-9948 (other shortest paths may exist)
+4 % path 7255-8551-60-8619-1256 (other shortest paths may exist)
+3 % path 9170-1261-9209-3842 (other shortest paths may exist)
+-1 % path none
+5 % path 3992-541-292-7059-983-2769 (other shortest paths may exist)
+3 % path 7659-2218-3521-2559 (other shortest paths may exist)
+5 % path 4250-4344-4341-4200-1898-3560 (other shortest paths may exist)
+3 % path 2642-1772-3444-2883 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 1044-3090-410-5537-4713 (other shortest paths may exist)
+3 % path 2699-4671-742-735 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+4 % path 1386-166-8457-9556-5219 (other shortest paths may exist)
+3 % path 5224-225-4417-8519 (other shortest paths may exist)
+-1 % path none
+4 % path 3161-5963-5715-6844-7509 (other shortest paths may exist)
+4 % path 6988-23-43-7997-7557 (other shortest paths may exist)
+4 % path 4299-2409-5289-5380-4302 (other shortest paths may exist)
+3 % path 6064-7470-7579-8952 (other shortest paths may exist)
+2 % path 3499-7710-4699 (other shortest paths may exist)
+3 % path 8813-8834-2877-3052 (other shortest paths may exist)
+-1 % path none
+3 % path 5640-8368-9008-246 (other shortest paths may exist)
+-1 % path none
+4 % path 5443-9733-138-8813-1110 (other shortest paths may exist)
+4 % path 6574-5950-8414-1060-1171 (other shortest paths may exist)
+3 % path 7684-849-5085-9100 (other shortest paths may exist)
+4 % path 7474-5655-5273-5380-5231 (other shortest paths may exist)
+-1 % path none
+3 % path 7258-5631-4876-4721 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 7306-5534-7816-7844 (other shortest paths may exist)
+3 % path 895-880-5845-6518 (other shortest paths may exist)
+2 % path 8742-8734-8711 (other shortest paths may exist)
+4 % path 5462-5563-1099-6100-6154 (other shortest paths may exist)
+2 % path 8998-8714-8857 (other shortest paths may exist)
+3 % path 336-4580-8314-3999 (other shortest paths may exist)
+3 % path 6198-6173-8117-81 (other shortest paths may exist)
+2 % path 7852-7758-7953 (other shortest paths may exist)
+2 % path 9341-9509-3322 (other shortest paths may exist)
+5 % path 4302-5380-3643-3688-4860-1834 (other shortest paths may exist)
+4 % path 4002-1013-194-186-166 (other shortest paths may exist)
+3 % path 6522-5916-7388-2954 (other shortest paths may exist)
+3 % path 251-5330-1455-814 (other shortest paths may exist)
+3 % path 5888-5427-4800-316 (other shortest paths may exist)
+4 % path 9106-4919-4931-8164-778 (other shortest paths may exist)
+3 % path 3156-9806-6747-6512 (other shortest paths may exist)
+3 % path 682-2405-735-750 (other shortest paths may exist)
+-1 % path none
+3 % path 291-8123-9476-9483 (other shortest paths may exist)
+-1 % path none
+4 % path 3264-162-160-3525-9534 (other shortest paths may exist)
+3 % path 6458-230-1782-8876 (other shortest paths may exist)
+4 % path 1218-9951-773-8832-7163 (other shortest paths may exist)
+3 % path 5687-1104-1767-5130 (other shortest paths may exist)
+3 % path 1598-8997-8924-9948 (other shortest paths may exist)
+-1 % path none
+3 % path 812-1597-1594-69 (other shortest paths may exist)
+-1 % path none
+2 % path 7518-7205-6337 (other shortest paths may exist)
+3 % path 945-938-1387-1403 (other shortest paths may exist)
+3 % path 9714-1736-4729-6375 (other shortest paths may exist)
+4 % path 7556-6177-5416-6344-6969 (other shortest paths may exist)
+-1 % path none
+2 % path 3156-1997-2235 (other shortest paths may exist)
+-1 % path none
+3 % path 1049-305-9750-903 (other shortest paths may exist)
+2 % path 8282-8229-6815 (other shortest paths may exist)
+4 % path 4092-866-2469-3859-1430 (other shortest paths may exist)
+3 % path 8728-347-327-9914 (other shortest paths may exist)
+4 % path 8615-2853-1288-4056-9846 (other shortest paths may exist)
+2 % path 3780-8728-4572 (other shortest paths may exist)
+4 % path 9227-9699-8841-2012-2040 (other shortest paths may exist)
+4 % path 1129-1091-4135-2529-3002 (other shortest paths may exist)
+-1 % path none
+3 % path 7253-8852-8880-6261 (other shortest paths may exist)
+3 % path 1014-1538-7457-6894 (other shortest paths may exist)
+4 % path 9160-1261-318-458-350 (other shortest paths may exist)
+5 % path 5887-370-283-280-1653-4459 (other shortest paths may exist)
+3 % path 2789-2581-9881-7144 (other shortest paths may exist)
+3 % path 6704-5711-6074-6186 (other shortest paths may exist)
+3 % path 7978-3385-2150-2258 (other shortest paths may exist)
+4 % path 8190-8072-842-131-7655 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 6068-2789-2594-3107-7768 (other shortest paths may exist)
+4 % path 2619-2249-8327-4364-7192 (other shortest paths may exist)
+2 % path 8166-803-8874 (other shortest paths may exist)
+4 % path 1812-5004-9161-9159-2113 (other shortest paths may exist)
+3 % path 357-344-7300-5820 (other shortest paths may exist)
+-1 % path none
+3 % path 5812-2908-1506-1450 (other shortest paths may exist)
+-1 % path none
+3 % path 6340-6820-8325-4017 (other shortest paths may exist)
+3 % path 8435-81-590-8702 (other shortest paths may exist)
+5 % path 3111-6598-956-8563-8575-217 (other shortest paths may exist)
+2 % path 6208-6938-7610 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 615-8533-158-1206-7091 (other shortest paths may exist)
+3 % path 1463-1480-1475-9975 (other shortest paths may exist)
+-1 % path none
+2 % path 6508-7514-2934 (other shortest paths may exist)
+3 % path 4658-8102-8287-4315 (other shortest paths may exist)
+4 % path 1150-410-5537-5460-6076 (other shortest paths may exist)
+4 % path 2367-385-6325-1754-8023 (other shortest paths may exist)
+-1 % path none
+4 % path 937-1401-4212-1725-216 (other shortest paths may exist)
+4 % path 8502-801-1011-9549-9545 (other shortest paths may exist)
+4 % path 5686-5380-4980-5121-6987 (other shortest paths may exist)
+3 % path 6689-2268-1879-2490 (other shortest paths may exist)
+4 % path 6848-6186-557-448-9529 (other shortest paths may exist)
+-1 % path none
+4 % path 1976-1787-1953-4634-4206 (other shortest paths may exist)
+-1 % path none
+3 % path 4271-4442-6975-7244 (other shortest paths may exist)
+1 % path 2816-3118 (other shortest paths may exist)
+3 % path 6686-3019-2088-3502 (other shortest paths may exist)
+-1 % path none
+4 % path 921-146-862-1096-1161 (other shortest paths may exist)
+-1 % path none
+4 % path 3629-9404-1729-5349-1463 (other shortest paths may exist)
+3 % path 4228-1386-2104-9329 (other shortest paths may exist)
+3 % path 6362-6871-4795-4875 (other shortest paths may exist)
+3 % path 938-281-3777-3907 (other shortest paths may exist)
+3 % path 2750-1780-2031-2312 (other shortest paths may exist)
+2 % path 2131-8315-8760 (other shortest paths may exist)
+3 % path 24-6-4059-8260 (other shortest paths may exist)
+4 % path 3754-2449-3056-5772-9109 (other shortest paths may exist)
+3 % path 507-280-3003-2957 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 3880-9744-7690-2757 (other shortest paths may exist)
+4 % path 9556-6404-5915-5174-5354 (other shortest paths may exist)
+2 % path 5709-7403-6112 (other shortest paths may exist)
+3 % path 8020-4931-8072-842 (other shortest paths may exist)
+4 % path 9529-918-870-7561-6312 (other shortest paths may exist)
+4 % path 1801-5302-1438-4919-6604 (other shortest paths may exist)
+3 % path 8369-197-5306-5150 (other shortest paths may exist)
+4 % path 9425-3434-2245-3334-73 (other shortest paths may exist)
+3 % path 6509-5678-5846-2223 (other shortest paths may exist)
+4 % path 4323-165-4940-230-9103 (other shortest paths may exist)
+4 % path 3778-983-979-8728-8767 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 7034-5458-2994-4462 (other shortest paths may exist)
+-1 % path none
+4 % path 8560-8590-6654-5619-5439 (other shortest paths may exist)
+3 % path 5304-5212-2218-2364 (other shortest paths may exist)
+4 % path 3280-7635-5557-7457-2727 (other shortest paths may exist)
+4 % path 1075-2968-3230-7741-7699 (other shortest paths may exist)
+3 % path 8026-659-9852-7525 (other shortest paths may exist)
+4 % path 1758-938-1606-6302-7546 (other shortest paths may exist)
+-1 % path none
+3 % path 2331-5474-7185-6037 (other shortest paths may exist)
+3 % path 2652-2544-3172-7330 (other shortest paths may exist)
+4 % path 6884-5963-7344-5474-2331 (other shortest paths may exist)
+3 % path 8055-8081-8799-5596 (other shortest paths may exist)
+4 % path 870-11-225-7381-6200 (other shortest paths may exist)
+3 % path 565-292-627-2968 (other shortest paths may exist)
+3 % path 5158-4052-4807-4760 (other shortest paths may exist)
+-1 % path none
+3 % path 5747-8183-3724-1483 (other shortest paths may exist)
+2 % path 8011-1277-9163 (other shortest paths may exist)
+3 % path 8520-5450-838-6460 (other shortest paths may exist)
+3 % path 5471-281-4485-2263 (other shortest paths may exist)
+2 % path 4316-4457-6891 (other shortest paths may exist)
+4 % path 7202-9020-4229-9457-9538 (other shortest paths may exist)
+-1 % path none
+5 % path 6927-6551-6737-2055-3552-1334 (other shortest paths may exist)
+3 % path 9755-4760-8778-1434 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+3 % path 5958-802-1094-9001 (other shortest paths may exist)
+3 % path 6090-1620-9032-8047 (other shortest paths may exist)
+3 % path 6554-6813-6992-3088 (other shortest paths may exist)
+3 % path 8532-801-5133-1300 (other shortest paths may exist)
+3 % path 5140-6112-6148-3106 (other shortest paths may exist)
+3 % path 6004-891-6170-1006 (other shortest paths may exist)
+4 % path 2401-2116-46-23-5156 (other shortest paths may exist)
+3 % path 6361-5747-8183-8164 (other shortest paths may exist)
+4 % path 614-357-6363-7635-3280 (other shortest paths may exist)
+3 % path 6518-5845-6025-9814 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 6152-5811-6355-5673 (other shortest paths may exist)
+3 % path 2131-1367-1327-8665 (other shortest paths may exist)
+3 % path 1924-227-230-358 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 2207-1892-6996-6541 (other shortest paths may exist)
+5 % path 4528-1013-1021-3107-2129-3921 (other shortest paths may exist)
+3 % path 905-8687-1293-9208 (other shortest paths may exist)
+3 % path 3605-1269-1241-7095 (other shortest paths may exist)
+-1 % path none
+2 % path 9717-9455-9412 (other shortest paths may exist)
+4 % path 5714-2689-680-2229-1727 (other shortest paths may exist)
+3 % path 728-548-8880-779 (other shortest paths may exist)
+3 % path 173-6498-1668-732 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 2074-152-5361-2580 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 4574-756-9277-9554 (other shortest paths may exist)
+4 % path 2013-465-3110-3508-7353 (other shortest paths may exist)
+3 % path 26-2018-6109-9287 (other shortest paths may exist)
+4 % path 4112-6-23-9507-8588 (other shortest paths may exist)
+4 % path 4845-155-4760-9079-7022 (other shortest paths may exist)
+-1 % path none
+4 % path 571-435-9172-9148-8692 (other shortest paths may exist)
+3 % path 3420-1951-3445-3189 (other shortest paths may exist)
+-1 % path none
+3 % path 9115-5576-5487-6109 (other shortest paths may exist)
+4 % path 5841-9693-48-29-3543 (other shortest paths may exist)
+-1 % path none
+4 % path 2780-1832-119-8002-6493 (other shortest paths may exist)
+-1 % path none
+3 % path 2699-1814-2134-1953 (other shortest paths may exist)
+4 % path 9686-7558-5771-6639-1231 (other shortest paths may exist)
+4 % path 3929-8752-959-1045-6634 (other shortest paths may exist)
+-1 % path none
+4 % path 6532-3645-3853-4573-2341 (other shortest paths may exist)
+3 % path 9859-8054-8107-5713 (other shortest paths may exist)
+4 % path 2094-647-2470-3241-2867 (other shortest paths may exist)
+-1 % path none
+5 % path 3365-6684-474-1069-1142-7233 (other shortest paths may exist)
+4 % path 1903-680-659-5655-7274 (other shortest paths may exist)
+4 % path 2093-5739-441-1832-2103 (other shortest paths may exist)
+3 % path 4330-4294-5415-6336 (other shortest paths may exist)
+4 % path 684-260-3498-2242-605 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 5936-4133-7050-5514 (other shortest paths may exist)
+4 % path 1982-3137-4893-1296-4917 (other shortest paths may exist)
+4 % path 1787-911-929-5034-4545 (other shortest paths may exist)
+4 % path 8591-8677-8169-8146-4626 (other shortest paths may exist)
+4 % path 3051-2030-663-9647-8334 (other shortest paths may exist)
+3 % path 6534-6741-2023-2485 (other shortest paths may exist)
+4 % path 8128-4932-5971-5912-7264 (other shortest paths may exist)
+4 % path 5503-773-9917-9733-5443 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 6361-6951-7205-4703 (other shortest paths may exist)
+3 % path 9981-929-6028-6713 (other shortest paths may exist)
+4 % path 5218-2209-1917-3565-8533 (other shortest paths may exist)
+4 % path 8756-790-814-1683-8174 (other shortest paths may exist)
+3 % path 798-194-4449-4277 (other shortest paths may exist)
+3 % path 4187-8458-7795-8339 (other shortest paths may exist)
+-1 % path none
+4 % path 6484-1776-2414-3581-234 (other shortest paths may exist)
+3 % path 6359-2618-9532-4658 (other shortest paths may exist)
+-1 % path none
+3 % path 2508-872-7425-6598 (other shortest paths may exist)
+4 % path 2950-1907-1885-4828-4977 (other shortest paths may exist)
+3 % path 1904-1794-3525-2616 (other shortest paths may exist)
+3 % path 251-1104-5133-1030 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+5 % path 8212-9843-530-6262-5934-391 (other shortest paths may exist)
+3 % path 384-262-8892-1243 (other shortest paths may exist)
+-1 % path none
+3 % path 1671-280-1692-2384 (other shortest paths may exist)
+-1 % path none
+3 % path 7115-1058-2923-2226 (other shortest paths may exist)
+2 % path 5781-6007-5678 (other shortest paths may exist)
+3 % path 8213-2239-3263-3689 (other shortest paths may exist)
+4 % path 6998-3253-2657-1896-2798 (other shortest paths may exist)
+2 % path 361-6197-7546 (other shortest paths may exist)
+4 % path 5360-5063-998-9995-1352 (other shortest paths may exist)
+-1 % path none
+3 % path 6246-7133-9774-1538 (other shortest paths may exist)
+3 % path 9632-435-9210-3296 (other shortest paths may exist)
+-1 % path none
+3 % path 1497-5238-319-406 (other shortest paths may exist)
+3 % path 9560-9406-702-779 (other shortest paths may exist)
+2 % path 8451-5133-8387 (other shortest paths may exist)
+4 % path 6693-3277-1921-4353-7784 (other shortest paths may exist)
+5 % path 123-122-91-101-1570-1700 (other shortest paths may exist)
+3 % path 945-976-8904-9701 (other shortest paths may exist)
+4 % path 2974-1761-5704-6996-9250 (other shortest paths may exist)
+-1 % path none
+4 % path 7639-5581-5696-23-5155 (other shortest paths may exist)
+4 % path 6175-4597-5712-7205-1285 (other shortest paths may exist)
+3 % path 5286-5183-225-1019 (other shortest paths may exist)
+4 % path 4168-878-4795-723-2234 (other shortest paths may exist)
+3 % path 1524-1466-6065-7392 (other shortest paths may exist)
+3 % path 1945-3084-7082-7259 (other shortest paths may exist)
+2 % path 8052-8237-6820 (other shortest paths may exist)
+3 % path 9776-228-510-517 (other shortest paths may exist)
+4 % path 5579-7221-9008-1115-1169 (other shortest paths may exist)
+4 % path 132-91-9900-6235-6179 (other shortest paths may exist)
+4 % path 6892-5655-6639-6100-6293 (other shortest paths may exist)
+4 % path 1032-803-998-8460-8459 (other shortest paths may exist)
+4 % path 4262-4318-4394-3462-2651 (other shortest paths may exist)
+3 % path 9716-9287-9398-394 (other shortest paths may exist)
+-1 % path none
+2 % path 9628-9460-9343 (other shortest paths may exist)
+-1 % path none
+3 % path 8944-211-8360-5005 (other shortest paths may exist)
+3 % path 8904-962-1374-4196 (other shortest paths may exist)
+3 % path 3395-458-557-4553 (other shortest paths may exist)
+3 % path 6350-903-896-7415 (other shortest paths may exist)
+4 % path 9186-4173-41-9421-726 (other shortest paths may exist)
+-1 % path none
+2 % path 2461-2973-619 (other shortest paths may exist)
+3 % path 9252-1402-1300-7546 (other shortest paths may exist)
+3 % path 3799-3755-5409-6712 (other shortest paths may exist)
+3 % path 7467-4879-4787-1722 (other shortest paths may exist)
+3 % path 8426-789-4573-2341 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+2 % path 596-4910-9529 (other shortest paths may exist)
+-1 % path none
+4 % path 3925-8426-246-9212-8683 (other shortest paths may exist)
+4 % path 7049-1370-1017-795-9505 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 5384-23-10-1797-2311 (other shortest paths may exist)
+-1 % path none
+3 % path 5073-4887-7646-7810 (other shortest paths may exist)
+5 % path 7805-1141-918-878-1465-8384 (other shortest paths may exist)
+3 % path 2043-1774-1788-2973 (other shortest paths may exist)
+3 % path 16-5292-7059-1208 (other shortest paths may exist)
+3 % path 7405-5457-1833-7008 (other shortest paths may exist)
+2 % path 9873-6599-7409 (other shortest paths may exist)
+3 % path 6723-6409-9557-9610 (other shortest paths may exist)
+-1 % path none
+4 % path 9726-8166-385-4959-5053 (other shortest paths may exist)
+4 % path 1018-1001-8396-6811-6085 (other shortest paths may exist)
+-1 % path none
+2 % path 2752-3239-978 (other shortest paths may exist)
+4 % path 1700-21-1460-1541-2773 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+3 % path 7133-1257-7995-3043 (other shortest paths may exist)
+2 % path 4476-5427-5974 (other shortest paths may exist)
+-1 % path none
+3 % path 6043-2453-1915-2803 (other shortest paths may exist)
+3 % path 236-227-8234-3539 (other shortest paths may exist)
+2 % path 9668-9401-7707 (other shortest paths may exist)
+3 % path 6627-5528-6227-6260 (other shortest paths may exist)
+-1 % path none
+3 % path 3379-2343-5460-7420 (other shortest paths may exist)
+-1 % path none
+3 % path 1138-437-410-6411 (other shortest paths may exist)
+2 % path 2661-5387-4768 (other shortest paths may exist)
+4 % path 6550-5561-7166-3139-3117 (other shortest paths may exist)
+3 % path 1958-2492-3564-3224 (other shortest paths may exist)
+-1 % path none
+2 % path 4731-4753-978 (other shortest paths may exist)
+-1 % path none
+3 % path 5802-6617-6719-7119 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 6756-5719-7563-7962 (other shortest paths may exist)
+3 % path 617-2119-2921-2708 (other shortest paths may exist)
+4 % path 3624-3472-2032-2502-5573 (other shortest paths may exist)
+3 % path 8297-228-4401-8263 (other shortest paths may exist)
+-1 % path none
+3 % path 2928-1911-2263-1535 (other shortest paths may exist)
+3 % path 9009-4622-4640-2194 (other shortest paths may exist)
+2 % path 7025-5723-6893 (other shortest paths may exist)
+3 % path 4035-3484-3287-3029 (other shortest paths may exist)
+4 % path 1519-4238-2861-3525-6326 (other shortest paths may exist)
+2 % path 7043-8562-64 (other shortest paths may exist)
+4 % path 1263-300-539-2414-1784 (other shortest paths may exist)
+3 % path 2804-2255-5958-5448 (other shortest paths may exist)
+5 % path 8385-3123-522-9202-2542-7076 (other shortest paths may exist)
+4 % path 6945-5460-7132-8032-9381 (other shortest paths may exist)
+3 % path 317-1697-5772-461 (other shortest paths may exist)
+6 % path 2772-2401-2243-2225-4594-8778-9824 (other shortest paths may exist)
+4 % path 1922-1948-2158-2197-574 (other shortest paths may exist)
+-1 % path none
+3 % path 3942-3739-4649-2475 (other shortest paths may exist)
+4 % path 6467-459-2155-8679-6786 (other shortest paths may exist)
+-1 % path none
+4 % path 9161-47-3828-4375-269 (other shortest paths may exist)
+-1 % path none
+5 % path 3703-7592-424-2847-3276-3288 (other shortest paths may exist)
+3 % path 7176-221-5354-754 (other shortest paths may exist)
+3 % path 5270-4052-8309-4554 (other shortest paths may exist)
+3 % path 1757-9025-6515-6661 (other shortest paths may exist)
+3 % path 6754-4713-4876-4823 (other shortest paths may exist)
+-1 % path none
+4 % path 4061-1206-875-910-177 (other shortest paths may exist)
+3 % path 5040-2405-2626-4584 (other shortest paths may exist)
+4 % path 3517-4515-1466-538-4022 (other shortest paths may exist)
+4 % path 8173-7483-5631-9532-526 (other shortest paths may exist)
+-1 % path none
+3 % path 1137-4150-7423-4093 (other shortest paths may exist)
+3 % path 6336-6196-2877-2818 (other shortest paths may exist)
+2 % path 6262-5648-6723 (other shortest paths may exist)
+3 % path 9756-3173-2853-3488 (other shortest paths may exist)
+4 % path 5689-7931-53-156-4264 (other shortest paths may exist)
+-1 % path none
+3 % path 8809-277-4423-2136 (other shortest paths may exist)
+3 % path 1692-1901-3564-1939 (other shortest paths may exist)
+3 % path 1009-9092-448-593 (other shortest paths may exist)
+5 % path 9234-3311-1250-2454-2879-8182 (other shortest paths may exist)
+-1 % path none
+4 % path 7141-5512-5088-2033-5578 (other shortest paths may exist)
+3 % path 4707-3381-1697-1606 (other shortest paths may exist)
+-1 % path none
+3 % path 2068-2197-2147-5104 (other shortest paths may exist)
+4 % path 8748-4822-9603-7468-6607 (other shortest paths may exist)
+-1 % path none
+3 % path 7762-7708-4991-4963 (other shortest paths may exist)
+3 % path 1263-300-882-929 (other shortest paths may exist)
+3 % path 6331-5447-959-7807 (other shortest paths may exist)
+4 % path 182-160-7068-5866-5321 (other shortest paths may exist)
+3 % path 7986-7967-9096-5423 (other shortest paths may exist)
+3 % path 5112-100-4229-4204 (other shortest paths may exist)
+3 % path 4404-1454-6684-6593 (other shortest paths may exist)
+3 % path 1899-3136-2449-556 (other shortest paths may exist)
+3 % path 8705-1013-976-6712 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+3 % path 6152-5583-5668-8577 (other shortest paths may exist)
+2 % path 8301-4931-5072 (other shortest paths may exist)
+3 % path 4085-3759-3773-8514 (other shortest paths may exist)
+-1 % path none
+3 % path 9096-4955-459-5992 (other shortest paths may exist)
+-1 % path none
+3 % path 5465-6290-169-5027 (other shortest paths may exist)
+4 % path 3642-6310-901-838-6880 (other shortest paths may exist)
+4 % path 7895-1576-962-4932-9112 (other shortest paths may exist)
+4 % path 9502-4591-459-8608-5202 (other shortest paths may exist)
+4 % path 6385-4233-3455-3373-7729 (other shortest paths may exist)
+4 % path 8449-4758-9742-7579-7414 (other shortest paths may exist)
+3 % path 1203-3455-4075-4055 (other shortest paths may exist)
+4 % path 1801-5302-344-4461-4367 (other shortest paths may exist)
+-1 % path none
+3 % path 9542-953-4887-9101 (other shortest paths may exist)
+-1 % path none
+4 % path 7650-1626-1464-2414-1686 (other shortest paths may exist)
+-1 % path none
+4 % path 8495-1953-191-7171-2651 (other shortest paths may exist)
+4 % path 8916-944-4832-4956-6730 (other shortest paths may exist)
+-1 % path none
+5 % path 2099-1173-7422-6793-9357-9356 (other shortest paths may exist)
+3 % path 1099-1300-782-4387 (other shortest paths may exist)
+3 % path 8731-8726-8229-8208 (other shortest paths may exist)
+3 % path 579-402-8892-8575 (other shortest paths may exist)
+4 % path 7716-7739-2908-2551-2066 (other shortest paths may exist)
+3 % path 4733-1446-1506-7711 (other shortest paths may exist)
+3 % path 8187-4192-4200-1722 (other shortest paths may exist)
+3 % path 4056-225-7165-8985 (other shortest paths may exist)
+3 % path 3604-2908-9191-9221 (other shortest paths may exist)
+4 % path 3826-7619-2290-2971-2347 (other shortest paths may exist)
+4 % path 7002-8396-89-9939-1289 (other shortest paths may exist)
+4 % path 138-23-6-4046-5239 (other shortest paths may exist)
+4 % path 4787-2475-147-23-1331 (other shortest paths may exist)
+2 % path 8102-4649-3816 (other shortest paths may exist)
+4 % path 1398-3204-1001-2635-3867 (other shortest paths may exist)
+3 % path 2117-5298-3944-9955 (other shortest paths may exist)
+-1 % path none
+4 % path 5613-812-661-653-682 (other shortest paths may exist)
+3 % path 4479-0-3123-2129 (other shortest paths may exist)
+3 % path 7569-5414-6613-8797 (other shortest paths may exist)
+4 % path 4947-2249-367-5115-8932 (other shortest paths may exist)
+4 % path 2239-2030-3506-5873-906 (other shortest paths may exist)
+-1 % path none
+4 % path 687-2628-1209-8572-8187 (other shortest paths may exist)
+3 % path 123-2271-1774-3542 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 7427-1911-8308-8770 (other shortest paths may exist)
+2 % path 4924-9093-5501 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 8356-3828-3096-2244 (other shortest paths may exist)
+4 % path 3954-1500-1619-1565-1977 (other shortest paths may exist)
+-1 % path none
+4 % path 7374-109-7690-7402-4004 (other shortest paths may exist)
+4 % path 3275-2150-6202-5811-7598 (other shortest paths may exist)
+4 % path 525-500-385-8734-636 (other shortest paths may exist)
+-1 % path none
+3 % path 4719-265-101-143 (other shortest paths may exist)
+4 % path 3195-338-463-5502-1053 (other shortest paths may exist)
+4 % path 4383-1926-2827-2147-5104 (other shortest paths may exist)
+4 % path 4943-913-9777-9119-2617 (other shortest paths may exist)
+3 % path 5766-6002-5838-6521 (other shortest paths may exist)
+-1 % path none
+4 % path 2084-2123-1844-3887-3923 (other shortest paths may exist)
+4 % path 1872-6998-1325-1387-9038 (other shortest paths may exist)
+3 % path 4327-3875-3648-492 (other shortest paths may exist)
+4 % path 1698-7514-6461-5855-5892 (other shortest paths may exist)
+3 % path 1319-3105-2213-2158 (other shortest paths may exist)
+4 % path 356-427-318-2434-537 (other shortest paths may exist)
+-1 % path none
+3 % path 3677-3851-811-8715 (other shortest paths may exist)
+3 % path 5377-8647-3903-3917 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 6063-6484-5535-5428-6234 (other shortest paths may exist)
+3 % path 5904-327-1685-1647 (other shortest paths may exist)
+3 % path 9760-7667-899-5972 (other shortest paths may exist)
+3 % path 4811-8404-797-808 (other shortest paths may exist)
+3 % path 3980-1565-1567-1690 (other shortest paths may exist)
+3 % path 6163-2486-728-714 (other shortest paths may exist)
+4 % path 9316-7951-402-5139-8450 (other shortest paths may exist)
+4 % path 7533-1955-5692-7475-6187 (other shortest paths may exist)
+4 % path 9875-919-2029-2614-2389 (other shortest paths may exist)
+3 % path 484-6291-6551-5936 (other shortest paths may exist)
+3 % path 1331-23-5350-2465 (other shortest paths may exist)
+3 % path 5462-5563-6239-4397 (other shortest paths may exist)
+-1 % path none
+2 % path 1464-7300-5808 (other shortest paths may exist)
+4 % path 5467-2405-673-9817-6357 (other shortest paths may exist)
+3 % path 3090-2861-4171-4202 (other shortest paths may exist)
+4 % path 8963-4229-100-7646-7810 (other shortest paths may exist)
+-1 % path none
+3 % path 6692-913-1094-8913 (other shortest paths may exist)
+4 % path 7320-752-756-1647-8835 (other shortest paths may exist)
+2 % path 5528-6264-8975 (other shortest paths may exist)
+3 % path 2720-2797-135-129 (other shortest paths may exist)
+3 % path 2827-1886-3596-2224 (other shortest paths may exist)
+4 % path 3086-702-8319-1401-937 (other shortest paths may exist)
+3 % path 5357-7226-5893-7045 (other shortest paths may exist)
+3 % path 4053-4017-7418-5883 (other shortest paths may exist)
+5 % path 8573-4189-141-3659-3799-7398 (other shortest paths may exist)
+4 % path 5721-618-1685-1644-6124 (other shortest paths may exist)
+3 % path 5289-5273-3544-1894 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 6255-6174-8975-8937 (other shortest paths may exist)
+2 % path 8529-1060-3137 (other shortest paths may exist)
+3 % path 4061-3924-3989-3868 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+4 % path 5245-225-979-2156-6982 (other shortest paths may exist)
+3 % path 1633-4844-4836-3679 (other shortest paths may exist)
+3 % path 2719-2123-5488-5745 (other shortest paths may exist)
+4 % path 9334-9342-9426-4382-4395 (other shortest paths may exist)
+3 % path 6439-2079-1940-3335 (other shortest paths may exist)
+3 % path 4139-1115-5870-3138 (other shortest paths may exist)
+-1 % path none
+3 % path 8703-0-9953-2116 (other shortest paths may exist)
+3 % path 2083-1779-2651-3004 (other shortest paths may exist)
+4 % path 2146-1926-6078-6119-5935 (other shortest paths may exist)
+3 % path 5482-5647-3137-8639 (other shortest paths may exist)
+4 % path 8160-4940-8040-8665-2392 (other shortest paths may exist)
+4 % path 3688-2183-3241-3048-1444 (other shortest paths may exist)
+4 % path 4290-4462-4283-4519-1399 (other shortest paths may exist)
+4 % path 1171-987-3711-310-9353 (other shortest paths may exist)
+-1 % path none
+4 % path 891-859-4304-1721-7394 (other shortest paths may exist)
+-1 % path none
+3 % path 3393-2529-6880-9764 (other shortest paths may exist)
+-1 % path none
+2 % path 2305-3823-7794 (other shortest paths may exist)
+3 % path 5695-1207-4793-7551 (other shortest paths may exist)
+3 % path 4410-430-366-4995 (other shortest paths may exist)
+-1 % path none
+3 % path 6523-819-7142-5084 (other shortest paths may exist)
+4 % path 7346-8688-4541-4523-9417 (other shortest paths may exist)
+4 % path 4116-11-870-3373-3013 (other shortest paths may exist)
+4 % path 6265-7287-6540-7962-6027 (other shortest paths may exist)
+4 % path 9941-6177-524-437-4731 (other shortest paths may exist)
+4 % path 8700-1130-8975-7221-6041 (other shortest paths may exist)
+3 % path 1148-344-5302-8484 (other shortest paths may exist)
+5 % path 8522-102-7402-7148-6165-5628 (other shortest paths may exist)
+3 % path 9358-9333-7025-6820 (other shortest paths may exist)
+4 % path 5686-5380-1453-8409-3573 (other shortest paths may exist)
+3 % path 593-365-3498-2559 (other shortest paths may exist)
+3 % path 6619-5503-7862-7877 (other shortest paths may exist)
+6 % path 6212-6875-9387-9246-3489-1775-2623 (other shortest paths may exist)
+3 % path 9025-5287-5380-9768 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+2 % path 8972-1148-3582 (other shortest paths may exist)
+3 % path 8169-196-181-2344 (other shortest paths may exist)
+3 % path 5865-3827-3778-402 (other shortest paths may exist)
+-1 % path none
+4 % path 2977-1163-4132-2604-2277 (other shortest paths may exist)
+4 % path 1496-8-4204-5648-6102 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+4 % path 5538-82-7852-8490-2683 (other shortest paths may exist)
+3 % path 6374-4708-4801-7773 (other shortest paths may exist)
+3 % path 3009-3241-8196-5077 (other shortest paths may exist)
+3 % path 3019-2971-3472-3624 (other shortest paths may exist)
+-1 % path none
+3 % path 5865-9837-4893-8020 (other shortest paths may exist)
+2 % path 1344-7753-7678 (other shortest paths may exist)
+4 % path 6297-5738-5631-4671-2870 (other shortest paths may exist)
+3 % path 6540-6178-7423-4118 (other shortest paths may exist)
+4 % path 6268-3577-488-2608-9907 (other shortest paths may exist)
+4 % path 3758-790-811-4038-5828 (other shortest paths may exist)
+4 % path 4356-7656-1603-9404-9437 (other shortest paths may exist)
+4 % path 7618-2242-3498-1877-5522 (other shortest paths may exist)
+4 % path 7763-5563-1099-1499-5266 (other shortest paths may exist)
+-1 % path none
+3 % path 6958-191-3799-3674 (other shortest paths may exist)
+3 % path 4246-1373-562-625 (other shortest paths may exist)
+-1 % path none
+3 % path 9951-773-2877-2180 (other shortest paths may exist)
+2 % path 1714-4216-4245 (other shortest paths may exist)
+5 % path 1983-1797-1532-9205-9442-8894 (other shortest paths may exist)
+3 % path 1866-208-7270-6951 (other shortest paths may exist)
+3 % path 9532-2618-4494-1560 (other shortest paths may exist)
+4 % path 5028-2417-7429-5761-5455 (other shortest paths may exist)
+3 % path 7391-5417-5487-7082 (other shortest paths may exist)
+4 % path 3542-1847-2254-9389-1165 (other shortest paths may exist)
+4 % path 4859-870-146-5292-1494 (other shortest paths may exist)
+4 % path 9240-9304-6868-7332-6332 (other shortest paths may exist)
+3 % path 6998-3993-811-8311 (other shortest paths may exist)
+5 % path 9076-236-6507-3139-2255-2443 (other shortest paths may exist)
+-1 % path none
+3 % path 1117-4204-6561-5987 (other shortest paths may exist)
+-1 % path none
+3 % path 3664-1043-692-674 (other shortest paths may exist)
+5 % path 6105-4494-280-3003-3123-331 (other shortest paths may exist)
+5 % path 6364-5598-6964-3450-1807-2893 (other shortest paths may exist)
+3 % path 8981-1590-8562-66 (other shortest paths may exist)
+4 % path 2234-723-458-2372-3055 (other shortest paths may exist)
+-1 % path none
+3 % path 4308-3571-3070-5478 (other shortest paths may exist)
+3 % path 1941-3521-1468-1454 (other shortest paths may exist)
+4 % path 969-8932-246-8857-3284 (other shortest paths may exist)
+3 % path 6785-762-8004-9020 (other shortest paths may exist)
+3 % path 5726-6769-5583-5485 (other shortest paths may exist)
+3 % path 2648-2965-2529-6168 (other shortest paths may exist)
+3 % path 9589-1729-9304-7205 (other shortest paths may exist)
+3 % path 5350-23-28-6674 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 2955-1857-2223-2500 (other shortest paths may exist)
+3 % path 5499-6082-6215-3426 (other shortest paths may exist)
+4 % path 2907-5193-5303-7841-9993 (other shortest paths may exist)
+-1 % path none
+4 % path 2321-1700-9693-9562-1433 (other shortest paths may exist)
+3 % path 6361-5436-5659-1560 (other shortest paths may exist)
+2 % path 6282-6762-7399 (other shortest paths may exist)
+2 % path 5990-6439-6712 (other shortest paths may exist)
+3 % path 9938-1287-1219-2384 (other shortest paths may exist)
+-1 % path none
+3 % path 6957-5420-5865-7250 (other shortest paths may exist)
+5 % path 2756-2661-2076-7561-7631-6086 (other shortest paths may exist)
+4 % path 601-2812-8146-5368-5220 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+4 % path 8384-1465-878-869-7707 (other shortest paths may exist)
+3 % path 467-426-6172-7311 (other shortest paths may exist)
+5 % path 3286-1774-2138-6760-6275-6607 (other shortest paths may exist)
+3 % path 4133-1063-7999-9152 (other shortest paths may exist)
+3 % path 7504-7513-402-72 (other shortest paths may exist)
+3 % path 1910-4110-6225-5919 (other shortest paths may exist)
+3 % path 2347-8808-5011-5255 (other shortest paths may exist)
+4 % path 5593-7087-970-938-6335 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 6079-6144-6719-7495 (other shortest paths may exist)
+5 % path 534-410-316-305-4320-4315 (other shortest paths may exist)
+-1 % path none
+4 % path 3886-983-7059-5518-7242 (other shortest paths may exist)
+4 % path 3815-1917-2035-2125-2551 (other shortest paths may exist)
+3 % path 4355-191-3799-3662 (other shortest paths may exist)
+4 % path 3160-1392-1427-659-779 (other shortest paths may exist)
+4 % path 6729-984-986-1450-5232 (other shortest paths may exist)
+-1 % path none
+3 % path 8108-984-1953-3375 (other shortest paths may exist)
+3 % path 5510-5870-6071-859 (other shortest paths may exist)
+2 % path 4010-8123-240 (other shortest paths may exist)
+3 % path 3186-2006-4544-7067 (other shortest paths may exist)
+3 % path 84-4773-4402-4481 (other shortest paths may exist)
+5 % path 5489-7090-24-1496-1459-9867 (other shortest paths may exist)
+3 % path 5451-1474-979-9354 (other shortest paths may exist)
+5 % path 1760-2491-1325-1421-6148-8223 (other shortest paths may exist)
+3 % path 8811-4623-2387-2415 (other shortest paths may exist)
+3 % path 9579-5193-5292-701 (other shortest paths may exist)
+4 % path 4472-186-4411-4208-1709 (other shortest paths may exist)
+-1 % path none
+3 % path 5142-756-1456-7200 (other shortest paths may exist)
+3 % path 6982-2156-7087-1477 (other shortest paths may exist)
+-1 % path none
+3 % path 6577-6652-6295-7348 (other shortest paths may exist)
+4 % path 1688-962-8932-6969-7154 (other shortest paths may exist)
+3 % path 6776-375-377-8599 (other shortest paths may exist)
+-1 % path none
+3 % path 8108-1669-4607-4605 (other shortest paths may exist)
+-1 % path none
+3 % path 5174-3339-2334-2303 (other shortest paths may exist)
+3 % path 8475-1388-8404-789 (other shortest paths may exist)
+-1 % path none
+3 % path 5877-1173-3777-3846 (other shortest paths may exist)
+4 % path 6208-5631-9532-713-450 (other shortest paths may exist)
+3 % path 5410-5581-6658-6597 (other shortest paths may exist)
+-1 % path none
+4 % path 2246-654-1469-5275-3093 (other shortest paths may exist)
+3 % path 6463-7344-271-3100 (other shortest paths may exist)
+3 % path 7419-5500-6225-6621 (other shortest paths may exist)
+4 % path 3121-141-4159-4640-2194 (other shortest paths may exist)
+3 % path 8779-2469-2032-2578 (other shortest paths may exist)
+3 % path 8849-5202-5184-5340 (other shortest paths may exist)
+4 % path 88-8686-5079-1797-1983 (other shortest paths may exist)
+-1 % path none
+3 % path 8641-1446-4832-8309 (other shortest paths may exist)
+4 % path 4629-1866-208-9025-6515 (other shortest paths may exist)
+4 % path 8205-568-402-1742-1920 (other shortest paths may exist)
+-1 % path none
+4 % path 78-338-5922-6332-4549 (other shortest paths may exist)
+3 % path 732-711-1456-4489 (other shortest paths may exist)
+5 % path 6905-7919-8-6178-5784-7578 (other shortest paths may exist)
+3 % path 3778-402-3408-2263 (other shortest paths may exist)
+4 % path 9250-6996-1418-9512-629 (other shortest paths may exist)
+3 % path 833-155-8457-4354 (other shortest paths may exist)
+5 % path 392-195-2997-2043-1827-9189 (other shortest paths may exist)
+4 % path 1810-5614-5643-4665-4677 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 3195-695-4919-3122 (other shortest paths may exist)
+4 % path 1242-76-3386-2898-3564 (other shortest paths may exist)
+4 % path 1572-6109-6639-7091-1078 (other shortest paths may exist)
+2 % path 6021-7176-7192 (other shortest paths may exist)
+4 % path 887-131-109-1000-1007 (other shortest paths may exist)
+2 % path 7138-1232-6704 (other shortest paths may exist)
+2 % path 1688-280-406 (other shortest paths may exist)
+4 % path 2169-415-351-4494-6953 (other shortest paths may exist)
+2 % path 8619-9221-116 (other shortest paths may exist)
+-1 % path none
+4 % path 2070-7178-6440-6561-5336 (other shortest paths may exist)
+3 % path 2255-1958-2200-2160 (other shortest paths may exist)
+4 % path 6558-562-297-3287-9737 (other shortest paths may exist)
+-1 % path none
+3 % path 602-548-422-4233 (other shortest paths may exist)
+-1 % path none
+4 % path 8495-8478-8414-1953-2134 (other shortest paths may exist)
+4 % path 5593-2163-1830-3194-3623 (other shortest paths may exist)
+4 % path 217-4115-5648-6803-7189 (other shortest paths may exist)
+4 % path 817-825-722-833-1928 (other shortest paths may exist)
+3 % path 6002-5581-6112-5622 (other shortest paths may exist)
+3 % path 1790-9669-505-6405 (other shortest paths may exist)
+-1 % path none
+3 % path 6506-6119-5950-9215 (other shortest paths may exist)
+5 % path 8222-8292-3379-6969-8932-6688 (other shortest paths may exist)
+3 % path 1822-347-987-1171 (other shortest paths may exist)
+4 % path 3281-2088-2367-3560-6139 (other shortest paths may exist)
+-1 % path none
+3 % path 1343-4544-5000-4994 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+4 % path 5883-5715-5762-7354-7360 (other shortest paths may exist)
+3 % path 8765-8315-724-6245 (other shortest paths may exist)
+4 % path 6959-4649-9903-9814-6495 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+3 % path 7619-5531-6036-6497 (other shortest paths may exist)
+-1 % path none
+5 % path 2932-1886-2311-3777-3666-3978 (other shortest paths may exist)
+4 % path 888-155-2095-3244-2111 (other shortest paths may exist)
+3 % path 4051-9311-4494-4490 (other shortest paths may exist)
+3 % path 4995-3230-3770-3873 (other shortest paths may exist)
+3 % path 1971-2928-2294-2900 (other shortest paths may exist)
+3 % path 4322-1318-8700-9438 (other shortest paths may exist)
+3 % path 8801-1541-1499-5731 (other shortest paths may exist)
+-1 % path none
+4 % path 6423-5350-1741-1746-2189 (other shortest paths may exist)
+3 % path 6080-832-149-9847 (other shortest paths may exist)
+3 % path 2972-1832-2628-2496 (other shortest paths may exist)
+3 % path 9778-7690-8614-8603 (other shortest paths may exist)
+-1 % path none
+4 % path 5264-0-5273-5655-7314 (other shortest paths may exist)
+3 % path 1528-1453-5659-6217 (other shortest paths may exist)
+4 % path 9066-3104-2239-2938-2705 (other shortest paths may exist)
+3 % path 425-723-9501-4673 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+2 % path 458-2701-2971 (other shortest paths may exist)
+-1 % path none
+3 % path 6524-4544-9567-4644 (other shortest paths may exist)
+-1 % path none
+4 % path 3437-2225-2674-647-1135 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 4050-4013-9774-4374-8271 (other shortest paths may exist)
+4 % path 9748-2761-1814-1958-5059 (other shortest paths may exist)
+4 % path 8987-4597-1692-1685-1691 (other shortest paths may exist)
+2 % path 5678-755-482 (other shortest paths may exist)
+3 % path 8423-5079-3221-4091 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 6666-9518-9606-151 (other shortest paths may exist)
+4 % path 9328-9509-2861-3139-3071 (other shortest paths may exist)
+4 % path 2323-1814-2343-3455-6672 (other shortest paths may exist)
+3 % path 7716-1750-8788-9922 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 5992-459-8281-8130 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+2 % path 5647-6290-5174 (other shortest paths may exist)
+4 % path 8708-789-1754-9800-3654 (other shortest paths may exist)
+4 % path 3846-2522-2681-2427-3503 (other shortest paths may exist)
+-1 % path none
+3 % path 136-919-6071-5843 (other shortest paths may exist)
+3 % path 9153-40-5500-6557 (other shortest paths may exist)
+-1 % path none
+3 % path 801-1001-8316-7665 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 127-91-101-9949 (other shortest paths may exist)
+3 % path 7841-407-2887-2609 (other shortest paths may exist)
+3 % path 7931-1353-7307-7385 (other shortest paths may exist)
+3 % path 8798-1475-5263-7108 (other shortest paths may exist)
+3 % path 1689-973-3924-3961 (other shortest paths may exist)
+3 % path 2040-793-789-1650 (other shortest paths may exist)
+-1 % path none
+3 % path 7429-5172-5144-5371 (other shortest paths may exist)
+3 % path 5507-5414-5348-5359 (other shortest paths may exist)
+3 % path 370-283-3223-1857 (other shortest paths may exist)
+5 % path 3101-2964-1985-3259-9090-9049 (other shortest paths may exist)
+-1 % path none
+3 % path 1546-1512-1981-2197 (other shortest paths may exist)
+-1 % path none
+4 % path 3363-7792-4147-4189-8573 (other shortest paths may exist)
+4 % path 1837-1794-1798-5326-5301 (other shortest paths may exist)
+3 % path 7889-495-1491-8632 (other shortest paths may exist)
+3 % path 7234-4720-4737-9417 (other shortest paths may exist)
+4 % path 9928-8798-8849-8161-8128 (other shortest paths may exist)
+-1 % path none
+3 % path 1496-1442-2875-860 (other shortest paths may exist)
+4 % path 8992-1063-305-9750-4765 (other shortest paths may exist)
+3 % path 6715-4093-4110-8167 (other shortest paths may exist)
+3 % path 8401-584-434-5641 (other shortest paths may exist)
+3 % path 707-9421-394-9037 (other shortest paths may exist)
+3 % path 6599-64-5648-7411 (other shortest paths may exist)
+3 % path 7552-606-9549-2228 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 2452-1857-1844-296-353 (other shortest paths may exist)
+4 % path 2038-522-83-8396-7002 (other shortest paths may exist)
+3 % path 6775-1286-31-9156 (other shortest paths may exist)
+4 % path 3573-1907-2387-4283-6133 (other shortest paths may exist)
+3 % path 3230-8320-5121-8621 (other shortest paths may exist)
+3 % path 865-678-1001-2139 (other shortest paths may exist)
+3 % path 3714-3659-141-924 (other shortest paths may exist)
+-1 % path none
+5 % path 7842-7738-4950-4720-4879-9098 (other shortest paths may exist)
+3 % path 1192-1003-3386-8030 (other shortest paths may exist)
+-1 % path none
+3 % path 1616-3381-3071-5326 (other shortest paths may exist)
+4 % path 2077-2626-2306-8519-7071 (other shortest paths may exist)
+2 % path 265-4710-4791 (other shortest paths may exist)
+3 % path 1213-7801-7855-6985 (other shortest paths may exist)
+4 % path 2120-307-4046-4059-8015 (other shortest paths may exist)
+4 % path 4176-183-7981-8778-9607 (other shortest paths may exist)
+3 % path 2181-1832-3536-5043 (other shortest paths may exist)
+3 % path 4242-5648-7622-6524 (other shortest paths may exist)
+-1 % path none
+3 % path 8617-3689-4671-4763 (other shortest paths may exist)
+-1 % path none
+3 % path 8690-1266-4519-1391 (other shortest paths may exist)
+3 % path 451-365-734-9160 (other shortest paths may exist)
+4 % path 9642-361-300-4288-4330 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 844-40-64-5648-7610 (other shortest paths may exist)
+5 % path 144-109-101-1869-2372-2690 (other shortest paths may exist)
+-1 % path none
+3 % path 7780-2832-8345-9557 (other shortest paths may exist)
+-1 % path none
+4 % path 7501-6023-1635-2453-3445 (other shortest paths may exist)
+-1 % path none
+3 % path 1553-1506-6798-7484 (other shortest paths may exist)
+-1 % path none
+3 % path 152-155-7664-4456 (other shortest paths may exist)
+4 % path 3387-8272-2731-2473-1248 (other shortest paths may exist)
+3 % path 5463-4812-1198-3990 (other shortest paths may exist)
+4 % path 5055-3420-6820-7356-4240 (other shortest paths may exist)
+3 % path 3019-1847-2454-3452 (other shortest paths may exist)
+3 % path 756-359-532-6188 (other shortest paths may exist)
+2 % path 9622-4275-304 (other shortest paths may exist)
+-1 % path none
+3 % path 3821-962-1688-9820 (other shortest paths may exist)
+3 % path 6803-5574-6249-285 (other shortest paths may exist)
+4 % path 8263-165-2482-2563-3670 (other shortest paths may exist)
+3 % path 606-492-3778-9350 (other shortest paths may exist)
+2 % path 5132-8608-4447 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 8749-271-101-857 (other shortest paths may exist)
+3 % path 1181-862-1955-3087 (other shortest paths may exist)
+3 % path 8401-9210-2974-5782 (other shortest paths may exist)
+4 % path 5211-0-8-1654-1623 (other shortest paths may exist)
+-1 % path none
+4 % path 8474-6056-362-2740-2280 (other shortest paths may exist)
+2 % path 3490-3450-3061 (other shortest paths may exist)
+3 % path 5818-6165-9052-8247 (other shortest paths may exist)
+4 % path 8751-8352-3633-4682-9992 (other shortest paths may exist)
+3 % path 2585-1866-4229-4234 (other shortest paths may exist)
+3 % path 3960-1263-1266-5948 (other shortest paths may exist)
+3 % path 1390-1408-4843-3202 (other shortest paths may exist)
+4 % path 3617-2261-9499-1058-4752 (other shortest paths may exist)
+-1 % path none
+3 % path 6610-1596-1649-1376 (other shortest paths may exist)
+-1 % path none
+4 % path 7571-1770-3955-3990-4107 (other shortest paths may exist)
+5 % path 8047-227-8136-5849-5571-6718 (other shortest paths may exist)
+3 % path 4638-1299-1130-1145 (other shortest paths may exist)
+4 % path 3343-6537-5906-4052-4733 (other shortest paths may exist)
+3 % path 2492-3498-7062-6537 (other shortest paths may exist)
+4 % path 4894-4924-9198-9213-1739 (other shortest paths may exist)
+4 % path 6256-5352-1453-8418-4561 (other shortest paths may exist)
+4 % path 8712-4646-3745-1966-2826 (other shortest paths may exist)
+-1 % path none
+4 % path 2258-2150-6202-7354-9113 (other shortest paths may exist)
+-1 % path none
+3 % path 7037-5771-7418-3344 (other shortest paths may exist)
+3 % path 7816-1375-1327-828 (other shortest paths may exist)
+-1 % path none
+3 % path 1223-2294-2817-3068 (other shortest paths may exist)
+3 % path 8961-149-7681-2414 (other shortest paths may exist)
+3 % path 6813-6435-6477-5311 (other shortest paths may exist)
+3 % path 6923-723-7951-791 (other shortest paths may exist)
+4 % path 8559-367-2437-2921-2988 (other shortest paths may exist)
+4 % path 1379-6486-870-5263-7108 (other shortest paths may exist)
+4 % path 1955-862-4735-5394-8340 (other shortest paths may exist)
+3 % path 7936-2565-2249-3580 (other shortest paths may exist)
+3 % path 5678-5823-2853-3154 (other shortest paths may exist)
+2 % path 7373-2680-3534 (other shortest paths may exist)
+4 % path 5214-3980-1977-5005-8247 (other shortest paths may exist)
+-1 % path none
+4 % path 9449-9100-1435-1122-3859 (other shortest paths may exist)
+-1 % path none
+3 % path 7556-5574-333-538 (other shortest paths may exist)
+3 % path 846-5441-2283-2119 (other shortest paths may exist)
+3 % path 2992-2047-9893-9885 (other shortest paths may exist)
+3 % path 4979-4966-8572-8142 (other shortest paths may exist)
+3 % path 2017-509-404-604 (other shortest paths may exist)
+4 % path 2184-9227-746-9224-6949 (other shortest paths may exist)
+-1 % path none
+4 % path 8441-7179-262-5901-203 (other shortest paths may exist)
+4 % path 757-7111-1568-2696-884 (other shortest paths may exist)
+2 % path 2777-3512-2997 (other shortest paths may exist)
+2 % path 6868-4256-7578 (other shortest paths may exist)
+3 % path 2593-1504-4196-6057 (other shortest paths may exist)
+-1 % path none
+4 % path 9186-4173-41-9380-9730 (other shortest paths may exist)
+4 % path 3276-1466-1567-8804-1039 (other shortest paths may exist)
+3 % path 5818-5579-2454-3036 (other shortest paths may exist)
+3 % path 630-4204-2175-3029 (other shortest paths may exist)
+4 % path 2625-2133-2911-8765-2903 (other shortest paths may exist)
+5 % path 9819-4291-1269-7707-7377-6426 (other shortest paths may exist)
+-1 % path none
+2 % path 9320-9302-744 (other shortest paths may exist)
+3 % path 4545-3263-2441-2096 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 7420-5460-277-8799-670 (other shortest paths may exist)
+3 % path 6964-1058-2510-3289 (other shortest paths may exist)
+3 % path 2075-3241-1644-1636 (other shortest paths may exist)
+4 % path 805-810-1577-3504-4992 (other shortest paths may exist)
+5 % path 5969-5579-5626-6714-4760-4730 (other shortest paths may exist)
+3 % path 8912-1104-9973-4054 (other shortest paths may exist)
+-1 % path none
+3 % path 1629-280-4367-2581 (other shortest paths may exist)
+3 % path 7236-1091-1127-1298 (other shortest paths may exist)
+4 % path 6706-4951-9455-4702-1134 (other shortest paths may exist)
+-1 % path none
+3 % path 1293-2602-548-602 (other shortest paths may exist)
+-1 % path none
+3 % path 4221-2794-2417-7122 (other shortest paths may exist)
+3 % path 1996-2965-2233-108 (other shortest paths may exist)
+3 % path 7941-2783-2098-8915 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 9271-894-107-2096-2147 (other shortest paths may exist)
+4 % path 7468-6901-9426-4469-4330 (other shortest paths may exist)
+3 % path 9773-878-9774-4872 (other shortest paths may exist)
+4 % path 3175-4909-534-1907-2245 (other shortest paths may exist)
+5 % path 2391-1395-562-6558-6658-1411 (other shortest paths may exist)
+2 % path 4352-4275-4468 (other shortest paths may exist)
+-1 % path none
+2 % path 3674-983-6424 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 752-328-4184-4472-4286 (other shortest paths may exist)
+4 % path 8635-378-410-4247-7543 (other shortest paths may exist)
+3 % path 629-1069-3263-2542 (other shortest paths may exist)
+3 % path 458-429-6405-7217 (other shortest paths may exist)
+3 % path 7464-3752-5915-6110 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+2 % path 6275-6031-5775 (other shortest paths may exist)
+4 % path 6247-1327-4246-6227-3047 (other shortest paths may exist)
+3 % path 7998-8396-8532-4267 (other shortest paths may exist)
+3 % path 3165-1827-2294-4295 (other shortest paths may exist)
+2 % path 6169-5709-7735 (other shortest paths may exist)
+3 % path 5423-655-2460-2519 (other shortest paths may exist)
+3 % path 5904-4729-1045-5379 (other shortest paths may exist)
+3 % path 4765-4758-5762-6013 (other shortest paths may exist)
+4 % path 3700-492-448-9035-9102 (other shortest paths may exist)
+2 % path 4880-2794-6192 (other shortest paths may exist)
+3 % path 5328-5166-6949-7848 (other shortest paths may exist)
+4 % path 1079-6719-7592-424-3862 (other shortest paths may exist)
+4 % path 6045-5558-1839-3021-2933 (other shortest paths may exist)
+-1 % path none
+3 % path 4956-3366-1618-6231 (other shortest paths may exist)
+-1 % path none
+3 % path 3265-1832-6233-280 (other shortest paths may exist)
+2 % path 4767-4876-8377 (other shortest paths may exist)
+4 % path 4530-812-661-1871-1854 (other shortest paths may exist)
+4 % path 6074-5865-9814-3976-3646 (other shortest paths may exist)
+3 % path 4275-4455-3777-3918 (other shortest paths may exist)
+4 % path 4028-2839-2845-4578-8381 (other shortest paths may exist)
+3 % path 9172-5068-3676-3987 (other shortest paths may exist)
+3 % path 2866-3379-5394-4262 (other shortest paths may exist)
+-1 % path none
+3 % path 3875-3666-3674-8755 (other shortest paths may exist)
+2 % path 8840-4588-8787 (other shortest paths may exist)
+3 % path 2756-2079-6439-6458 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 5736-6590-741-7951-7458 (other shortest paths may exist)
+4 % path 9036-8327-8322-3859-1430 (other shortest paths may exist)
+2 % path 6682-6144-9579 (other shortest paths may exist)
+4 % path 2645-2134-2414-6057-9144 (other shortest paths may exist)
+5 % path 2270-1159-1060-5958-6678-9274 (other shortest paths may exist)
+4 % path 7212-2163-5068-9172-452 (other shortest paths may exist)
+3 % path 1661-101-3427-2321 (other shortest paths may exist)
+3 % path 1226-1217-1758-1662 (other shortest paths may exist)
+4 % path 1255-7491-5922-6190-6732 (other shortest paths may exist)
+3 % path 708-4634-1435-862 (other shortest paths may exist)
+-1 % path none
+3 % path 7231-1555-4053-4019 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 6068-2789-2138-225-7731 (other shortest paths may exist)
+4 % path 6442-219-1782-2674-3848 (other shortest paths may exist)
+3 % path 8440-1971-8575-5005 (other shortest paths may exist)
+-1 % path none
+3 % path 3017-1538-8649-7933 (other shortest paths may exist)
+3 % path 9781-1945-7710-954 (other shortest paths may exist)
+3 % path 3431-3107-3299-7385 (other shortest paths may exist)
+-1 % path none
+4 % path 6723-5648-6914-7711-8530 (other shortest paths may exist)
+4 % path 1259-1232-5667-5852-3763 (other shortest paths may exist)
+-1 % path none
+4 % path 9135-4578-1293-9555-9277 (other shortest paths may exist)
+3 % path 2876-2006-5335-7120 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+2 % path 5993-6685-6383 (other shortest paths may exist)
+2 % path 804-9828-9852 (other shortest paths may exist)
+3 % path 4775-4807-4718-9281 (other shortest paths may exist)
+3 % path 5393-9946-8117-8166 (other shortest paths may exist)
+-1 % path none
+3 % path 4037-4074-3759-3881 (other shortest paths may exist)
+4 % path 3776-3699-3724-7418-7287 (other shortest paths may exist)
+4 % path 4014-3676-6716-7343-2015 (other shortest paths may exist)
+3 % path 9781-1945-3223-5055 (other shortest paths may exist)
+4 % path 3345-2125-2437-3221-4091 (other shortest paths may exist)
+-1 % path none
+4 % path 2267-9938-43-107-4883 (other shortest paths may exist)
+3 % path 5292-712-9406-703 (other shortest paths may exist)
+3 % path 2418-1106-1141-5319 (other shortest paths may exist)
+4 % path 1682-5393-7279-7388-2176 (other shortest paths may exist)
+4 % path 9548-361-344-379-7300 (other shortest paths may exist)
+3 % path 1927-3073-2343-7051 (other shortest paths may exist)
+3 % path 1957-1577-7867-7917 (other shortest paths may exist)
+2 % path 7989-21-4120 (other shortest paths may exist)
+4 % path 5720-6714-9549-9693-9229 (other shortest paths may exist)
+-1 % path none
+3 % path 7263-6214-7512-7156 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+3 % path 562-296-6751-7251 (other shortest paths may exist)
+4 % path 6431-7251-7065-5896-6117 (other shortest paths may exist)
+4 % path 2896-2551-1898-2449-556 (other shortest paths may exist)
+3 % path 246-8688-2968-3290 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 8960-9843-728-7110-6617 (other shortest paths may exist)
+2 % path 1627-2196-649 (other shortest paths may exist)
+-1 % path none
+4 % path 6028-4828-424-3989-7240 (other shortest paths may exist)
+3 % path 2110-1021-8372-6198 (other shortest paths may exist)
+-1 % path none
+3 % path 6314-5487-5474-7036 (other shortest paths may exist)
+-1 % path none
+3 % path 7431-2290-1912-3021 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+-1 % path none
+3 % path 2714-941-942-9281 (other shortest paths may exist)
+4 % path 3709-1485-1511-6684-3365 (other shortest paths may exist)
+-1 % path none
+3 % path 7664-866-8814-5106 (other shortest paths may exist)
+4 % path 9686-7558-0-5163-5216 (other shortest paths may exist)
+3 % path 1156-5915-8325-5763 (other shortest paths may exist)
+1 % path 7739-5588 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+2 % path 4186-1710-1647 (other shortest paths may exist)
+-1 % path none
+3 % path 6243-4283-754-734 (other shortest paths may exist)
+4 % path 9120-1678-647-2471-1884 (other shortest paths may exist)
+4 % path 8322-40-1456-5361-2580 (other shortest paths may exist)
+3 % path 6098-1300-1370-3872 (other shortest paths may exist)
+3 % path 7839-2175-1779-1740 (other shortest paths may exist)
+-1 % path none
+4 % path 333-316-296-2344-3481 (other shortest paths may exist)
+-1 % path none
+3 % path 5349-930-7690-9771 (other shortest paths may exist)
+3 % path 126-6766-9192-9221 (other shortest paths may exist)
+3 % path 8002-1121-4216-6772 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 8044-7377-6524-7204 (other shortest paths may exist)
+-1 % path none
+4 % path 942-11-5144-9090-2433 (other shortest paths may exist)
+5 % path 9448-7841-292-327-6700-9345 (other shortest paths may exist)
+3 % path 6970-6796-5563-551 (other shortest paths may exist)
+-1 % path none
+4 % path 9394-2492-2136-8136-8512 (other shortest paths may exist)
+3 % path 7192-4364-8519-8467 (other shortest paths may exist)
+3 % path 2870-3648-6081-6906 (other shortest paths may exist)
+4 % path 243-377-3408-2551-1899 (other shortest paths may exist)
+3 % path 8154-4402-4325-4399 (other shortest paths may exist)
+4 % path 2525-4820-9025-8950-1587 (other shortest paths may exist)
+3 % path 2496-2133-5488-2975 (other shortest paths may exist)
+-1 % path none
+3 % path 8786-401-1754-3315 (other shortest paths may exist)
+3 % path 6558-562-541-8638 (other shortest paths may exist)
+4 % path 6387-5439-3123-9953-8407 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 779-3889-9177-251 (other shortest paths may exist)
+3 % path 1090-4030-4803-4734 (other shortest paths may exist)
+3 % path 3064-1387-6461-7425 (other shortest paths may exist)
+4 % path 8010-1626-5752-5460-6907 (other shortest paths may exist)
+-1 % path none
+4 % path 5136-246-1254-194-982 (other shortest paths may exist)
+3 % path 8886-40-7480-7591 (other shortest paths may exist)
+3 % path 219-3594-2388-2160 (other shortest paths may exist)
+2 % path 5088-8398-8262 (other shortest paths may exist)
+3 % path 2492-2453-8695-5290 (other shortest paths may exist)
+3 % path 9558-4148-878-3078 (other shortest paths may exist)
+3 % path 5126-3105-7792-7725 (other shortest paths may exist)
+4 % path 3319-814-1040-1388-4152 (other shortest paths may exist)
+4 % path 8458-7708-4991-9972-8146 (other shortest paths may exist)
+3 % path 8198-659-2881-7806 (other shortest paths may exist)
+3 % path 2801-2561-7689-2253 (other shortest paths may exist)
+3 % path 79-4971-405-1945 (other shortest paths may exist)
+3 % path 1868-2283-848-1871 (other shortest paths may exist)
+3 % path 7532-3676-2106-3528 (other shortest paths may exist)
+3 % path 2984-530-557-488 (other shortest paths may exist)
+5 % path 3417-789-797-6230-6803-2001 (other shortest paths may exist)
+4 % path 5658-2043-1774-2375-6631 (other shortest paths may exist)
+3 % path 3521-2438-2076-5204 (other shortest paths may exist)
+-1 % path none
+3 % path 6359-5833-3863-8355 (other shortest paths may exist)
+5 % path 1938-2200-1774-2043-3776-561 (other shortest paths may exist)
+4 % path 3085-297-4472-8485-1934 (other shortest paths may exist)
+4 % path 3571-1892-6925-7089-6386 (other shortest paths may exist)
+3 % path 5753-7635-7664-833 (other shortest paths may exist)
+3 % path 9623-1426-1370-4609 (other shortest paths may exist)
+2 % path 1437-3274-9132 (other shortest paths may exist)
+3 % path 9384-6037-6101-6551 (other shortest paths may exist)
+4 % path 923-4796-9870-6769-4970 (other shortest paths may exist)
+4 % path 8100-305-9599-2925-5708 (other shortest paths may exist)
+3 % path 4768-4388-186-4255 (other shortest paths may exist)
+4 % path 9762-155-699-6970-6431 (other shortest paths may exist)
+3 % path 8628-979-8700-4843 (other shortest paths may exist)
+-1 % path none
+5 % path 1989-2453-311-389-4860-1834 (other shortest paths may exist)
+2 % path 7411-7393-8098 (other shortest paths may exist)
+3 % path 3622-2256-3570-2917 (other shortest paths may exist)
+3 % path 2943-867-862-8262 (other shortest paths may exist)
+4 % path 3989-3645-2183-2246-654 (other shortest paths may exist)
+4 % path 8545-459-4831-5916-7353 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 5141-6333-5619-6593 (other shortest paths may exist)
+3 % path 1135-1981-3311-2760 (other shortest paths may exist)
+5 % path 8328-38-29-9660-9434-734 (other shortest paths may exist)
+-1 % path none
+3 % path 3843-43-31-53 (other shortest paths may exist)
+3 % path 31-9501-723-488 (other shortest paths may exist)
+3 % path 6961-3209-458-395 (other shortest paths may exist)
+-1 % path none
+4 % path 591-1649-1064-8001-3968 (other shortest paths may exist)
+4 % path 6378-2231-918-9516-8722 (other shortest paths may exist)
+-1 % path none
+4 % path 2437-1886-3565-4858-2823 (other shortest paths may exist)
+-1 % path none
+2 % path 1321-1712-9563 (other shortest paths may exist)
+-1 % path none
+4 % path 8367-211-3677-3739-3987 (other shortest paths may exist)
+3 % path 2840-29-9660-4255 (other shortest paths may exist)
+-1 % path none
+3 % path 5715-6646-5326-5162 (other shortest paths may exist)
+3 % path 2205-9218-5066-5512 (other shortest paths may exist)
+3 % path 9499-1892-7237-6459 (other shortest paths may exist)
+4 % path 4410-430-326-3761-3749 (other shortest paths may exist)
+4 % path 4567-4045-26-6561-6871 (other shortest paths may exist)
+3 % path 2480-2671-385-4982 (other shortest paths may exist)
+5 % path 8330-562-286-6233-6144-6831 (other shortest paths may exist)
+5 % path 1484-3633-2877-1906-9506-2610 (other shortest paths may exist)
+3 % path 2914-3506-5614-6419 (other shortest paths may exist)
+3 % path 2263-4304-4515-1521 (other shortest paths may exist)
+3 % path 1678-647-1804-2651 (other shortest paths may exist)
+4 % path 9167-1687-76-4980-4604 (other shortest paths may exist)
+4 % path 8496-196-5655-7122-6068 (other shortest paths may exist)
+3 % path 4490-4394-5099-7827 (other shortest paths may exist)
+2 % path 3029-3496-2701 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 1313-8314-6569-5656 (other shortest paths may exist)
+-1 % path none
+4 % path 433-7656-752-721-559 (other shortest paths may exist)
+-1 % path none
+4 % path 5238-10-6610-7144-800 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+2 % path 3848-8631-6529 (other shortest paths may exist)
+3 % path 1924-1426-4691-9920 (other shortest paths may exist)
+3 % path 4440-165-5110-8571 (other shortest paths may exist)
+4 % path 9424-100-165-4331-3932 (other shortest paths may exist)
+3 % path 3395-3204-2628-6307 (other shortest paths may exist)
+2 % path 2347-3311-1985 (other shortest paths may exist)
+-1 % path none
+5 % path 7038-4801-4761-4702-3974-4370 (other shortest paths may exist)
+3 % path 48-46-2271-2139 (other shortest paths may exist)
+3 % path 8518-7742-9781-9776 (other shortest paths may exist)
+2 % path 904-8114-8207 (other shortest paths may exist)
+2 % path 4087-8295-7361 (other shortest paths may exist)
+-1 % path none
+2 % path 3711-9558-9380 (other shortest paths may exist)
+3 % path 2492-1844-8368-1689 (other shortest paths may exist)
+3 % path 383-297-304-290 (other shortest paths may exist)
+-1 % path none
+4 % path 1411-6658-5614-6926-2548 (other shortest paths may exist)
+4 % path 5938-9647-9342-9312-1149 (other shortest paths may exist)
+3 % path 2929-63-36-1270 (other shortest paths may exist)
+3 % path 171-63-3334-3452 (other shortest paths may exist)
+3 % path 2293-2877-3770-3894 (other shortest paths may exist)
+4 % path 8203-2269-1893-2110-9594 (other shortest paths may exist)
+3 % path 1776-1953-3274-8813 (other shortest paths may exist)
+3 % path 7490-3287-2110-8336 (other shortest paths may exist)
+3 % path 5339-7477-5784-1815 (other shortest paths may exist)
+3 % path 1241-3309-2561-4447 (other shortest paths may exist)
+3 % path 7024-7892-9393-2573 (other shortest paths may exist)
+3 % path 3299-2409-5053-260 (other shortest paths may exist)
+4 % path 3685-3817-3859-5174-5340 (other shortest paths may exist)
+3 % path 2122-2921-4659-8080 (other shortest paths may exist)
+4 % path 3025-1774-1871-844-926 (other shortest paths may exist)
+4 % path 8419-3346-1565-2571-2363 (other shortest paths may exist)
+4 % path 9493-9236-9554-8608-7004 (other shortest paths may exist)
+3 % path 5672-5811-7122-1736 (other shortest paths may exist)
+4 % path 5084-4956-459-6900-4886 (other shortest paths may exist)
+4 % path 7093-5704-3486-9227-729 (other shortest paths may exist)
+-1 % path none
+3 % path 908-131-929-9981 (other shortest paths may exist)
+4 % path 2070-7178-5428-5764-6823 (other shortest paths may exist)
+3 % path 1397-562-1464-2205 (other shortest paths may exist)
+3 % path 5273-1481-1475-3259 (other shortest paths may exist)
+2 % path 8295-4568-1407 (other shortest paths may exist)
+3 % path 2372-2067-3403-4639 (other shortest paths may exist)
+3 % path 6369-3648-3911-8344 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 5821-1481-1557-4654 (other shortest paths may exist)
+3 % path 5501-319-583-1733 (other shortest paths may exist)
+4 % path 6360-5452-5833-1926-9158 (other shortest paths may exist)
+3 % path 8365-283-1104-972 (other shortest paths may exist)
+4 % path 2984-530-402-7951-6120 (other shortest paths may exist)
+-1 % path none
+2 % path 8052-9333-8939 (other shortest paths may exist)
+4 % path 7430-2218-1960-3048-1444 (other shortest paths may exist)
+4 % path 2322-1772-4949-7835-2538 (other shortest paths may exist)
+-1 % path none
+3 % path 5728-5818-4434-4446 (other shortest paths may exist)
+4 % path 7713-538-1417-1404-8845 (other shortest paths may exist)
+-1 % path none
+4 % path 781-659-655-8814-9790 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 8081-8057-9092-9081 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+4 % path 1595-1276-9563-9476-6582 (other shortest paths may exist)
+3 % path 6532-5512-6368-5959 (other shortest paths may exist)
+5 % path 3527-2071-2375-5934-6916-5727 (other shortest paths may exist)
+3 % path 8781-702-8799-6847 (other shortest paths may exist)
+-1 % path none
+4 % path 3970-219-13-5144-704 (other shortest paths may exist)
+3 % path 6524-5512-7148-9455 (other shortest paths may exist)
+4 % path 3679-2887-3150-4965-1543 (other shortest paths may exist)
+3 % path 8008-1620-9224-9157 (other shortest paths may exist)
+4 % path 7347-4411-4375-8369-8378 (other shortest paths may exist)
+4 % path 197-283-8908-4127-854 (other shortest paths may exist)
+2 % path 610-394-5420 (other shortest paths may exist)
+4 % path 7322-6684-509-2017-6864 (other shortest paths may exist)
+4 % path 5295-6269-544-430-8928 (other shortest paths may exist)
+3 % path 480-21-23-3979 (other shortest paths may exist)
+3 % path 2411-2006-2898-939 (other shortest paths may exist)
+3 % path 2953-1386-4634-8257 (other shortest paths may exist)
+4 % path 7681-135-2797-2388-7871 (other shortest paths may exist)
+4 % path 6127-4-3334-2918-8208 (other shortest paths may exist)
+3 % path 9453-6409-9421-737 (other shortest paths may exist)
+-1 % path none
+-1 % path none
+3 % path 8284-1064-633-1177 (other shortest paths may exist)
+3 % path 5004-538-300-539 (other shortest paths may exist)
+3 % path 5959-277-5460-7067 (other shortest paths may exist)
+3 % path 6082-978-1664-1647 (other shortest paths may exist)
+4 % path 3150-2033-2620-5642-5417 (other shortest paths may exist)
+3 % path 5901-262-6139-5614 (other shortest paths may exist)
+3 % path 3361-2119-7872-4923 (other shortest paths may exist)
+-1 % path none
+4 % path 7027-5927-9161-9219-9729 (other shortest paths may exist)
+3 % path 4802-655-661-654 (other shortest paths may exist)
+3 % path 3136-1818-1827-4607 (other shortest paths may exist)
+3 % path 4464-6016-6002-5260 (other shortest paths may exist)
+4 % path 5725-1374-658-7450-5906 (other shortest paths may exist)
+3 % path 454-522-3100-4050 (other shortest paths may exist)
+5 % path 9687-9280-2258-8350-1032-1845 (other shortest paths may exist)
+Chiang_Kai-shek Sukarno George_W._Bush % component sizes 216 128 96
+Chiang_Kai-shek Sukarno Mohandas_Karamchand_Gandhi Ho_Chi_Minh % component sizes 176 102 69 68
+Chiang_Kai-shek Sukarno Ho_Chi_Minh % component sizes 136 77 52
+Chiang_Kai-shek Sukarno Ho_Chi_Minh % component sizes 80 50 32
+Chiang_Kai-shek Ho_Chi_Minh Sukarno Thaksin_Shinawatra Elena_Likhovtseva % component sizes 38 21 18 16 14
+Abraham_Lincoln Amartya_Sen Roy_Orbison % component sizes 1 1 1
+230|1814 1814|1857 1814|2219 % common interest counts 5 5 5
+8132|8195 8084|8132 8084|8161 8084|8185 % common interest counts 1 0 0 0
+7953|7981 7953|7987 7953|7989 % common interest counts 1 1 1
+9202 3107 6811 % centrality values 0.3858394449747184 0.3833879623706639 0.38282437465035113
+2529 5070 1754 7099 % centrality values 0.3889442032370745 0.38776673881626955 0.38766318707900327 0.3842767355197673

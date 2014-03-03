@@ -1,9 +1,9 @@
 
 # $File: Makefile
-# $Date: Mon Mar 03 11:29:42 2014 +0800
+# $Date: Mon Mar 03 16:36:30 2014 +0800
 
 OBJ_DIR = build
-TARGET = main
+TARGET = ../main
 
 INCLUDE_DIR = -Iinclude
 DEFINES = -DDEBUG
@@ -46,9 +46,9 @@ $(TARGET): $(OBJS)
 
 
 clean:
-	@rm -rf $(OBJ_DIR) $(TARGET)
+	@rm -rf $(OBJ_DIR)
 
-TEST_DATA = ../1k
+TEST_DATA = ../data/1k
 
 run: $(TARGET)
 	./$(TARGET) $(TEST_DATA) $(TEST_DATA)-queries.txt

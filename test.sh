@@ -1,10 +1,22 @@
 #!/bin/bash -e
 # File: test.sh
-# Date: Sun Mar 02 09:44:51 2014 +0800
+# Date: Mon Mar 03 16:38:44 2014 +0800
 # Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
-[[ -z "$1" ]] && (echo "Usage: $0 <data dir> <1/2/3/4> <cpp file to test>" && exit 1)
+[[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/" && exit 1)
+DATA_DIRNAME=`basename $1`
+ALL_DIRNAME=`dirname $1`
+QUERY=$ALL_DIRNAME/$DATA_DIRNAME-queries.txt
+ANS=$ALL_DIRNAME/$DATA_DIRNAME-answers-nocomment.txt
 
-ln -svf `readlink -f $3` src/query"$2".cpp
+if [[ ! -d "$1" || ! -f $QUERY || ! -f $ANS ]] ; then
+	echo "No data/query/ans file found!"
+	exit 1
+fi
+
+TIME=`date "+%m%d-%H:%M:%S"`
+OUTPUT=ans-"$TIME".txt
+
 make -C src
-./src/main $1 $1-sample-queries"$2".txt
+./run.sh "$1" $QUERY > $OUTPUT
+diff $OUTPUT $ANS

@@ -1,0 +1,23 @@
+Team Name:
+
+Team Member:
+	Yuxin Wu|ppwwyyxxc@gmail.com|Tsinghua University|Dept. of Computer Science and Technology|Bachelor of Engineering
+	XXX
+
+Advisor:
+	Guoliang Li ?
+
+Techniques Used:
+	Q1:
+	    BFS starting from two person
+
+	Q2:
+		Maintain k connected components for each tag, update them using Union-Find Set.
+
+	Q3:
+
+	Q4:
+		Calculate closeness centrality for everyone.
+
+Third Party Code Used:
+	None

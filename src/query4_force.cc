@@ -1,10 +1,11 @@
 //File: query4_force.cc
-//Date: Mon Mar 03 18:08:38 2014 +0800
+//Date: Tue Mar 04 10:10:15 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "query4.h"
 #include "data.h"
 #include "lib/common.h"
+#include "lib/Timer.h"
 #include "lib/utils.h"
 #ifdef __linux__
 #include <tr1/unordered_set>
@@ -28,6 +29,7 @@ namespace {
 	int ** SP_matrix;
 	int * degree;
 	size_t np;
+	vector<vector<int>> friends;
 }
 
 vector<PersonInForum> get_tag_persons(const string& s) {
@@ -54,25 +56,20 @@ void calculate_SP(const vector<PersonInForum>& ps) {		// TOO SLOW
 
 #pragma omp parallel for schedule(dynamic)
 	REP(i, np) {
-		int nowpid = ps[i];
-		deque<int> q; q.push_back(nowpid);
+		deque<size_t> q; q.push_back(i);
 		int depth = 0;
 		while (size_t qsize = q.size()) {
 			depth ++;
 			REP(_k, qsize) {
-				int top = q.front(); q.pop_front();
-				auto& friends = Data::friends[top];
-				for (auto itr = friends.begin(); itr != friends.end(); itr ++) {
-					int pid = itr->pid;
-					auto rst = persons.find(pid);
-					if (rst != persons.end()) {
-						// found a friend in the forum
-						size_t index = rst->second;
-						if (SP_matrix[i][index] != -1 or i == index) continue;
-						degree[i] ++;
-						SP_matrix[i][index] = depth;
-						q.push_back(itr->pid);
-					}
+				auto top = q.front(); q.pop_front();
+				auto& fs = friends[top];
+				for (auto itr = fs.begin(); itr != fs.end(); itr ++) {
+					// found a friend in the forum
+					size_t index = *itr;
+					if (SP_matrix[i][index] != -1 or i == index) continue;
+					degree[i] ++;
+					SP_matrix[i][index] = depth;
+					q.push_back(index);
 				}
 			}
 		}
@@ -104,9 +101,21 @@ double cal_central(size_t k) {
 }
 
 void Query4Handler::add_query(int k, const string& s) {
+	Timer timer;
 	vector<PersonInForum> persons = get_tag_persons(s);
 	np = persons.size();
-	print_debug("Nperson under this tag: %lu\n", np);
+	friends.resize(np);
+	REP(i, np) {
+		friends[i].clear();
+		auto& fs = Data::friends[persons[i]];
+		for (auto itr = fs.begin(); itr != fs.end(); itr ++) {
+			auto lb_itr = lower_bound(persons.begin(), persons.end(), itr->pid);
+			if (*lb_itr == itr->pid) {
+				friends[i].push_back((int)distance(persons.begin(), lb_itr));
+			}
+		}
+	}
+
 	degree = new int[np];
 	REP(i, np) degree[i] = 1;
 	SP_matrix = new int*[np];
@@ -115,7 +124,9 @@ void Query4Handler::add_query(int k, const string& s) {
 		REP(j, np) SP_matrix[i][j] = -1;
 	}
 
+	//print_debug("Before cal SP %lf\n", timer.get_time());
 	calculate_SP(persons);
+	//print_debug("After cal SP %lf\n", timer.get_time());
 
 	priority_queue<HeapEle> q;		// need a fixed-size queue later
 	REP(i, np) {

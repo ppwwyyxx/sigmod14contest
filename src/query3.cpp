@@ -1,1 +1,1 @@
-query3_example.cc
+query3_force.cc

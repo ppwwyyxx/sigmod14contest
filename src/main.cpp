@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Mon Mar 03 16:39:38 2014 +0800
+//Date: Mon Mar 03 22:58:04 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/Timer.h"
@@ -81,34 +81,34 @@ int main(int argc, char* argv[]) {
 	print_debug("nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);
 	read_query(string(argv[2]));
 
-	timer.reset();
+	double time = timer.get_time();
 	q1.work();
-	tot_time[1] += timer.get_time();
-	timer.reset();
+	tot_time[1] += timer.get_time() - time;
+	time = timer.get_time();
 	q2.work();
-	tot_time[2] += timer.get_time();
-	timer.reset();
+	tot_time[2] += timer.get_time() - time;
+	time = timer.get_time();
 	q3.work();
-	tot_time[3] += timer.get_time();
-	timer.reset();
+	tot_time[3] += timer.get_time() - time;
+	time = timer.get_time();
 	q4.work();
-	tot_time[4] += timer.get_time();
+	tot_time[4] += timer.get_time() - time;
 
-	timer.reset();
+	time = timer.get_time();
 	q1.print_result();
-	tot_time[1] += timer.get_time();
-	timer.reset();
+	tot_time[1] += timer.get_time() - time;
+	time = timer.get_time();
 	q2.print_result();
-	tot_time[2] += timer.get_time();
-	timer.reset();
+	tot_time[2] += timer.get_time() - time;
+	time = timer.get_time();
 	q3.print_result();
-	tot_time[3] += timer.get_time();
-	timer.reset();
+	tot_time[3] += timer.get_time() - time;
+	time = timer.get_time();
 	q4.print_result();
-	tot_time[4] += timer.get_time();
+	tot_time[4] += timer.get_time() - time;
 
 	for (int i = 1; i <= 4; i ++)
 		print_debug("%d queries of type %d spent %lf secs in total\n", query_cnt[i], i, tot_time[i]);
-
 	Data::free();
+	print_debug("Running time: %lf secs\n", timer.get_time());
 }

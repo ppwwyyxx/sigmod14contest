@@ -1,11 +1,12 @@
-//File: query3.cpp
-//Date: Mon Mar 03 14:57:35 2014 +0800
+//File: query3_force.cc
+//Date: Tue Mar 04 13:29:00 2014 +0800
 //Author: Junbang Liang <williamm2006@126.com>
 //Method:	Online. For each query, find the subset of persons included.
 //			And do bfs for each person, adding required pairs. Finally sort and output.
 //			Complexity: O(N^2 * ntags * logN)
 
 #include "query3.h"
+#include "lib/debugutils.h"
 #include <algorithm>
 #include <queue>
 #include <vector>
@@ -87,10 +88,13 @@ void Query3Handler::add_query(int k, int h, const string& p) {
 	}
 	//printf("\n");
 	//bfs
-	for (PersonSet::iterator it = pset.begin(); it != pset.end(); ++it)
-		bfs(it->pid, h);
+
+	for (int k = 0; k < (int)pset.size(); k ++)
+		bfs(pset[k].pid, h);
+
+	m_assert(answers.size());
 	//sort and output
-	sort(answers.begin(), answers.begin() + answers.size());
+	sort(answers.begin(), answers.end());
 	vector<Answer3> tmp;
 	for (vector<Answer3>::iterator it = answers.begin(); it != answers.end() && (k--); ++it)
 		tmp.push_back(*it);
@@ -104,8 +108,10 @@ void Query3Handler::work() {
 void Query3Handler::print_result() {
 	for (auto it = global_answer.begin(); it != global_answer.end(); ++it)
 	{
-		for (auto it1 = it->begin(); it1 != it->end(); ++it1)
-			printf("%d|%d ", it1->p1, it1->p2);
+		for (auto it1 = it->begin(); it1 != it->end(); ++it1) {
+			if (it1 != it->begin()) printf(" ");
+			printf("%d|%d", it1->p1, it1->p2);
+		}
 		printf("\n");
 	}
 }

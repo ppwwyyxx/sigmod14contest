@@ -17,7 +17,7 @@
 #include <vector>
 using namespace std;
 
-int bfs3(int p1, int p2, int x, int h) {			// 10k: 0.014sec / 1500queries
+int bfs3(int p1, int p2, int x, int h) {
 	if (p1 == p2) return 0;
 	vector<bool> vst1(Data::nperson, false);
 	vector<bool> vst2(Data::nperson, false);
@@ -90,7 +90,7 @@ int get_common_tag(int p1, int p2)
 	return ret;
 }
 
-void Query3Handler::bfs(int pid, int h)
+void Query3Handler::bfs(int pid, int h, int k)
 {
 	vector<bool> vst(Data::nperson, false);
 	deque<int> q;
@@ -112,8 +112,19 @@ void Query3Handler::bfs(int pid, int h)
 				{
 					q.push_back(person);
 					vst[person] = true;
-					if (pinplace.find(person) != pinplace.end() && person > pid)
-						answers.push_back(Answer3(get_common_tag(pid, person), pid, person));
+					if (pinplace.find(person) != pinplace.end() && person > pid){
+                        Answer3 ans(get_common_tag(pid, person), pid, person);
+                        int p = 0;
+                        for (p = 0; p < k; p++){
+                            if (ans < answers[p]) break;
+                        }
+                        if (p==k) continue;
+                        for (int i = k-1; i > p; i--){
+                            answers[i] = answers[i-1];
+                        }
+                        answers[p] = ans;
+						//answers.push_back(Answer3(get_common_tag(pid, person), pid, person));
+                    }
 				}
 			}
 		}
@@ -142,11 +153,12 @@ void Query3Handler::add_query(int k, int h, const string& p) {
 		pset.resize(std::distance(pset.begin(), pset_end));
 	}
     
-    printf("SIZE : %d\n", pset.size());
+    //printf("SIZE : %d\n", pset.size());
     
     vector<Answer3> tmp;
     if (pset.size() * 10 > Data::nperson){
         //pickup people
+        for (int i=0; i<k; i++) answers.push_back(Answer3(0,2e9,2e9));
         for (PersonSet::iterator it = pset.begin(); it != pset.end(); ++it)
         {
             pinplace.insert(it->pid);
@@ -154,12 +166,16 @@ void Query3Handler::add_query(int k, int h, const string& p) {
         }
         //printf("\n");
         //bfs
-        for (PersonSet::iterator it = pset.begin(); it != pset.end(); ++it)
-            bfs(it->pid, h);
+        for (PersonSet::iterator it = pset.begin(); it != pset.end(); ++it){
+            if (it->ntags < answers[k-1].com_interest) continue;
+            bfs(it->pid, h, k);
+        }
+        global_answer.push_back(answers);
         //sort and output
-        sort(answers.begin(), answers.begin() + answers.size());
-        for (vector<Answer3>::iterator it = answers.begin(); it != answers.end() && (k--); ++it)
-            tmp.push_back(*it);
+        
+//        sort(answers.begin(), answers.begin() + answers.size());
+//        for (vector<Answer3>::iterator it = answers.begin(); it != answers.end() && (k--); ++it)
+//            tmp.push_back(*it);
 
     }else{
         for (PersonSet::iterator it1 = pset.begin(); it1 != pset.end(); ++it1) {
@@ -175,10 +191,10 @@ void Query3Handler::add_query(int k, int h, const string& p) {
             if (bfs3(answers[i].p1, answers[i].p2, -1, h) > h) continue;
             tmp.push_back(answers[i]);
         }
-        
+        global_answer.push_back(tmp);
     }
 
-	global_answer.push_back(tmp);
+	
 }
 
 void Query3Handler::work() {
@@ -189,7 +205,7 @@ void Query3Handler::print_result() {
 	for (auto it = global_answer.begin(); it != global_answer.end(); ++it)
 	{
 		for (auto it1 = it->begin(); it1 != it->end(); ++it1)
-			printf("%d|%d:%d ", it1->p1, it1->p2, it1->com_interest);
+			printf("%d|%d ", it1->p1, it1->p2);
 		printf("\n");
 	}
 }

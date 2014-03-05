@@ -47,7 +47,7 @@ class Query3Handler {
 
 		void print_result();		// TODO
 
-		void bfs(int, int);
+		void bfs(int, int, int);
 
 	protected:
 		PersonSet pset;

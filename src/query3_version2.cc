@@ -1,8 +1,8 @@
-//File: query3.cpp
-//Date: Mon Mar 03 14:57:35 2014 +0800
+//File: query3_version2.cc
+//Date: Thu Mar 06 17:39:09 2014 +0800
 //Author: Junbang Liang <williamm2006@126.com>, Han Zhao <nikifor383@gmail.com>
 //Method:	Online. For each query, find the subset of persons included.
-//			If the number of persons is bigger than n/10, 
+//			If the number of persons is bigger than n/10,
 //				do bfs for each person, adding required pairs. Finally sort and output.
 //				Complexity: O(NM * ntags * logN)
 //			else,
@@ -28,7 +28,7 @@ int bfs3(int p1, int p2, int x, int h) {
 	while (true) {
 		size_t s1 = q1.size(), s2 = q2.size();
 		if (!s1 or !s2) break;
-        
+
 		depth1 ++;
 		REP(k, s1) {
 			int now_ele = q1.front();
@@ -44,9 +44,9 @@ int bfs3(int p1, int p2, int x, int h) {
 				}
 			}
 		}
-        
+
         if (depth1+depth2>=h) break;
-        
+
 		depth2 ++;
 		REP(k, s2) {
 			int now_ele = q2.front();
@@ -62,7 +62,7 @@ int bfs3(int p1, int p2, int x, int h) {
 				}
 			}
 		}
-        
+
         if (depth1+depth2>=h) break;
 	}
 	return 2e9;
@@ -139,7 +139,7 @@ void Query3Handler::add_query(int k, int h, const string& p) {
 	//init
 	pset.clear();
 	answers.clear();
-    
+
 	pinplace.clear();
 	//union sets
 	for (vector<int>::iterator it = Data::placeid[p].begin(); it != Data::placeid[p].end(); ++it)
@@ -152,9 +152,9 @@ void Query3Handler::add_query(int k, int h, const string& p) {
 				tmp.begin(), tmp.end(), pset.begin());
 		pset.resize(std::distance(pset.begin(), pset_end));
 	}
-    
+
     //printf("SIZE : %d\n", pset.size());
-    
+
     vector<Answer3> tmp;
     if (pset.size() * 10 > Data::nperson){
         //pickup people
@@ -172,7 +172,7 @@ void Query3Handler::add_query(int k, int h, const string& p) {
         }
         global_answer.push_back(answers);
         //sort and output
-        
+
 //        sort(answers.begin(), answers.begin() + answers.size());
 //        for (vector<Answer3>::iterator it = answers.begin(); it != answers.end() && (k--); ++it)
 //            tmp.push_back(*it);
@@ -194,7 +194,7 @@ void Query3Handler::add_query(int k, int h, const string& p) {
         global_answer.push_back(tmp);
     }
 
-	
+
 }
 
 void Query3Handler::work() {
@@ -204,8 +204,10 @@ void Query3Handler::work() {
 void Query3Handler::print_result() {
 	for (auto it = global_answer.begin(); it != global_answer.end(); ++it)
 	{
-		for (auto it1 = it->begin(); it1 != it->end(); ++it1)
-			printf("%d|%d ", it1->p1, it1->p2);
+		for (auto it1 = it->begin(); it1 != it->end(); ++it1) {
+			if (it1 != it->begin())	 printf(" ");
+			printf("%d|%d", it1->p1, it1->p2);
+		}
 		printf("\n");
 	}
 }

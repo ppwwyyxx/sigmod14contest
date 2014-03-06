@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Mon Mar 03 22:58:04 2014 +0800
+//Date: Wed Mar 05 08:34:34 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/Timer.h"
@@ -70,6 +70,7 @@ void read_query(const string& fname) {
 		query_cnt[type] ++;
 		fgets(buf, 1024, fin);
 	}
+	fclose(fin);
 }
 
 int main(int argc, char* argv[]) {

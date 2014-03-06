@@ -1,5 +1,5 @@
 //File: query3.h
-//Date: Mon Mar 03 15:04:42 2014 +0800
+//Date: Thu Mar 06 17:38:24 2014 +0800
 
 #pragma once
 
@@ -47,7 +47,7 @@ class Query3Handler {
 
 		void print_result();		// TODO
 
-		void bfs(int, int);
+		void bfs(int, int, int);
 
 	protected:
 		PersonSet pset;

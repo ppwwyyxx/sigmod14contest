@@ -170,6 +170,8 @@ void Query3Handler::add_query(int k, int h, const string& p) {
             if (it->ntags < answers[k-1].com_interest) continue;
             bfs(it->pid, h, k);
         }
+		while (answers[answers.size() - 1].p1 == 2000000000)
+			answers.erase(answers.end() - 1);
         global_answer.push_back(answers);
         //sort and output
 
@@ -187,7 +189,7 @@ void Query3Handler::add_query(int k, int h, const string& p) {
         }
         sort(answers.begin(), answers.begin() + answers.size());
         tmp.clear();
-        for (int i = 0; i < answers.size(), tmp.size() < k; i++){
+        for (int i = 0; i < answers.size() && tmp.size() < k; i++){
             if (bfs3(answers[i].p1, answers[i].p2, -1, h) > h) continue;
             tmp.push_back(answers[i]);
         }

@@ -4,22 +4,10 @@
 #include <vector>
 #include <queue>
 #include <cstdio>
+#include "heap.h"
 
 using namespace std;
 
-namespace {
-	struct HeapEle {
-		int range;      // defined in the problem
-		int tag_id;
-		HeapEle(int _range, int _tag_id)
-			:range(_range), tag_id(_tag_id) {}
-
-		bool operator <(const HeapEle &b) const {
-			return (range > b.range) || ((range == b.range) && (Data::tag_name[tag_id] < Data::tag_name[b.tag_id]));
-		}
-	};
-
-}
 void Query2Handler::add_query(int k, int d) {
 	priority_queue<HeapEle> heap;
 	//print_debug("person number = %u\n", Data::person_in_tags.size());

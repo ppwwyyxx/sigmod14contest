@@ -4,9 +4,12 @@
 #include <vector>
 
 struct Query2 {
-	int k, d;
-	Query2(int _k, int _d):
-		k(_k), d(_d){}
+	int k, d, qid;
+	Query2(int _k, int _d, int _qid):
+		k(_k), d(_d), qid(_qid){}
+    bool operator <(const Query2 &b) const {
+        return d > b.d;
+    }
 };
 
 class Query2Handler {

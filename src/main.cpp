@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Wed Mar 05 08:34:34 2014 +0800
+//Date: Fri Mar 07 10:18:07 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/Timer.h"
@@ -9,6 +9,10 @@
 #include <cstdio>
 #include <string.h>
 #include <string>
+
+#include <functional>
+#include <thread>
+#include <memory>
 
 #include "query1.h"
 #include "query2.h"
@@ -109,7 +113,7 @@ int main(int argc, char* argv[]) {
 	tot_time[4] += timer.get_time() - time;
 
 	for (int i = 1; i <= 4; i ++)
-		print_debug("%d queries of type %d spent %lf secs in total\n", query_cnt[i], i, tot_time[i]);
+		fprintf(stderr, "%d q%d: %.4fs\n", query_cnt[i], i, tot_time[i]);
 	Data::free();
-	print_debug("Running time: %lf secs\n", timer.get_time());
+	print_debug("Time: %.4fs\n", timer.get_time());
 }

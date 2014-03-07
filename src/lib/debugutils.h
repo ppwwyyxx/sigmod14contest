@@ -21,6 +21,9 @@ void error_exit(const char *msg) __attribute__((noreturn));
 
 #define print_debug(fmt, ...) \
 			__print_debug__(__FILE__, __func__, __LINE__, fmt, ## __VA_ARGS__)
+/*
+ *#define print_debug(fmt, ...)
+ */
 
 #define m_assert(expr) \
 	__m_assert_check__((expr), # expr, __FILE__, __PRETTY_FUNCTION__, __LINE__)

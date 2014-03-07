@@ -1,6 +1,7 @@
 
 # $File: Makefile
-# $Date: Fri Mar 07 11:25:36 2014 +0800
+# $Date: Fri Mar 07 11:30:42 2014 +0800
+# $Date: Fri Mar 07 11:30:42 2014 +0800
 
 OBJ_DIR = build
 TARGET = ../main
@@ -12,10 +13,10 @@ OPTFLAGS = -Wall -Wextra -Wconversion -Wno-unused-result
 # OPTFLAGS += -g -O0
 OPTFLAGS += -O3
 
-CXXFLAGS = $(INCLUDE_DIR)
-CXXFLAGS += -fopenmp  -std=c++0x
+CXXFLAGS := $(INCLUDE_DIR)
+CXXFLAGS += -fopenmp -pthread -std=c++0x
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
-LDFLAGS += -fopenmp
+LDFLAGS += -fopenmp -pthread
 
 GCC = gcc
 CC = g++

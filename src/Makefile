@@ -1,6 +1,6 @@
 
 # $File: Makefile
-# $Date: Mon Mar 03 18:43:19 2014 +0800
+# $Date: Fri Mar 07 11:25:36 2014 +0800
 
 OBJ_DIR = build
 TARGET = ../main
@@ -9,7 +9,7 @@ INCLUDE_DIR = -Iinclude
 DEFINES = -DDEBUG
 
 OPTFLAGS = -Wall -Wextra -Wconversion -Wno-unused-result
-#OPTFLAGS += -g
+# OPTFLAGS += -g -O0
 OPTFLAGS += -O3
 
 CXXFLAGS = $(INCLUDE_DIR)
@@ -24,7 +24,7 @@ ccSOURCES = $(shell find . -name "*.cpp" | sed 's/^\.\///g')
 OBJS = $(addprefix $(OBJ_DIR)/,$(ccSOURCES:.cpp=.o))
 DEPFILES = $(OBJS:.o=.d)
 
-.PHONY: all clean run
+.PHONY: all clean run rebuild
 
 all: $(TARGET)
 
@@ -53,6 +53,10 @@ $(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
 
 clean:
 	@rm -rf $(OBJ_DIR)
+
+rebuild:
+	@+make clean
+	@+make
 
 TEST_DATA = ../data/1k
 

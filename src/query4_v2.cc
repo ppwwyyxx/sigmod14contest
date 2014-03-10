@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Fri Mar 07 11:28:19 2014 +0800
+ * $File: query4_v2.cc
+ * $Date: Mon Mar 10 19:31:49 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -121,7 +121,9 @@ int check_compute_degree(int v) {
 		for (size_t j = 0; j < size; j ++) {
 			size_t u = q.front();
 			q.pop_front();
-			for (auto &w: friends[u]) {
+			auto &fr = friends[u];
+			for (auto it = fr.begin(); it != fr.end(); it ++) {
+				auto &w = *it;
 				if (hash[w])
 					continue;
 				hash[w] = true;

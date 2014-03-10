@@ -1,7 +1,7 @@
 
 # $File: Makefile
-# $Date: Fri Mar 07 11:30:42 2014 +0800
-# $Date: Fri Mar 07 11:30:42 2014 +0800
+# $Date: Mon Mar 10 17:31:48 2014 +0800
+# $Date: Mon Mar 10 17:31:48 2014 +0800
 
 OBJ_DIR = build
 TARGET = ../main
@@ -11,12 +11,13 @@ DEFINES = -DDEBUG
 
 OPTFLAGS = -Wall -Wextra -Wconversion -Wno-unused-result
 # OPTFLAGS += -g -O0
-OPTFLAGS += -O3
+#OPTFLAGS += -O3
 
+CONCURFLAGS = -fopenmp -pthread
 CXXFLAGS := $(INCLUDE_DIR)
-CXXFLAGS += -fopenmp -pthread -std=c++0x
+CXXFLAGS += -std=c++0x $(CONCURFLAGS)
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
-LDFLAGS += -fopenmp -pthread
+LDFLAGS += $(CONCURFLAGS) -Wl,--wrap=memcpy -lprofiler
 
 GCC = gcc
 CC = g++
@@ -48,7 +49,7 @@ $(OBJ_DIR)/%.d: %.cpp  Makefile
 
 $(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
 	@echo "Linking ..."
-	@$(CC) $^ -o $@ $(LDFLAGS) -Wl,--wrap=memcpy
+	@$(CC) $^ -o $@ $(LDFLAGS)
 	@echo "done."
 
 

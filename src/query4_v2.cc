@@ -1,6 +1,6 @@
 /*
  * $File: query4_v2.cc
- * $Date: Mon Mar 10 19:31:49 2014 +0800
+ * $Date: Mon Mar 10 21:43:53 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -287,7 +287,7 @@ void Query4Handler::add_query(int k, const string& s) {
 		auto centrality = he.centrality;
 		assert(centrality <= last_centrality);
 		if (centrality == last_centrality && pid == last_pid) {
-			fprintf(stderr, "%f\n", centrality);
+			//fprintf(stderr, "%f\n", centrality);
 			line.push_back(persons[pid]);
 			if ((int)line.size() == k)
 				break;
@@ -298,7 +298,7 @@ void Query4Handler::add_query(int k, const string& s) {
 		last_centrality = centrality;
 		last_pid = pid;
 	}
-	fprintf(stderr, "cnt: %d/%d\n", cnt, k);
+	//fprintf(stderr, "cnt: %d/%d\n", cnt, k);
 	delete[] degree;
 	delete[] que;
 }

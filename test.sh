@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # File: test.sh
-# Date: Mon Mar 03 23:02:34 2014 +0800
+# Date: Mon Mar 10 17:20:28 2014 +0800
 # Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 [[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/" && exit 1)
@@ -15,7 +15,8 @@ if [[ ! -d "$1" || ! -f $QUERY || ! -f $ANS ]] ; then
 fi
 
 TIME=`date "+%m%d-%H:%M:%S"`
-OUTPUT=ans-"$TIME".txt
+mkdir -p log
+OUTPUT=log/ans-"$TIME".txt
 
 make -C src
 time ./memusg ./run.sh "$1" $QUERY > $OUTPUT

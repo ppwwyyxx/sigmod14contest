@@ -1,0 +1,29 @@
+#!/bin/bash -e
+# File: prof.sh
+# Date: Mon Mar 10 18:09:14 2014 +0800
+# Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
+[[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/" && exit 1)
+DATA_DIRNAME=`basename $1`
+ALL_DIRNAME=`dirname $1`
+QUERY=$ALL_DIRNAME/$DATA_DIRNAME-queries.txt
+
+if [[ ! -d "$1" || ! -f $QUERY ]] ; then
+	echo "No data/query file found!"
+	exit 1
+fi
+
+TIME=`date "+%m%d-%H:%M:%S"`
+
+mkdir -p log
+export CPUPROFILE=log/prof-$TIME
+#export PROFILEFREQUENCY=10000
+
+# see http://google-perftools.googlecode.com/svn/trunk/doc/cpuprofile.html for more options
+
+make -C src
+./main "$1" "$QUERY" > /dev/null
+
+OUTPUT="$CPUPROFILE".png
+pprof --dot ./main $CPUPROFILE | dot -Tpng -o$OUTPUT
+feh $OUTPUT

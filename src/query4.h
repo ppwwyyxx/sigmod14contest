@@ -1,10 +1,11 @@
 //File: query4.h
-//Date: Mon Mar 03 10:40:04 2014 +0800
+//Date: Wed Mar 12 11:16:58 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
 
 #include <vector>
+#include <mutex>
 #include <string>
 
 struct Query4 {
@@ -16,6 +17,8 @@ struct Query4 {
 
 class Query4Handler {
 	public:
+		std::mutex mt_work_done;
+
 		void add_query(int k, const std::string& s);
 
 		void work();
@@ -23,6 +26,5 @@ class Query4Handler {
 		void print_result();		// TODO
 
 	protected:
-		std::vector<Query4> queries;
 		std::vector<std::vector<int> > ans;
 };

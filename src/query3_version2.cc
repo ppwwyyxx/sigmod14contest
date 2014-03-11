@@ -1,5 +1,5 @@
-//File: query3.cpp
-//Date: Tue Mar 11 11:28:12 2014 +0800
+//File: query3_version2.cc
+//Date: Wed Mar 12 13:43:00 2014 +0800
 //Author: Junbang Liang <williamm2006@126.com>, Han Zhao <nikifor383@gmail.com>
 //Method:	Online. For each query, find the subset of persons included.
 //			If the number of persons is bigger than n/10,
@@ -36,7 +36,6 @@ int bfs3(int p1, int p2, int x, int h) {
 			auto& friends = Data::friends[now_ele];
 			for (auto it = friends.begin(); it != friends.end(); it ++) {
 				int person = it -> pid;
-				if (it->ncmts <= x) break;
 				if (not vst1[person]) {
 					if (vst2[person]) return depth1 + depth2;
 					q1.push_back(person);
@@ -54,7 +53,6 @@ int bfs3(int p1, int p2, int x, int h) {
 			auto& friends = Data::friends[now_ele];
 			for (auto it = friends.begin(); it != friends.end(); it ++) {
 				int person = it -> pid;
-				if (it->ncmts <= x) break;
 				if (not vst2[person]) {
 					if (vst1[person]) return depth1 + depth2;
 					q2.push_back(person);
@@ -129,10 +127,6 @@ void Query3Handler::bfs(int pid, int h, int k)
 }
 
 void Query3Handler::add_query(int k, int h, const string& p) {
-	//printf("\t\t\t%s\n", p.c_str());
-	//query input
-	queries.push_back(Query3(k, h, p));
-	//init
 	pset.clear();
 	answers.clear();
 
@@ -175,7 +169,7 @@ void Query3Handler::add_query(int k, int h, const string& p) {
 //        for (vector<Answer3>::iterator it = answers.begin(); it != answers.end() && (k--); ++it)
 //            tmp.push_back(*it);
 
-    }else{
+    } else {
         for (PersonSet::iterator it1 = pset.begin(); it1 != pset.end(); ++it1) {
             for (PersonSet::iterator it2 = it1+1; it2 != pset.end(); ++it2) {
                 int cts = get_common_tag(it1->pid, it2->pid);
@@ -191,15 +185,12 @@ void Query3Handler::add_query(int k, int h, const string& p) {
         }
         global_answer.push_back(tmp);
     }
-
-
 }
 
-void Query3Handler::work() {
-
-}
+void Query3Handler::work() { }
 
 void Query3Handler::print_result() {
+	lock_guard<mutex> lg(mt_work_done);
 	for (auto it = global_answer.begin(); it != global_answer.end(); ++it)
 	{
 		for (auto it1 = it->begin(); it1 != it->end(); ++it1) {

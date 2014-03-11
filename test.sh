@@ -1,9 +1,14 @@
 #!/bin/bash -e
 # File: test.sh
-# Date: Mon Mar 10 17:20:28 2014 +0800
+# Date: Tue Mar 11 23:58:31 2014 +0800
 # Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 [[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/" && exit 1)
+
+PROG_NAME=`readlink -f "$0"`
+PROG_DIR=`dirname "$PROG_NAME"`
+cd "$PROG_DIR"
+
 DATA_DIRNAME=`basename $1`
 ALL_DIRNAME=`dirname $1`
 QUERY=$ALL_DIRNAME/$DATA_DIRNAME-queries.txt

@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Tue Mar 11 11:29:26 2014 +0800
+ * $Date: Wed Mar 12 13:43:34 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -255,10 +255,10 @@ void Query4Handler::add_query(int k, const string& s) {
 }
 
 void Query4Handler::work() {
-
 }
 
 void Query4Handler::print_result() {
+	lock_guard<mutex> lg(mt_work_done);
 	for (auto itr = ans.begin(); itr != ans.end(); itr ++) {
 		vector<int>& line = *itr;
 		for (size_t k = 0; k < line.size(); k ++) {

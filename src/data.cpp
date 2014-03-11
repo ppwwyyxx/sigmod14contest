@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Tue Mar 11 11:21:57 2014 +0800
+//Date: Wed Mar 12 12:49:57 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -12,7 +12,6 @@ using namespace std;
 
 int Data::nperson= 0;
 int Data::ntag = 0;
-bool ** Data::pp_map = NULL;
 int * Data::birthday = NULL;
 vector<vector<ConnectedPerson> > Data::friends;
 vector<TagSet> Data::tags;
@@ -22,6 +21,17 @@ unordered_map<std::string, int, StringHashFunc> Data::tagid;
 vector<vector<Forum*> > Data::tag_forums;
 unordered_map<string, vector<int>, StringHashFunc> Data::placeid;
 vector<PlaceNode> Data::places;
+
+mutex Data::mt_comment_read;
+mutex Data::mt_tag_read;
+mutex Data::mt_forum_read;
+bool Data::comment_read = false;
+bool Data::tag_read = false;
+bool Data::forum_read = false;
+condition_variable Data::cv_comment_read;
+condition_variable Data::cv_tag_read;
+condition_variable Data::cv_forum_read;
+
 #ifdef DEBUG
 vector<int> Data::real_tag_id;
 #endif
@@ -34,9 +44,11 @@ void Data::allocate(int max_pid) {
 	m_assert(nperson == 0);
 	Data::nperson = max_pid + 1;
 
-	pp_map = new bool*[nperson];
-	for (int i = 0; i < nperson; i ++)
-		pp_map[i] = new bool[nperson]();
+	/*
+	 *pp_map = new bool*[nperson];
+	 *for (int i = 0; i < nperson; i ++)
+	 *    pp_map[i] = new bool[nperson]();
+	 */
 
 	birthday = new int[nperson];
 	friends.resize(nperson);
@@ -44,7 +56,9 @@ void Data::allocate(int max_pid) {
 }
 
 void Data::free() {
-	free_2d<bool>(pp_map, nperson);
+	/*
+	 *free_2d<bool>(pp_map, nperson);
+	 */
 	delete[] birthday;
 }
 

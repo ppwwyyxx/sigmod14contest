@@ -1,10 +1,11 @@
 //File: query3.h
-//Date: Fri Mar 07 09:07:42 2014 +0800
+//Date: Wed Mar 12 11:24:16 2014 +0800
 
 #pragma once
 
 #include <vector>
 #include <string>
+#include <mutex>
 #include "data.h"
 
 struct Query3 {
@@ -41,6 +42,7 @@ struct Answer3 {
 
 class Query3Handler {
 	public:
+		std::mutex mt_work_done;
 		void add_query(int k, int h, const std::string& p);
 
 		void work();
@@ -53,7 +55,6 @@ class Query3Handler {
 	protected:
 		PersonSet pset;
 		std::set<int> pinplace;
-		std::vector<Query3> queries;
 		std::vector<Answer3> answers;
 		std::vector<std::vector<Answer3> > global_answer;
 };

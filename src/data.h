@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Tue Mar 11 11:21:18 2014 +0800
+//Date: Wed Mar 12 12:49:49 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -7,6 +7,8 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <condition_variable>
+#include <mutex>
 #include "lib/hash_lib.h"
 
 #include <set>
@@ -77,6 +79,18 @@ struct Forum {
 
 class Data {
 public:
+	static std::mutex mt_comment_read;
+	static std::condition_variable cv_comment_read;
+	static bool comment_read;
+
+	static std::condition_variable cv_tag_read;
+	static std::mutex mt_tag_read;
+	static bool tag_read;
+
+	static std::mutex mt_forum_read;
+	static std::condition_variable cv_forum_read;
+	static bool forum_read;
+
 	static int nperson, ntag;
 
 	static bool ** pp_map;		// person_knows_person

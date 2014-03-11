@@ -1,5 +1,5 @@
 //File: query3.cpp
-//Date: Mon Mar 03 14:57:35 2014 +0800
+//Date: Wed Mar 12 13:33:50 2014 +0800
 //Author: Junbang Liang <williamm2006@126.com>
 //Method:	Online. For each query, find the subset of persons included.
 //			And do bfs for each person, adding required pairs. Finally sort and output.
@@ -63,7 +63,6 @@ void Query3Handler::bfs(int pid, int h)
 void Query3Handler::add_query(int k, int h, const string& p) {
 	//printf("\t\t\t%s\n", p.c_str());
 	//query input
-	queries.push_back(Query3(k, h, p));
 	//init
 	pset.clear();
 	answers.clear();
@@ -104,8 +103,10 @@ void Query3Handler::work() {
 void Query3Handler::print_result() {
 	for (auto it = global_answer.begin(); it != global_answer.end(); ++it)
 	{
-		for (auto it1 = it->begin(); it1 != it->end(); ++it1)
-			printf("%d|%d ", it1->p1, it1->p2);
+		for (auto it1 = it->begin(); it1 != it->end(); ++it1) {
+			if (it1 != it->begin())	 printf(" ");
+			printf("%d|%d", it1->p1, it1->p2);
+		}
 		printf("\n");
 	}
 }

@@ -1,4 +1,5 @@
 src/build
 src/main
+src/.ycm_extra_conf.py
 main
 *.swp

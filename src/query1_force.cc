@@ -1,11 +1,12 @@
-//File: query1_force.cc
-//Date: Sun Mar 02 21:32:19 2014 +0800
+//File: query1.cpp
+//Date: Wed Mar 12 00:38:24 2014 +0800
 
 #include "query1.h"
 #include "lib/common.h"
 #include "data.h"
 #include <cstdio>
 #include <queue>
+#include <algorithm>
 #include <vector>
 using namespace std;
 
@@ -85,9 +86,15 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 	return -1;
 }
 
-void Query1Handler::add_query(int p1, int p2, int x) {
-	int ans = bfs2(p1, p2, x);
+void Query1Handler::add_query(const Query1& q) {
+	int ans = bfs2(q.p1, q.p2, q.x);
 	this->ans.push_back(ans);
+}
+
+void Query1Handler::pre_work() {
+	REP(i, Data::nperson) {
+		sort(Data::friends[i].begin(), Data::friends[i].end());
+	}
 }
 
 void Query1Handler::work() {}

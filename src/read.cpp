@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sun Mar 02 23:47:25 2014 +0800
+//Date: Tue Mar 11 11:22:17 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "lib/debugutils.h"
@@ -10,7 +10,6 @@
 #include <algorithm>
 #include <stdio.h>
 using namespace std;
-using namespace std::tr1;
 
 namespace {
 	const int BUFFER_LEN = 1024 * 1024 * 5;
@@ -163,6 +162,9 @@ void read_comments(const string& dir) {
 
 void read_tags_forums(const string & dir) {
 	unordered_map<int, int> id_map; // map from real id to continuous id
+#ifdef GOOGLE_HASH
+	id_map.set_empty_key(-1);
+#endif
 	int tid, pid, fid;
 	{		// read tag and tag names
 		FILE* fin = safe_open(dir + "/tag.csv");
@@ -198,6 +200,9 @@ void read_tags_forums(const string & dir) {
 	}
 
 	unordered_map<int, Forum*> forum_idmap;
+#ifdef GOOGLE_HASH
+	forum_idmap.set_empty_key(-1);
+#endif
 	Data::tag_forums.resize(Data::ntag);
 	{
 		FILE* fin = safe_open(dir + "/forum_hasMember_person.csv");

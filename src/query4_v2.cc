@@ -1,6 +1,6 @@
 /*
- * $File: query4_v2.cc
- * $Date: Mon Mar 10 21:43:53 2014 +0800
+ * $File: query4.cpp
+ * $Date: Tue Mar 11 11:29:26 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -9,11 +9,7 @@
 #include "lib/common.h"
 #include "lib/Timer.h"
 #include "lib/utils.h"
-#ifdef __linux__
-#include <tr1/unordered_set>
-#else
-#include <unordered_set>
-#endif
+#include "lib/hash_lib.h"
 #include <omp.h>
 #include <queue>
 #include <algorithm>
@@ -21,15 +17,8 @@
 #include <cassert>
 
 using namespace std;
-using namespace std::tr1;
-
-// TODO:
-// cache the Shortest Path caculated before, see if the node in the path
-// is in the forum
-
 
 namespace {
-	int ** SP_matrix;
 	int * degree;
 	size_t *que;
 	size_t np;
@@ -53,33 +42,6 @@ vector<PersonInForum> get_tag_persons(const string& s) {
 	return persons;
 }
 
-void calculate_SP(const vector<PersonInForum>& ps) {		// TOO SLOW
-	unordered_map<int, int> persons;  // <pid, index>
-//	persons.reserve(np);
-	REP(i, np) persons[ps[i]] = (int)i;
-
-#pragma omp parallel for schedule(dynamic)
-	REP(i, np) {
-		deque<size_t> q; q.push_back(i);
-		int depth = 0;
-		while (size_t qsize = q.size()) {
-			depth ++;
-			REP(_k, qsize) {
-				auto top = q.front(); q.pop_front();
-				auto& fs = friends[top];
-				for (auto itr = fs.begin(); itr != fs.end(); itr ++) {
-					// found a friend in the forum
-					size_t index = *itr;
-					if (SP_matrix[i][index] != -1 or i == index) continue;
-					degree[i] ++;
-					SP_matrix[i][index] = depth;
-					q.push_back(index);
-				}
-			}
-		}
-	}
-}
-
 namespace {
 //    static int timestamp_counter;
 	struct HeapEle {
@@ -97,17 +59,6 @@ namespace {
 		}
 	};
 
-}
-
-double cal_central(size_t k) {
-	double up = ::sqr(degree[k] - 1);
-	int s = 0;
-	REP(i, np) {
-		if (i == k) continue;
-		int t = SP_matrix[k][i];
-		if (t > 0) s += t;
-	}
-	return up / s / (double)(np - 1);
 }
 
 int check_compute_degree(int v) {
@@ -269,7 +220,7 @@ void Query4Handler::add_query(int k, const string& s) {
 	int est_dist_max = 2;  // TODO: this parameter needs tune
 	priority_queue<HeapEle> q;
 	CentralityEstimator estimator;
-	for (size_t i = 0; i < np; i ++) {
+	for (int i = 0; i < (int)np; i ++) {
 		double centrality = estimator.estimate(i, est_dist_max);
 		q.push(HeapEle(i, centrality));
 //        fprintf(stderr, "cent %lu = %f\n", i, centrality);
@@ -293,7 +244,7 @@ void Query4Handler::add_query(int k, const string& s) {
 				break;
 		} else {
 			cnt ++;
-			q.push(HeapEle(pid, estimator.estimate(pid, np)));
+			q.push(HeapEle(pid, estimator.estimate(pid, (int)np)));
 		}
 		last_centrality = centrality;
 		last_pid = pid;

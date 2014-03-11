@@ -1,5 +1,5 @@
 //File: query4_force.cc
-//Date: Tue Mar 04 10:10:15 2014 +0800
+//Date: Tue Mar 11 10:29:35 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "query4.h"
@@ -7,11 +7,7 @@
 #include "lib/common.h"
 #include "lib/Timer.h"
 #include "lib/utils.h"
-#ifdef __linux__
-#include <tr1/unordered_set>
-#else
-#include <unordered_set>
-#endif
+#include "lib/hash_lib.h"
 #include <omp.h>
 #include <queue>
 #include <algorithm>

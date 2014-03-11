@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Sun Mar 02 13:30:23 2014 +0800
+//Date: Tue Mar 11 11:21:57 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <iterator>
 using namespace std;
-using namespace std::tr1;
 
 int Data::nperson= 0;
 int Data::ntag = 0;
@@ -19,15 +18,19 @@ vector<vector<ConnectedPerson> > Data::friends;
 vector<TagSet> Data::tags;
 vector<vector<int> > Data::person_in_tags;
 vector<string> Data::tag_name;
-unordered_map<std::string, int> Data::tagid;
+unordered_map<std::string, int, StringHashFunc> Data::tagid;
 vector<vector<Forum*> > Data::tag_forums;
-unordered_map<string, vector<int> > Data::placeid;
+unordered_map<string, vector<int>, StringHashFunc> Data::placeid;
 vector<PlaceNode> Data::places;
 #ifdef DEBUG
 vector<int> Data::real_tag_id;
 #endif
 
 void Data::allocate(int max_pid) {
+#ifdef GOOGLE_HASH
+	tagid.set_empty_key("");
+	placeid.set_empty_key("");
+#endif
 	m_assert(nperson == 0);
 	Data::nperson = max_pid + 1;
 

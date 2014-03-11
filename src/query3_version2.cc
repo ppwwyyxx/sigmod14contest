@@ -1,5 +1,5 @@
-//File: query3_version2.cc
-//Date: Thu Mar 06 17:39:09 2014 +0800
+//File: query3.cpp
+//Date: Tue Mar 11 11:28:12 2014 +0800
 //Author: Junbang Liang <williamm2006@126.com>, Han Zhao <nikifor383@gmail.com>
 //Method:	Online. For each query, find the subset of persons included.
 //			If the number of persons is bigger than n/10,
@@ -68,10 +68,6 @@ int bfs3(int p1, int p2, int x, int h) {
 	return 2e9;
 }
 
-void add_answer(int cts, int p1, int p2, int k){
-
-}
-
 int get_common_tag(int p1, int p2)
 {
 	TagSet &t1 = Data::tags[p1], &t2 = Data::tags[p2];
@@ -99,7 +95,7 @@ void Query3Handler::bfs(int pid, int h, int k)
 	int depth = 0;
 	while (depth < h)
 	{
-		int now_size = q.size();
+		auto now_size = q.size();
 		while (now_size--)
 		{
 			int cur_id = q.front();

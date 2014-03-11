@@ -1,17 +1,17 @@
 
 # $File: Makefile
-# $Date: Mon Mar 10 17:31:48 2014 +0800
-# $Date: Mon Mar 10 17:31:48 2014 +0800
+# $Date: Tue Mar 11 10:46:43 2014 +0800
+# $Date: Tue Mar 11 10:46:43 2014 +0800
 
 OBJ_DIR = build
 TARGET = ../main
 
-INCLUDE_DIR = -Iinclude
-DEFINES = -DDEBUG
+INCLUDE_DIR = -Iinclude -Ithird-party
+DEFINES = -DDEBUG -DGOOGLE_DENSE_HASH
 
-OPTFLAGS = -Wall -Wextra -Wconversion -Wno-unused-result
+OPTFLAGS = -Wall -Wextra -Wconversion -Wno-unused-result -Wno-unused-local-typedefs
 # OPTFLAGS += -g -O0
-#OPTFLAGS += -O3
+OPTFLAGS += -O3
 
 CONCURFLAGS = -fopenmp -pthread
 CXXFLAGS := $(INCLUDE_DIR)

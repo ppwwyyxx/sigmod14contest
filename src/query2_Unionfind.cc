@@ -5,7 +5,7 @@
 #include <vector>
 #include <cstdio>
 #include <algorithm>
-#include <unordered_set>
+#include "lib/hash_lib.h"
 
 using namespace std;
 
@@ -57,7 +57,12 @@ void Query2Handler::work() {
 	myfriends.resize(Data::nperson);
 	heap.resize(Data::ntag);
 	myhash.resize(Data::ntag);
-	
+#ifdef GOOGLE_HASH
+	for (auto it = myhash.begin(); it != myhash.end(); it ++) {
+		it->set_empty_key(-1);
+	}
+#endif
+
     //sort quries by d
     sort(queries.begin(), queries.end());
     //sort persons by d
@@ -78,7 +83,7 @@ void Query2Handler::work() {
     }
     //ans heap
     for (int i=0; i<Data::ntag; i++) heap.insert(i,0);
-	
+
     int queryP = 0;
     for (int i=0; i<Data::nperson && queryP<(int) queries.size(); i++) {
         int person_now = person[i];

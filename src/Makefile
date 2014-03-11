@@ -1,23 +1,35 @@
 
 # $File: Makefile
-# $Date: Tue Mar 11 10:46:43 2014 +0800
-# $Date: Tue Mar 11 10:46:43 2014 +0800
+# $Date: Tue Mar 11 11:49:23 2014 +0800
+# $Date: Tue Mar 11 11:49:23 2014 +0800
 
 OBJ_DIR = build
 TARGET = ../main
 
-INCLUDE_DIR = -Iinclude -Ithird-party
-DEFINES = -DDEBUG -DGOOGLE_DENSE_HASH
+BUILD ?= develop
 
-OPTFLAGS = -Wall -Wextra -Wconversion -Wno-unused-result -Wno-unused-local-typedefs
-# OPTFLAGS += -g -O0
+INCLUDE_DIR = -Iinclude -Ithird-party
+DEFINES += -DGOOGLE_HASH
+
+OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
+#OPTFLAGS += -g -O0
 OPTFLAGS += -O3
 
+ifeq ($(BUILD), submit)
+OPTFLAGS = -O3
+LDFLAGS += -Wl,--wrap=memcpy
+else
+DEFINES += -DDEBUG
+LDFLAGS += -lprofiler
+OPTFLAGS += -Wall -Wextra -Wconversion
+endif
+
 CONCURFLAGS = -fopenmp -pthread
-CXXFLAGS := $(INCLUDE_DIR)
+CXXFLAGS = $(INCLUDE_DIR)
 CXXFLAGS += -std=c++0x $(CONCURFLAGS)
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
-LDFLAGS += $(CONCURFLAGS) -Wl,--wrap=memcpy -lprofiler
+LDFLAGS += $(CONCURFLAGS)
+
 
 GCC = gcc
 CC = g++

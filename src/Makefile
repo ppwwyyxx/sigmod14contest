@@ -1,10 +1,10 @@
 
 # $File: Makefile
-# $Date: Wed Mar 12 14:16:42 2014 +0800
-# $Date: Wed Mar 12 14:16:42 2014 +0800
+# $Date: Wed Mar 12 15:46:58 2014 +0800
+# $Date: Wed Mar 12 15:46:58 2014 +0800
 
 OBJ_DIR = build
-TARGET = ../main
+TARGET = ./main
 
 BUILD ?= develop
 

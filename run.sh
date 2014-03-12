@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # File: run.sh
-# Date: Tue Mar 11 11:55:25 2014 +0800
+# Date: Wed Mar 12 15:48:31 2014 +0800
 # Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #[[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/ /path/to/query/file" && exit 1)

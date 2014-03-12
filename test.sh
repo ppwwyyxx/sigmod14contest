@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # File: test.sh
-# Date: Tue Mar 11 23:58:31 2014 +0800
+# Date: Wed Mar 12 15:48:37 2014 +0800
 # Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 [[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/" && exit 1)
@@ -24,5 +24,6 @@ mkdir -p log
 OUTPUT=log/ans-"$TIME".txt
 
 make -C src
-time ./memusg ./run.sh "$1" $QUERY > $OUTPUT
+export LD_PRELOAD=src/third-party/libtcmalloc.so.4.1.2
+time ./memusg ./src/main "$1" $QUERY > $OUTPUT
 diff $OUTPUT $ANS && echo "Accepted" || echo "Wrong Answer"

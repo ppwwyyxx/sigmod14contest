@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # File: prof.sh
-# Date: Mon Mar 10 18:09:14 2014 +0800
+# Date: Wed Mar 12 15:51:56 2014 +0800
 # Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 [[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/" && exit 1)
@@ -22,8 +22,8 @@ export CPUPROFILE=log/prof-$TIME
 # see http://google-perftools.googlecode.com/svn/trunk/doc/cpuprofile.html for more options
 
 make -C src
-./main "$1" "$QUERY" > /dev/null
+./src/main "$1" "$QUERY" > /dev/null
 
 OUTPUT="$CPUPROFILE".png
 pprof --dot ./main $CPUPROFILE | dot -Tpng -o$OUTPUT
-feh $OUTPUT
+[[ -x `which feh` ]] && feh $OUTPUT

@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Wed Mar 12 14:31:34 2014 +0800
+//Date: Wed Mar 12 15:50:22 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -102,7 +102,6 @@ void add_all_query(int type) {
 			}
 			break;
 	}
-	tot_time[type] += timer.get_time();
 }
 
 inline void start_4() {
@@ -111,7 +110,6 @@ inline void start_4() {
 		Data::cv_forum_read.wait(lk);
 	}
 
-	print_debug("4: read\n");
 	Timer timer;
 	timer.reset();
 	add_all_query(4);
@@ -126,7 +124,6 @@ inline void start_1() {
 		Data::cv_comment_read.wait(lk);
 	}
 
-	print_debug("1: read\n");
 	{
 		std::lock_guard<mutex> lg(q2.mt_work_done);
 		std::lock_guard<mutex> lgg(q3.mt_work_done);
@@ -143,17 +140,14 @@ inline void start_2() {
 	while (!Data::tag_read) {
 		Data::cv_tag_read.wait(lg);
 	}
-	print_debug("2: read\n");
 
 	Timer timer;
 	{
 		std::lock_guard<mutex> lk(q2.mt_work_done);
-		print_debug("2: work\n");
 		timer.reset();
 		q2.work();
 		tot_time[2] += timer.get_time();
 	}
-	print_debug("2: done\n");
 }
 
 inline void start_3() {
@@ -161,7 +155,6 @@ inline void start_3() {
 	while (!Data::tag_read) {
 		Data::cv_tag_read.wait(lg);
 	}
-	print_debug("3: read\n");
 	{
 		std::lock_guard<mutex> lk(q3.mt_work_done);
 		Timer timer;
@@ -169,7 +162,6 @@ inline void start_3() {
 		add_all_query(3);
 		tot_time[3] += timer.get_time();
 	}
-	print_debug("3: done\n");
 }
 
 
@@ -177,8 +169,7 @@ int main(int argc, char* argv[]) {
 	memset(tot_time, 0, 5 * sizeof(double));
 	Timer timer;
 	read_data(string(argv[1]));
-	print_debug("Read all spent %lf secs\n", timer.get_time());
-	print_debug("nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);
+	print_debug("Read return at %lf secs\n", timer.get_time());
 	read_query(string(argv[2]));
 
 
@@ -202,6 +193,7 @@ int main(int argc, char* argv[]) {
 	q3.print_result();
 	q4.print_result();
 
+	print_debug("nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);
 	fprintf(stderr, "%lu\t%lu\t%lu\t%lu\n", q1_set.size(), q2_set.size(), q3_set.size(), q4_set.size());
 	for (int i = 1; i <= 4; i ++)
 		fprintf(stderr, "q%d: %.4fs\t", i, tot_time[i]);

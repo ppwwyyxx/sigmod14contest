@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Wed Mar 12 13:43:34 2014 +0800
+ * $File: query4_v2.cc
+ * $Date: Wed Mar 12 14:34:52 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -30,7 +30,7 @@ vector<PersonInForum> get_tag_persons(const string& s) {
 	auto& forums = Data::tag_forums[tagid];
 	vector<PersonInForum> persons;
 
-	for (auto itr = forums.begin(); itr != forums.end(); itr ++) {
+	FOR_ITR(itr, forums) {
 		set<PersonInForum>& persons_in_forum = (*itr)->persons;
 		vector<PersonInForum> tmp; tmp.swap(persons);
 		persons.resize(tmp.size() + persons_in_forum.size());
@@ -99,7 +99,8 @@ void compute_degree() {
 		que[qh] = i;
 		while (qh != qt) {
 			size_t v0 = que[qh ++];
-			for (auto &v1: friends[v0]) {
+			FOR_ITR(itr, friends[v0]) {
+				auto& v1 = *itr;
 				if (degree[v1] != -1)
 					continue;
 
@@ -170,7 +171,7 @@ class CentralityEstimator {
 				REP(_k, qsize) {
 					auto top = q.front(); q.pop_front();
 					auto& fs = friends[top];
-					for (auto itr = fs.begin(); itr != fs.end(); itr ++) {
+					FOR_ITR(itr, fs) {
 						// found a friend in the forum
 						size_t index = *itr;
 						if (hash[index] == timestamp_counter)
@@ -203,7 +204,7 @@ void Query4Handler::add_query(int k, const string& s) {
 	REP(i, np) {
 		friends[i].clear();
 		auto& fs = Data::friends[persons[i]];
-		for (auto itr = fs.begin(); itr != fs.end(); itr ++) {
+		FOR_ITR(itr, fs) {
 			auto lb_itr = lower_bound(persons.begin(), persons.end(), itr->pid);
 			if (*lb_itr == itr->pid) {
 				friends[i].push_back((int)distance(persons.begin(), lb_itr));
@@ -259,7 +260,7 @@ void Query4Handler::work() {
 
 void Query4Handler::print_result() {
 	lock_guard<mutex> lg(mt_work_done);
-	for (auto itr = ans.begin(); itr != ans.end(); itr ++) {
+	FOR_ITR(itr, ans) {
 		vector<int>& line = *itr;
 		for (size_t k = 0; k < line.size(); k ++) {
 			if (k) printf(" ");

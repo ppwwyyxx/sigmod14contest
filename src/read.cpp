@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Wed Mar 12 16:26:49 2014 +0800
+//Date: Wed Mar 12 20:02:32 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -124,8 +124,8 @@ void read_person_knows_person(const string& dir) {
 	fclose(fin);
 }
 
-void read_comments(const string& dir) {
-	char buffer[BUFFER_LEN];
+namespace { char buffer[BUFFER_LEN];	}	// WARNING: GLOBAL VARIABLE
+void read_comments(string dir) {
 	char *ptr, *buf_end;
 
 	vector<int> owner;
@@ -192,8 +192,9 @@ void read_comments(const string& dir) {
 	Data::comment_read_cv.notify_all();
 }
 
-void read_tags_forums_places(const string & dir) {
-	char buffer[BUFFER_LEN];
+namespace { char buffer2[BUFFER_LEN]; }
+void read_tags_forums_places(string dir) {
+	char* buffer = buffer2;
 	char *ptr, *buf_end;
 
 	Timer timer;

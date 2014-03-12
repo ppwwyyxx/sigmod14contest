@@ -1,11 +1,10 @@
 //File: main.cpp
-//Date: Wed Mar 12 16:26:00 2014 +0800
+//Date: Wed Mar 12 20:06:39 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
 #include <string.h>
 #include <string>
-
 #include <thread>
 
 #include "lib/Timer.h"
@@ -26,7 +25,6 @@ Query3Handler q3;
 Query4Handler q4;
 
 double tot_time[5];
-int query_cnt[5];
 vector<Query1> q1_set;
 vector<Query2> q2_set;
 vector<Query3> q3_set;
@@ -156,13 +154,13 @@ inline void start_3() {
 }
 
 
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char* argv[]) {
 	memset(tot_time, 0, 5 * sizeof(double));
 	Timer timer;
 	read_data(string(argv[1]));
 	print_debug("Read return at %lf secs\n", timer.get_time());
 	read_query(string(argv[2]));
-
 
 #ifdef USE_THREAD
 	thread th_q1(start_1);
@@ -190,5 +188,5 @@ int main(int argc, char* argv[]) {
 	for (int i = 1; i <= 4; i ++)
 		fprintf(stderr, "q%d: %.4fs\t", i, tot_time[i]);
 	Data::free();
-	print_debug("\nTime: %.4fs\n", timer.get_time());
+	fprintf(stderr, "\nTime: %.4fs\n", timer.get_time());
 }

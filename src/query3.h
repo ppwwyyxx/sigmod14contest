@@ -1,5 +1,5 @@
 //File: query3.h
-//Date: Wed Mar 12 11:24:16 2014 +0800
+//Date: Wed Mar 12 19:52:06 2014 +0800
 
 #pragma once
 
@@ -57,4 +57,6 @@ class Query3Handler {
 		std::set<int> pinplace;
 		std::vector<Answer3> answers;
 		std::vector<std::vector<Answer3> > global_answer;
+		std::vector<std::set<int> > invList[101010];
+		std::vector<Answer3> ansList[101010];
 };

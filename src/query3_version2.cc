@@ -1,15 +1,21 @@
-//File: query3.cpp
-//Author: Wenbo Tao.
-//Method:	Inverted List.
+//File: query3_version2.cc
+//Date: Wed Mar 12 13:43:00 2014 +0800
+//Author: Junbang Liang <williamm2006@126.com>, Han Zhao <nikifor383@gmail.com>
+//Method:	Online. For each query, find the subset of persons included.
+//			If the number of persons is bigger than n/10,
+//				do bfs for each person, adding required pairs. Finally sort and output.
+//				Complexity: O(NM * ntags * logN)
+//			else,
+//				for each pair of persons, calculate the common interests and sort.
+//				Then do 2-way bfs to check out the answers.
+//				Complexity: O(N^2 * ntags * 2-way-bfs)
 
 #include "query3.h"
 #include "lib/common.h"
 #include <algorithm>
 #include <queue>
 #include <vector>
-#include <map>
 using namespace std;
-
 
 int bfs3(int p1, int p2, int x, int h) {
 	if (p1 == p2) return 0;
@@ -30,7 +36,6 @@ int bfs3(int p1, int p2, int x, int h) {
 			auto& friends = Data::friends[now_ele];
 			for (auto it = friends.begin(); it != friends.end(); it ++) {
 				int person = it -> pid;
-				if (it->ncmts <= x) break;
 				if (not vst1[person]) {
 					if (vst2[person]) return depth1 + depth2;
 					q1.push_back(person);
@@ -48,7 +53,6 @@ int bfs3(int p1, int p2, int x, int h) {
 			auto& friends = Data::friends[now_ele];
 			for (auto it = friends.begin(); it != friends.end(); it ++) {
 				int person = it -> pid;
-				if (it->ncmts <= x) break;
 				if (not vst2[person]) {
 					if (vst1[person]) return depth1 + depth2;
 					q2.push_back(person);
@@ -123,10 +127,6 @@ void Query3Handler::bfs(int pid, int h, int k)
 }
 
 void Query3Handler::add_query(int k, int h, const string& p) {
-	//printf("\t\t\t%s\n", p.c_str());
-	//query input
-	queries.push_back(Query3(k, h, p));
-	//init
 	pset.clear();
 	answers.clear();
 
@@ -142,139 +142,55 @@ void Query3Handler::add_query(int k, int h, const string& p) {
 				tmp.begin(), tmp.end(), pset.begin());
 		pset.resize(std::distance(pset.begin(), pset_end));
 	}
-	
-	vector<vector<int> > invertedList;
-	vector<int> people; 
-	invertedList.resize(6000);			//This number needs to be fixed.
-	for (int i = 0; i < 5000; i ++)		//This number as well.
-		invertedList[i].clear();
-	
-	people.clear();
-	for (PersonSet::iterator it1 = pset.begin(); it1 != pset.end(); ++it1) 
-		people.push_back(it1->pid);
-	sort(people.begin(), people.end());
-	
-	for (int g = (int) people.size() - 1; g >= 0; g --) 
-	{
-		TagSet curTagSet = Data::tags[people[g]];
-	
-		int curPerson = people[g];
-		
-		vector<pair<int, int> > curTags; curTags.clear();
-		
-		//modify global inverted list
-		for (TagSet::iterator i = curTagSet.begin(); i != curTagSet.end(); i ++)
-			invertedList[*i].push_back(curPerson), curTags.push_back(make_pair(invertedList[*i].size(), (*i)));
-		
-		//sort by size
-		sort(curTags.begin(), curTags.end());
-		invList[curPerson].clear();
-		
-		//generate local inverted list
-		for (int i = 0; i < (int) curTags.size(); i ++)
-		{
-			vector<int> &r = invertedList[curTags[i].second];
-			invList[curPerson].push_back(set<int>(r.begin(), r.end()));
-		}
-	}
-	
-	int totPair = 0;
-	//Arsenal is the champion!!
 
-	for (int g = 0; g < (int) people.size(); g ++)
-	{
-		int curPerson = people[g];						//current person id
-		vector<set<int> > &r = invList[curPerson];		//current inverted list
-		ansList[curPerson].clear();						//This method should be discarded if k is too large.
-		
-		//enumerate the number of common tags from 2 to r.size()
-		map<int, int> candidate; candidate.clear();
-		set<int> forsake; forsake.clear(); forsake.insert(curPerson);
-		for (int i = 0; i < (int) r.size() - 1; i ++)
-		{
-			for (set<int>::iterator j = r[i].begin(); j != r[i].end(); j ++)
-				candidate[*j] ++;
-			for (map<int, int>::iterator j = candidate.begin(); j != candidate.end(); j ++)
-				if (! forsake.count(j->first))
-				{
-					int tot = j->second;
-					for (int p = i + 1; p < (int) r.size(); p ++)
-						if (r[p].count(j->first)) tot ++;
-					if (tot != (int) r.size() - i) continue;
-					if (bfs3(curPerson, j->first, -1, h) > h) continue;
+    //printf("SIZE : %d\n", pset.size());
 
-					ansList[curPerson].push_back(Answer3((int) r.size() - i, curPerson, j->first));
-					forsake.insert(j->first);
-				}
-		}
-		
-		//only 1 common tag
+    vector<Answer3> tmp;
+    if (pset.size() * 10 > Data::nperson){
+        //pickup people
+        for (int i=0; i<k; i++) answers.push_back(Answer3(0,2e9,2e9));
+        for (PersonSet::iterator it = pset.begin(); it != pset.end(); ++it)
+        {
+            pinplace.insert(it->pid);
+            //printf("%d ", it->pid);
+        }
+        //printf("\n");
+        //bfs
+        for (PersonSet::iterator it = pset.begin(); it != pset.end(); ++it){
+            if (it->ntags < answers[k-1].com_interest) continue;
+            bfs(it->pid, h, k);
+        }
+		while (answers[answers.size() - 1].p1 == 2000000000)
+			answers.erase(answers.end() - 1);
+        global_answer.push_back(answers);
+        //sort and output
 
-		set<pair<int, int> > ids; ids.clear();
-		for (int i = 0; i < (int) r.size(); i ++)
-			for ( ; ! r[i].empty(); )
-				if (! forsake.count(*(r[i].begin())))
-				{
-					ids.insert(make_pair(*(r[i].begin()), i));
-					r[i].erase(r[i].begin());
-					break;
-				}
-				else r[i].erase(r[i].begin());
-		
-//		cout << "person : " << curPerson << endl;	
-		for ( ; (int) ansList[curPerson].size() < k; )
-		{
-			if (ids.empty()) break;
-//			cout << "size : " << ansList[curPerson].size() << endl;
-			set<pair<int, int> >::iterator winner = ids.begin();
-			
-			if (! forsake.count(winner->first) && bfs3(curPerson, winner->first, -1, h) <= h)
-				ansList[curPerson].push_back(Answer3(1, curPerson, winner->first));
-			ids.erase(winner);
-			forsake.insert(winner->first);
-			
-			for (int i = winner->second; ! r[i].empty(); )
-				if (! forsake.count(*(r[i].begin())))
-				{
-					ids.insert(make_pair(*(r[i].begin()), i));
-					r[i].erase(r[i].begin());
-					break;
-				}
-				else r[i].erase(r[i].begin());			
-		}
-		
-		//0 common interest
-		
-		for (int i = g + 1; i < (int) people.size() && totPair + (int) ansList[curPerson].size() < k; i ++)
-			if (! forsake.count(people[i]) && bfs3(curPerson, people[i], -1, h) <= h)
-				ansList[curPerson].push_back(Answer3(0, curPerson, people[i]));
-		
-		totPair += (int) ansList[curPerson].size();
-	}
-	vector<Answer3> tmp1, tmp2;
-	tmp1.clear(), tmp2.clear();
-	for (PersonSet::iterator it = pset.begin(); it != pset.end(); it ++)
-	{
-		int curPerson = it->pid;						
-		for (int i = 0; i < (int) ansList[curPerson].size(); i ++)
-			tmp1.push_back(ansList[curPerson][i]);
-	}
-	
-	sort(tmp1.begin(), tmp1.end());
-	for (int i = 0; i < k; i ++)
-		tmp2.push_back(tmp1[i]);
-	global_answer.push_back(tmp2);
+//        sort(answers.begin(), answers.begin() + answers.size());
+//        for (vector<Answer3>::iterator it = answers.begin(); it != answers.end() && (k--); ++it)
+//            tmp.push_back(*it);
 
-	return ;	
-	
-
+    } else {
+        for (PersonSet::iterator it1 = pset.begin(); it1 != pset.end(); ++it1) {
+            for (PersonSet::iterator it2 = it1+1; it2 != pset.end(); ++it2) {
+                int cts = get_common_tag(it1->pid, it2->pid);
+                Answer3 ans(cts, it1->pid, it2->pid);
+                answers.push_back(ans);
+            }
+        }
+        sort(answers.begin(), answers.begin() + answers.size());
+        tmp.clear();
+        for (int i = 0; i < answers.size() && tmp.size() < k; i++){
+            if (bfs3(answers[i].p1, answers[i].p2, -1, h) > h) continue;
+            tmp.push_back(answers[i]);
+        }
+        global_answer.push_back(tmp);
+    }
 }
 
-void Query3Handler::work() {
-
-}
+void Query3Handler::work() { }
 
 void Query3Handler::print_result() {
+	lock_guard<mutex> lg(mt_work_done);
 	for (auto it = global_answer.begin(); it != global_answer.end(); ++it)
 	{
 		for (auto it1 = it->begin(); it1 != it->end(); ++it1) {

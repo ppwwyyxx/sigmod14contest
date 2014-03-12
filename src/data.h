@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Wed Mar 12 12:49:49 2014 +0800
+//Date: Wed Mar 12 16:21:38 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -79,16 +79,16 @@ struct Forum {
 
 class Data {
 public:
-	static std::mutex mt_comment_read;
-	static std::condition_variable cv_comment_read;
+	static std::mutex comment_read_mt;
+	static std::condition_variable comment_read_cv;
 	static bool comment_read;
 
-	static std::condition_variable cv_tag_read;
-	static std::mutex mt_tag_read;
+	static std::condition_variable tag_read_cv;
+	static std::mutex tag_read_mt;
 	static bool tag_read;
 
-	static std::mutex mt_forum_read;
-	static std::condition_variable cv_forum_read;
+	static std::mutex forum_read_mt;
+	static std::condition_variable forum_read_cv;
 	static bool forum_read;
 
 	static int nperson, ntag;

@@ -1,7 +1,7 @@
 
 # $File: Makefile
-# $Date: Wed Mar 12 15:46:58 2014 +0800
-# $Date: Wed Mar 12 15:46:58 2014 +0800
+# $Date: Wed Mar 12 16:28:15 2014 +0800
+# $Date: Wed Mar 12 16:28:15 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -10,6 +10,7 @@ BUILD ?= develop
 
 INCLUDE_DIR = -Iinclude -Ithird-party
 DEFINES += -DGOOGLE_HASH
+DEFINES += -DUSE_THREAD
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
 #OPTFLAGS += -g -O0
@@ -18,6 +19,7 @@ OPTFLAGS += -O3
 ifeq ($(BUILD), submit)
 OPTFLAGS = -O3
 LDFLAGS += -Wl,--wrap=memcpy
+DEFINES += -DUSE_THREAD
 else
 DEFINES += -DDEBUG
 LDFLAGS += -lprofiler

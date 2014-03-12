@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Wed Mar 12 14:31:34 2014 +0800
+//Date: Wed Mar 12 16:26:49 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -22,8 +22,7 @@ namespace {
 
 #define safe_open(fname) \
 	FILE* fin = fopen((fname).c_str(), "r"); \
-	m_assert(fin != NULL); \
-	ptr = buffer, buf_end = ptr + 1;
+	m_assert(fin != NULL);
 
 #define PTR_NEXT() \
 { \
@@ -69,6 +68,8 @@ void read_person_file(const string& dir) {
 	char tmpBuf[1024];
 
 	safe_open(dir + "/person.csv");
+	ptr = buffer, buf_end = ptr + 1;
+
 	READ_TILL_EOL();
 	int pid, maxid = 0;
 	while (true) {
@@ -82,6 +83,7 @@ void read_person_file(const string& dir) {
 	// read birthday
 	rewind(fin);
 	ptr = buffer, buf_end = ptr + 1;
+
 	READ_TILL_EOL();
 	int year, month, day;
 	while (true) {
@@ -105,6 +107,8 @@ void read_person_knows_person(const string& dir) {
 	char *ptr, *buf_end;
 
 	safe_open(dir + "/person_knows_person.csv");
+	ptr = buffer, buf_end = ptr + 1;
+
 	READ_TILL_EOL();
 	int p1, p2;
 	while (true) {
@@ -128,6 +132,8 @@ void read_comments(const string& dir) {
 	Timer timer;
 	{
 		safe_open(dir + "/comment_hasCreator_person.csv");
+		ptr = buffer, buf_end = ptr + 1;
+
 		READ_TILL_EOL();
 		unsigned cid, pid;
 		owner.reserve(4000000);
@@ -148,6 +154,8 @@ void read_comments(const string& dir) {
 		comment_map[i] = new int[Data::nperson]();
 	{
 		safe_open(dir + "/comment_replyOf_comment.csv");
+		ptr = buffer, buf_end = ptr + 1;
+
 		READ_TILL_EOL();
 		int cid1, cid2;
 		while (true) {
@@ -180,11 +188,8 @@ void read_comments(const string& dir) {
 	free_2d<int>(comment_map, Data::nperson);
 	print_debug("Read comment spent %lf secs\n", timer.get_time());
 
-	{
-		lock_guard<mutex> lg(Data::mt_comment_read);
-		Data::comment_read = true;
-	}
-	Data::cv_comment_read.notify_all();
+	Data::comment_read = true;
+	Data::comment_read_cv.notify_all();
 }
 
 void read_tags_forums_places(const string & dir) {
@@ -234,13 +239,10 @@ void read_tags_forums_places(const string & dir) {
 	//read places, need tag data to sort
 	read_places(dir);
 
-	{
-		lock_guard<mutex> lg(Data::mt_tag_read);
-		Data::tag_read = true;
-	}
-	Data::cv_tag_read.notify_all();
+	Data::tag_read = true;
+	Data::tag_read_cv.notify_all();
 
-	print_debug("Read tag spent %lf secs\n", timer.get_time());
+	print_debug("Read tag and places spent %lf secs\n", timer.get_time());
 	timer.reset();
 
 	unordered_map<int, Forum*> forum_idmap;
@@ -250,6 +252,7 @@ void read_tags_forums_places(const string & dir) {
 	Data::tag_forums.resize(Data::ntag);
 	{
 		safe_open(dir + "/forum_hasMember_person.csv");
+		ptr = buffer, buf_end = ptr + 1;
 		READ_TILL_EOL();
 		while (true) {
 			READ_INT(fid);
@@ -261,7 +264,7 @@ void read_tags_forums_places(const string & dir) {
 			if (itr != forum_idmap.end()) {
 				itr->second->persons.insert(PersonInForum(pid));
 			} else {
-				Forum* forum = new Forum();		// XXX these memory will never be free until program exited.
+				Forum* forum = new Forum();		// XXX these memory will never be freed until program exited.
 #ifdef DEBUG
 				forum->id = fid;
 #endif
@@ -273,6 +276,7 @@ void read_tags_forums_places(const string & dir) {
 	}
 	{
 		safe_open(dir + "/forum_hasTag_tag.csv");
+		ptr = buffer, buf_end = ptr + 1;
 		READ_TILL_EOL();
 		while (true) {
 			READ_INT(fid);
@@ -287,16 +291,12 @@ void read_tags_forums_places(const string & dir) {
 	}
 	print_debug("Read forum spent %lf secs\n", timer.get_time());
 
-	{
-		lock_guard<mutex> lg(Data::mt_forum_read);
-		Data::forum_read = true;
-	}
-	Data::cv_forum_read.notify_all();
+	Data::forum_read = true;
+	Data::forum_read_cv.notify_all();
 }
 
 void read_org_places(const string& fname, const vector<int>& org_places) {
 	char buffer[1024];
-	char *ptr, *buf_end;		// not used
 	safe_open(fname);
 	fgets(buffer, BUFFER_LEN, fin);
 	int oid, pid;
@@ -312,7 +312,6 @@ void read_org_places(const string& fname, const vector<int>& org_places) {
 
 void build_places_tree(const string& dir) {
 	char buffer[1024];
-	char *ptr, *buf_end;		// not used
 	int pid, max_pid = 0;
 	{
 		safe_open(dir + "/place.csv");
@@ -344,7 +343,6 @@ void build_places_tree(const string& dir) {
 
 void read_places(const string& dir) {
 	char buffer[1024];
-	char *ptr, *buf_end;		// not used
 	build_places_tree(dir);
 
 	{
@@ -389,10 +387,11 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 	read_person_knows_person(dir);
 	print_debug("Read person spent %lf secs\n", timer.get_time());
 	timer.reset();
+#ifdef USE_THREAD
 	thread(read_comments, dir).detach();		// peak memory will be large
 	thread(read_tags_forums_places, dir).detach();
-	/*
-	 *read_comments(dir);
-	 *read_tags_forums_places(dir);
-	 */
+#else
+	read_comments(dir);
+	read_tags_forums_places(dir);
+#endif
 }

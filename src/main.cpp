@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Wed Mar 12 15:50:22 2014 +0800
+//Date: Wed Mar 12 16:26:00 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -104,11 +104,13 @@ void add_all_query(int type) {
 	}
 }
 
+#define WAIT_FOR(s) \
+	unique_lock<mutex> lk(s ## _mt); \
+	while (!s) (s ## _cv).wait(lk); \
+	lk.unlock();
+
 inline void start_4() {
-	unique_lock<mutex> lk(Data::mt_forum_read);
-	while (!Data::forum_read) {
-		Data::cv_forum_read.wait(lk);
-	}
+	WAIT_FOR(Data::forum_read);
 
 	Timer timer;
 	timer.reset();
@@ -118,12 +120,7 @@ inline void start_4() {
 
 inline void start_1() {
 	Timer timer;
-
-	unique_lock<mutex> lk(Data::mt_comment_read);
-	while (!Data::comment_read) {
-		Data::cv_comment_read.wait(lk);
-	}
-
+	WAIT_FOR(Data::comment_read);
 	{
 		std::lock_guard<mutex> lg(q2.mt_work_done);
 		std::lock_guard<mutex> lgg(q3.mt_work_done);
@@ -136,12 +133,9 @@ inline void start_1() {
 
 inline void start_2() {
 	//add_all_query(2);
-	unique_lock<mutex> lg(Data::mt_tag_read);
-	while (!Data::tag_read) {
-		Data::cv_tag_read.wait(lg);
-	}
-
 	Timer timer;
+	WAIT_FOR(Data::tag_read);
+
 	{
 		std::lock_guard<mutex> lk(q2.mt_work_done);
 		timer.reset();
@@ -151,10 +145,7 @@ inline void start_2() {
 }
 
 inline void start_3() {
-	unique_lock<mutex> lg(Data::mt_tag_read);
-	while (!Data::tag_read) {
-		Data::cv_tag_read.wait(lg);
-	}
+	WAIT_FOR(Data::tag_read);
 	{
 		std::lock_guard<mutex> lk(q3.mt_work_done);
 		Timer timer;
@@ -173,12 +164,7 @@ int main(int argc, char* argv[]) {
 	read_query(string(argv[2]));
 
 
-	/*
-	 *start_1();
-	 *start_2();
-	 *start_3();
-	 *start_4();
-	 */
+#ifdef USE_THREAD
 	thread th_q1(start_1);
 	thread th_q4(start_4);
 	thread th_q2(start_2);
@@ -187,6 +173,12 @@ int main(int argc, char* argv[]) {
 	th_q2.join();
 	th_q3.join();
 	th_q4.join();
+#else
+	start_1();
+	start_2();
+	start_3();
+	start_4();
+#endif
 
 	q1.print_result();
 	q2.print_result();

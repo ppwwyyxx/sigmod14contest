@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Wed Mar 12 12:49:57 2014 +0800
+//Date: Wed Mar 12 16:21:10 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -22,15 +22,15 @@ vector<vector<Forum*> > Data::tag_forums;
 unordered_map<string, vector<int>, StringHashFunc> Data::placeid;
 vector<PlaceNode> Data::places;
 
-mutex Data::mt_comment_read;
-mutex Data::mt_tag_read;
-mutex Data::mt_forum_read;
+mutex Data::comment_read_mt;
+mutex Data::tag_read_mt;
+mutex Data::forum_read_mt;
 bool Data::comment_read = false;
 bool Data::tag_read = false;
 bool Data::forum_read = false;
-condition_variable Data::cv_comment_read;
-condition_variable Data::cv_tag_read;
-condition_variable Data::cv_forum_read;
+condition_variable Data::comment_read_cv;
+condition_variable Data::tag_read_cv;
+condition_variable Data::forum_read_cv;
 
 #ifdef DEBUG
 vector<int> Data::real_tag_id;

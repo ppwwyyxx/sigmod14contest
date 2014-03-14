@@ -1,14 +1,14 @@
 
 # $File: Makefile
-# $Date: Sat Mar 15 01:04:29 2014 +0800
-# $Date: Sat Mar 15 01:04:29 2014 +0800
+# $Date: Sat Mar 15 01:49:20 2014 +0800
+# $Date: Sat Mar 15 01:49:20 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
 
 BUILD ?= develop
 
-INCLUDE_DIR = -Iinclude -Ithird-party
+INCLUDE_DIR = -Iinclude -isystem third-party
 DEFINES += -DGOOGLE_HASH
 DEFINES += -DUSE_THREAD
 
@@ -18,7 +18,6 @@ OPTFLAGS += -O3
 
 ifeq ($(BUILD), submit)
 OPTFLAGS = -O3
-LDFLAGS += -Wl,--wrap=memcpy
 DEFINES += -DUSE_THREAD
 else
 DEFINES += -DDEBUG
@@ -34,7 +33,7 @@ LDFLAGS += $(CONCURFLAGS)
 
 
 GCC = gcc
-CC = g++
+CC ?= g++
 SHELL = bash
 ccSOURCES = $(shell find . -name "*.cpp" | sed 's/^\.\///g')
 OBJS = $(addprefix $(OBJ_DIR)/,$(ccSOURCES:.cpp=.o))
@@ -47,24 +46,25 @@ all: $(TARGET)
 sinclude $(DEPFILES)
 
 $(OBJ_DIR)/%.o: %.cpp
-	@#echo "[cpp] $< ..."
+	@echo "[cpp] $< ..."
 	@$(CC) -c $< -o $@ $(CXXFLAGS)
 
 $(OBJ_DIR)/memcpy.o: lib/memcpy.c
-	@#echo "[memcpy.o] ..."
+	@echo "[memcpy.o] ..."
 	@$(GCC) -c $< -o $@
 
 
 $(OBJ_DIR)/%.d: %.cpp  Makefile
 	@mkdir -p $(dir $@)
-	@#echo "[dep] $< ..."
+	@echo "[dep] $< ..."
 	@$(CC) $(CXXFLAGS) $(INCLUDE_DIR) $(DEFINES) -MM -MT "$(OBJ_DIR)/$(<:.cpp=.o) $(OBJ_DIR)/$(<:.cpp=.d)" "$<"  > "$@"
 
 
-$(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
-	@#echo "Linking ..."
+#$(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
+$(TARGET): $(OBJS)
+	@echo "Linking ..."
 	@$(CC) $^ -o $@ $(LDFLAGS)
-	@#echo "done."
+	@echo "done."
 
 
 clean:

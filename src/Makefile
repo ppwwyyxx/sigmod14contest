@@ -1,7 +1,7 @@
 
 # $File: Makefile
-# $Date: Wed Mar 12 16:28:15 2014 +0800
-# $Date: Wed Mar 12 16:28:15 2014 +0800
+# $Date: Sat Mar 15 00:47:31 2014 +0800
+# $Date: Sat Mar 15 00:47:31 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -10,7 +10,7 @@ BUILD ?= develop
 
 INCLUDE_DIR = -Iinclude -Ithird-party
 DEFINES += -DGOOGLE_HASH
-DEFINES += -DUSE_THREAD
+#DEFINES += -DUSE_THREAD
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
 #OPTFLAGS += -g -O0

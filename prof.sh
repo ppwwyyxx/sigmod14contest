@@ -13,6 +13,10 @@ if [[ ! -d "$1" || ! -f $QUERY ]] ; then
 	exit 1
 fi
 
+for PPROF in pprof google-pprof; do
+	which $PPROF > /dev/null && break
+done
+
 TIME=`date "+%m%d-%H:%M:%S"`
 
 mkdir -p log
@@ -25,5 +29,5 @@ make -C src
 ./src/main "$1" "$QUERY" > /dev/null
 
 OUTPUT="$CPUPROFILE".png
-pprof --dot ./main $CPUPROFILE | dot -Tpng -o$OUTPUT
+$PPROF --dot ./src/main $CPUPROFILE | dot -Tpng -o$OUTPUT
 [[ -x `which feh` ]] && feh $OUTPUT

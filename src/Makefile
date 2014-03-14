@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Sat Mar 15 03:17:46 2014 +0800
+# $Date: Sat Mar 15 03:57:45 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -27,11 +27,11 @@ CONCURFLAGS = -fopenmp -pthread
 CXXFLAGS = $(INCLUDE_DIR)
 CXXFLAGS += -std=c++0x $(CONCURFLAGS)
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
-LDFLAGS += $(CONCURFLAGS) -lstdc++
+LDFLAGS += $(CONCURFLAGS)
 
 
 GCC = gcc
-CC ?= g++
+CC = g++
 SHELL = bash
 ccSOURCES = $(shell find . -name "*.cpp" | sed 's/^\.\///g')
 OBJS = $(addprefix $(OBJ_DIR)/,$(ccSOURCES:.cpp=.o))

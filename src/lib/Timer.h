@@ -9,6 +9,8 @@
 #include <sys/time.h>
 #endif
 
+#include "debugutils.h"
+
 
 class Timer {
 	public:
@@ -37,3 +39,14 @@ class Timer {
 		timeval endCount;
 #endif
 };
+
+class GuardedTimer {
+	public:
+		GuardedTimer(const char *fmt, ...) __attribute__((format(printf, 2, 3)));  //! use print_debug
+		~GuardedTimer();
+
+	protected:
+		std::string msg;
+		Timer timer;
+};
+

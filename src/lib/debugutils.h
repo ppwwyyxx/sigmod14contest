@@ -10,6 +10,8 @@
 #include <type_traits>
 #endif
 
+#include <string>
+
 void __m_assert_check__(bool val, const char *expr,
 		const char *file, const char *func, int line);
 
@@ -31,6 +33,8 @@ void error_exit(const char *msg) __attribute__((noreturn));
 
 void __print_debug__(const char *file, const char *func, int line, const char *fmt, ...)
 	__attribute__((format(printf, 4, 5)));
+
+std::string ssprintf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
 
 #include <iostream>
 #define P(a) std::cout << (a)

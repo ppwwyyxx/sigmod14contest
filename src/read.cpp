@@ -131,6 +131,7 @@ void read_comments(string dir) {
 	vector<int> owner;
 	Timer timer;
 	{
+		GuardedTimer guarded_timer("read comment_hasCreator_person.csv");
 		safe_open(dir + "/comment_hasCreator_person.csv");
 		ptr = buffer, buf_end = ptr + 1;
 
@@ -153,6 +154,7 @@ void read_comments(string dir) {
 	for (int i = 0; i < Data::nperson; i ++)
 		comment_map[i] = new int[Data::nperson]();
 	{
+		GuardedTimer guarded_timer("read comment_replyOf_comment.csv");
 		safe_open(dir + "/comment_replyOf_comment.csv");
 		ptr = buffer, buf_end = ptr + 1;
 

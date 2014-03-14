@@ -3,6 +3,9 @@
 
 
 #include <cstdlib>
+#include <cstdio>
+#include <cstdarg>
+
 #include "Timer.h"
 
 Timer::Timer() {
@@ -49,4 +52,53 @@ double Timer::get_time_microsec() {
 
     return end - start;
 }
+
+GuardedTimer::GuardedTimer(const char *fmt, ...) {
+	const int BUF_SIZE = 256;
+	const int MAX_SIZE = 1 << 20;
+	thread_local char buf[BUF_SIZE];
+
+	va_list arg;
+	int byte_to_print;
+
+	// first give @buf a try
+	va_start(arg, fmt);
+	byte_to_print = vsnprintf(buf, BUF_SIZE, fmt, arg);
+	va_end(arg);
+
+	if (byte_to_print < BUF_SIZE) {
+		msg = buf;
+		return ;
+	}
+
+	std::string ret;
+
+	// buf is not enough, iteratively increasing size
+	int size = byte_to_print + 1;
+	char *ptr;
+	for (; size < MAX_SIZE; size *= 2) {
+		ptr = new char[size];
+		va_start(arg, fmt);
+		byte_to_print = vsnprintf(buf, size, fmt, arg);
+		va_end(arg);
+
+		if (byte_to_print < size) {
+			ret = ptr;
+			delete [] ptr;
+			msg = buf;
+			return;
+		}
+
+		if (size * 2 >= MAX_SIZE)
+			ret = ptr;
+
+		size *= 2;
+		delete [] ptr;
+	}
+}
+
+GuardedTimer::~GuardedTimer() {
+	print_debug("%s %f secs\n", msg.c_str(), timer.get_time_sec());
+}
+
 

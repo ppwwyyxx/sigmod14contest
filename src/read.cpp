@@ -1,12 +1,12 @@
 //File: read.cpp
-//Date: Sat Mar 15 00:53:10 2014 +0800
+//Date: Sat Mar 15 01:30:04 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
 #include <algorithm>
 #include <mutex>
 #include <fstream>
-#include <list>
+#include <queue>
 #include <thread>
 #include <stdio.h>
 
@@ -81,8 +81,8 @@ void read_person_knows_person(const string& dir) {
 	fclose(fin);
 }
 
-namespace { char buffer[BUFFER_LEN];	}	// WARNING: GLOBAL VARIABLE
 void read_comments(string dir) {
+	static char buffer[BUFFER_LEN];
 	char *ptr, *buf_end;
 
 	vector<int> owner;
@@ -151,10 +151,9 @@ void read_comments(string dir) {
 	comment_read_cv.notify_all();
 }
 
-namespace { char buffer2[BUFFER_LEN]; }
 void read_forum(const string& dir, unordered_map<int, int>& id_map, const unordered_set<int>& q4_tag_ids) {
+	static char buffer[BUFFER_LEN];
 	Timer timer;
-	char* buffer = buffer2;
 	char* ptr, *buf_end;
 	Data::tag_forums.resize(Data::ntag);
 	int fid, tid, pid;
@@ -183,7 +182,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		safe_open(dir + "/forum_hasMember_person.csv");
 		ptr = buffer, buf_end = ptr + 1;
 		READ_TILL_EOL();
-		list<int> person_in_now_forum;
+		deque<int> person_in_now_forum;			// XXX QAQ cannot use list
 		int old_fid = -1;
 		while (true) {
 			READ_INT(fid);
@@ -217,6 +216,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 
 
 void read_tags_forums_places(const string& dir) {
+	char buffer[1024];
 	Timer timer;
 
 	unordered_map<int, int> id_map; // map from real id to continuous id

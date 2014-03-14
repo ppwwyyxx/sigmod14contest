@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Fri Mar 14 23:18:13 2014 +0800
+//Date: Sat Mar 15 01:22:01 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -122,4 +122,4 @@ extern std::mutex forum_read_mt;
 extern std::condition_variable forum_read_cv;
 extern bool forum_read;
 
-extern unordered_set<std::string> q4_tag_set;
+extern unordered_set<std::string, StringHashFunc> q4_tag_set;

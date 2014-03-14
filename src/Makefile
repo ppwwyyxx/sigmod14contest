@@ -1,7 +1,7 @@
 
 # $File: Makefile
-# $Date: Sat Mar 15 00:47:31 2014 +0800
-# $Date: Sat Mar 15 00:47:31 2014 +0800
+# $Date: Sat Mar 15 01:04:29 2014 +0800
+# $Date: Sat Mar 15 01:04:29 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -10,7 +10,7 @@ BUILD ?= develop
 
 INCLUDE_DIR = -Iinclude -Ithird-party
 DEFINES += -DGOOGLE_HASH
-#DEFINES += -DUSE_THREAD
+DEFINES += -DUSE_THREAD
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
 #OPTFLAGS += -g -O0
@@ -47,24 +47,24 @@ all: $(TARGET)
 sinclude $(DEPFILES)
 
 $(OBJ_DIR)/%.o: %.cpp
-	@echo "[cpp] $< ..."
+	@#echo "[cpp] $< ..."
 	@$(CC) -c $< -o $@ $(CXXFLAGS)
 
 $(OBJ_DIR)/memcpy.o: lib/memcpy.c
-	@echo "[memcpy.o] ..."
+	@#echo "[memcpy.o] ..."
 	@$(GCC) -c $< -o $@
 
 
 $(OBJ_DIR)/%.d: %.cpp  Makefile
 	@mkdir -p $(dir $@)
-	@echo "[dep] $< ..."
+	@#echo "[dep] $< ..."
 	@$(CC) $(CXXFLAGS) $(INCLUDE_DIR) $(DEFINES) -MM -MT "$(OBJ_DIR)/$(<:.cpp=.o) $(OBJ_DIR)/$(<:.cpp=.d)" "$<"  > "$@"
 
 
 $(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
-	@echo "Linking ..."
+	@#echo "Linking ..."
 	@$(CC) $^ -o $@ $(LDFLAGS)
-	@echo "done."
+	@#echo "done."
 
 
 clean:

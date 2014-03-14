@@ -1,7 +1,5 @@
-
 # $File: Makefile
-# $Date: Sat Mar 15 01:49:20 2014 +0800
-# $Date: Sat Mar 15 01:49:20 2014 +0800
+# $Date: Sat Mar 15 03:17:46 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -29,7 +27,7 @@ CONCURFLAGS = -fopenmp -pthread
 CXXFLAGS = $(INCLUDE_DIR)
 CXXFLAGS += -std=c++0x $(CONCURFLAGS)
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
-LDFLAGS += $(CONCURFLAGS)
+LDFLAGS += $(CONCURFLAGS) -lstdc++
 
 
 GCC = gcc

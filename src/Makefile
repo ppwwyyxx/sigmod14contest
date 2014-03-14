@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Sat Mar 15 03:57:45 2014 +0800
+# $Date: Sat Mar 15 04:21:32 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -31,7 +31,7 @@ LDFLAGS += $(CONCURFLAGS)
 
 
 GCC = gcc
-CC = g++
+CC ?= g++
 SHELL = bash
 ccSOURCES = $(shell find . -name "*.cpp" | sed 's/^\.\///g')
 OBJS = $(addprefix $(OBJ_DIR)/,$(ccSOURCES:.cpp=.o))

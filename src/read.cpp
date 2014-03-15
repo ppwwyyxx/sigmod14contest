@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Mar 15 01:46:20 2014 +0800
+//Date: Sat Mar 15 11:52:00 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -20,7 +20,7 @@
 using namespace std;
 
 void read_person_file(const string& dir) {
-	char buffer[BUFFER_LEN];
+	static char buffer[BUFFER_LEN];
 	char *ptr, *buf_end;
 	char tmpBuf[1024];
 
@@ -60,7 +60,7 @@ void read_person_file(const string& dir) {
 }
 
 void read_person_knows_person(const string& dir) {
-	char buffer[BUFFER_LEN];
+	static char buffer[BUFFER_LEN];
 	char *ptr, *buf_end;
 
 	safe_open(dir + "/person_knows_person.csv");
@@ -81,7 +81,8 @@ void read_person_knows_person(const string& dir) {
 	fclose(fin);
 }
 
-void read_comments(string dir) {
+#if 0
+void read_comments_old(const string &dir) {
 	static char buffer[BUFFER_LEN];
 	char *ptr, *buf_end;
 
@@ -104,12 +105,15 @@ void read_comments(string dir) {
 			owner.push_back(pid);
 		}
 		fclose(fin);
-	}		// only scan: 0.5s. push_back: 0.9s
+	}		// 0.6s
 
 	// read comment->comment
-	int ** comment_map = new int*[Data::nperson];
-	for (int i = 0; i < Data::nperson; i ++)
-		comment_map[i] = new int[Data::nperson]();		// TODO this takes 0.2s!
+	/*
+	 *vector<unordered_map<int, int>> comment_map(Data::nperson);
+	 *FOR_ITR(itr, comment_map) itr->set_empty_key(-1);
+	 */
+	vector<vector<int>> comment_map(Data::nperson);
+	FOR_ITR(itr, comment_map) itr->resize(Data::nperson);
 	{
 		GuardedTimer guarded_timer("read comment_replyOf_comment.csv");
 		safe_open(dir + "/comment_replyOf_comment.csv");
@@ -128,28 +132,73 @@ void read_comments(string dir) {
 		fclose(fin);
 	}	// THIS is 1s
 
-
-	for (int i = 0; i < Data::nperson; i ++) {
+	REP(i, Data::nperson) {
 		auto& fs = Data::friends[i];
+		auto& m = comment_map[i];
 		FOR_ITR(itr, fs) {
-			itr->ncmts = min(comment_map[i][itr->pid], comment_map[itr->pid][i]);
+			itr->ncmts = min(m[itr->pid], comment_map[itr->pid][i]);
 		}
-		/*
-		 *for (int j = 0; j < Data::nperson; j ++) {
-		 *    if (not Data::pp_map[i][j]) continue;
-		 *    int ncmt = std::min(comment_map[i][j], comment_map[j][i]);
-		 *    Data::friends[i].push_back(ConnectedPerson(j, ncmt));		// i reply to j
-		 *    Data::friends[j].push_back(ConnectedPerson(i, ncmt));		// j reply to i
-		 *}
-		 *sort(Data::friends[i].begin(), Data::friends[i].end());
-		 */
 	}
-	free_2d<int>(comment_map, Data::nperson);
 	print_debug("Read comment spent %lf secs\n", timer.get_time());
-
 	comment_read = true;
 	comment_read_cv.notify_all();
 }
+#endif
+
+void read_comments(const string& dir) {
+	// This function assumes that when comment a reply to b, a - b < COMMENT_CACHE_LEN
+	const int COMMENT_CACHE_LEN = 512;		// 10k: max(cid1 - cdi2) = 180
+
+	Timer timer;
+	static char buffer_p[BUFFER_LEN];
+	static char buffer_c[BUFFER_LEN];
+	FILE* fp_p = fopen((dir + "/comment_hasCreator_person.csv").c_str(), "r");
+	FILE* fp_c = fopen((dir + "/comment_replyOf_comment.csv").c_str(), "r");
+	char *ptr_p = buffer_p, *buf_end_p = ptr_p + 1,
+		 *ptr_c = buffer_c, *buf_end_c = ptr_c + 1;
+	READ_TILL_EOL_s(_p); READ_TILL_EOL_s(_c);
+
+	int comment_owner[COMMENT_CACHE_LEN];
+	int cid, pid, cid1, cid2;
+
+	/*
+	 *vector<unordered_map<int, int>> comment_map(Data::nperson);
+	 *FOR_ITR(itr, comment_map) itr->set_empty_key(-1);
+	 */
+	vector<vector<int>> comment_map(Data::nperson);
+	FOR_ITR(itr, comment_map) itr->resize(Data::nperson);
+
+	while (true) {
+		READ_INT_s(_c, cid1);
+		if (buffer_c == buf_end_c) break;
+		READ_INT_s(_c, cid2);
+		m_assert(cid1 - cid2 < COMMENT_CACHE_LEN);
+		while (true) {
+			READ_INT_s(_p, cid);
+			READ_INT_s(_p, pid);
+			comment_owner[cid % COMMENT_CACHE_LEN] = pid;
+			if (cid == cid1) {
+				int p2 = comment_owner[cid2 % COMMENT_CACHE_LEN];
+				comment_map[pid][p2] ++;
+				break;
+			}
+		}
+	}
+	fclose(fp_p);fclose(fp_c);
+
+	REP(i, Data::nperson) {
+		auto& fs = Data::friends[i];
+		auto& m = comment_map[i];
+		FOR_ITR(itr, fs) {
+			itr->ncmts = min(m[itr->pid], comment_map[itr->pid][i]);
+		}
+	}
+
+	print_debug("Read comment spent %lf secs\n", timer.get_time());
+	comment_read = true;
+	comment_read_cv.notify_all();
+}
+
 
 void read_forum(const string& dir, unordered_map<int, int>& id_map, const unordered_set<int>& q4_tag_ids) {
 	static char buffer[BUFFER_LEN];
@@ -351,8 +400,7 @@ void read_places(const string& dir) {
 	read_org_places(dir + "/person_workAt_organisation.csv", org_places);
 
 	// sort and unique
-	for (vector<PlaceNode>::iterator it = Data::places.begin();
-			it != Data::places.end(); it ++) {
+	FOR_ITR(it, Data::places) {
 		sort(it->persons.begin(), it->persons.end());
 		vector<PersonInPlace>::iterator last = unique(it->persons.begin(), it->persons.end());
 		it->persons.resize(distance(it->persons.begin(), last));

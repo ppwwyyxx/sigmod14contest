@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Sat Mar 15 05:02:41 2014 +0000
+ * $File: query4_v2.cc
+ * $Date: Sat Mar 15 10:16:50 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 

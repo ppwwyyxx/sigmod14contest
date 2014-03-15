@@ -81,9 +81,9 @@ void add_all_query(int type) {
 	Timer timer;
 	switch (type) {
 		case 1:
-			FOR_ITR(itr, q1_set) {
-				q1.add_query(*itr);
-			}
+#pragma omp parallel for num_threads(NUM_THREADS)
+			for (size_t i = 0; i < q1_set.size(); i ++)
+				q1.add_query(q1_set[i], i);
 			break;
 		case 2:
 			FOR_ITR(itr, q2_set) {

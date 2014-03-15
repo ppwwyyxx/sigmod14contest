@@ -3,6 +3,9 @@
 
 #pragma once
 #include <vector>
+#include <mutex>
+#include "lib/hash_lib.h"
+#include <map>
 
 struct Query1 {
 	int p1, p2, x;
@@ -14,12 +17,13 @@ class Query1Handler {
 	public:
 		void pre_work();
 
-		void add_query(const Query1 & q);
+		void add_query(const Query1 & q, int ind);
 
 		void work();
 
 		void print_result();		// TODO
 
 	protected:
-		std::vector<int> ans;
+		std::vector<std::pair<int, int>> ans;
+		std::mutex ans_mt;
 };

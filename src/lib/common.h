@@ -8,3 +8,6 @@
 #define REPL(x, y, z) for (auto x = decltype(z){y}; x < (z); x ++)
 #define REPD(x, y, z) for (auto x = decltype(z){y}; x >= (z); x --)
 #define FOR_ITR(x, y) for (auto x = (y).begin(); x != (y).end(); x ++)
+
+#define NUM_THREADS 8
+

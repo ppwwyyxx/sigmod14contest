@@ -86,9 +86,12 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 	return -1;
 }
 
-void Query1Handler::add_query(const Query1& q) {
+void Query1Handler::add_query(const Query1& q, int ind) {
 	int ans = bfs2(q.p1, q.p2, q.x);
-	this->ans.push_back(ans);
+	{
+		std::unique_lock<mutex> lock(ans_mt);
+		this->ans.emplace_back(ind, ans);
+	}
 }
 
 void Query1Handler::pre_work() {
@@ -100,7 +103,10 @@ void Query1Handler::pre_work() {
 void Query1Handler::work() {}
 
 void Query1Handler::print_result() {
+//    FOR_ITR(it, ans)
+//        printf("%d\n", it->second);
+	sort(ans.begin(), ans.end());
 	REP(k, ans.size()) {
-		printf("%d\n", ans[k]);
+		printf("%d\n", ans[k].second);
 	}
 }

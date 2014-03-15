@@ -1,12 +1,12 @@
 //File: read.cpp
-//Date: Sat Mar 15 01:30:04 2014 +0800
+//Date: Sat Mar 15 01:46:20 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
 #include <algorithm>
 #include <mutex>
 #include <fstream>
-#include <queue>
+#include <list>
 #include <thread>
 #include <stdio.h>
 
@@ -182,7 +182,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		safe_open(dir + "/forum_hasMember_person.csv");
 		ptr = buffer, buf_end = ptr + 1;
 		READ_TILL_EOL();
-		deque<int> person_in_now_forum;			// XXX QAQ cannot use list
+		list<int> person_in_now_forum;			// XXX QAQ cannot use list
 		int old_fid = -1;
 		while (true) {
 			READ_INT(fid);

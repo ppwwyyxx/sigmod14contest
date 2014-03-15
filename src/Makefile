@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Sat Mar 15 11:43:17 2014 +0800
+# $Date: Sat Mar 15 12:08:56 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -16,6 +16,7 @@ OPTFLAGS += -O3
 
 ifeq ($(BUILD), submit)
 OPTFLAGS = -O3
+LDFLAGS += -Wl,--wrap=memcpy
 DEFINES += -DUSE_THREAD
 else
 DEFINES += -DDEBUG
@@ -58,8 +59,8 @@ $(OBJ_DIR)/%.d: %.cpp  Makefile
 	@$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) $(DEFINES) -MM -MT "$(OBJ_DIR)/$(<:.cpp=.o) $(OBJ_DIR)/$(<:.cpp=.d)" "$<"  > "$@"
 
 
-#$(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
-$(TARGET): $(OBJS)
+#$(TARGET): $(OBJS)
+$(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
 	@echo "Linking ..."
 	@$(CXX) $^ -o $@ $(LDFLAGS)
 	@echo "done."

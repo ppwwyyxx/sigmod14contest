@@ -1,6 +1,6 @@
 /*
  * $File: query4_v2.cc
- * $Date: Wed Mar 12 14:34:52 2014 +0800
+ * $Date: Sat Mar 15 01:43:14 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -48,6 +48,7 @@ namespace {
 		int pid;
 		double centrality;
 
+		HeapEle() {}
 		HeapEle(int _pid, double _centrality) :
 			pid(_pid), centrality(_centrality) {
 			}
@@ -219,13 +220,15 @@ void Query4Handler::add_query(int k, const string& s) {
 
 	// estimate centrality
 	int est_dist_max = 2;  // TODO: this parameter needs tune
-	priority_queue<HeapEle> q;
 	CentralityEstimator estimator;
+	vector<HeapEle> heap_ele_buf(np);
 	for (int i = 0; i < (int)np; i ++) {
 		double centrality = estimator.estimate(i, est_dist_max);
-		q.push(HeapEle(i, centrality));
+		heap_ele_buf[i] = HeapEle(i, centrality);
+//        q.push(HeapEle(i, centrality));
 //        fprintf(stderr, "cent %lu = %f\n", i, centrality);
 	}
+	priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
 
 	// calculate answer
 	ans.push_back(vector<int>());

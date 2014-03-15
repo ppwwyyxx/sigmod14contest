@@ -1,6 +1,6 @@
 /*
  * $File: ThreadPool.hh
- * $Date: Sat Mar 15 02:53:10 2014 +0000
+ * $Date: Sat Mar 15 12:49:01 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -57,7 +57,7 @@ private:
 public:
 	ThreadPool(size_t);
 	template<class Function, class Callback>
-		void enqueue(Function &&f, Callback &callback) {
+		void enqueue(Function &&f, Callback &&callback) {
 			if (stop)
 				throw std::runtime_error("enqueue on stopped ThreadPool");
 

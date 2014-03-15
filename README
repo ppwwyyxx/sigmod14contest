@@ -3,9 +3,13 @@ Team Name:
 Team Member:
 	Yuxin Wu|ppwwyyxxc@gmail.com|Tsinghua University|Dept. of Computer Science and Technology|Bachelor of Engineering
 	Xinyu Zhou|zxytim@gmail.com|Tsinghua University|Dept. of Computer Science and Technology|Bachelor of Engineering
+	Jiawen Liang|taobingxue001@126.com|Tsinghua University|Institute for Interdisciplinary Information Sciences|Bachelor of Engineering
+	Wenbo Tao|thierryhenrytracy@163.com|Tsinghua University|Dept. of Computer Science and Technology|Bachelor of Engineering
+	Junbang Liang|williamm2006@126.com|Tsinghua University|Dept. of Computer Science and Technology|Bachelor of Engineering
+	Han Zhao|nikifor383@gmail.com|Tsinghua University|Dept. of Computer Science and Technology|Bachelor of Engineering
 
 Advisor:
-	Guoliang Li ?
+	Guoliang Li
 
 Techniques Used:
 	Q1:
@@ -15,9 +19,10 @@ Techniques Used:
 		Maintain k connected components for each tag, update them using Union-Find Set.
 
 	Q3:
+		Build inversed index list
 
 	Q4:
-		Calculate closeness centrality for everyone.
+		Estimate an upper bound and maintain the k-largest
 
 Third Party Code Used:
-	None
+	google sparsehash

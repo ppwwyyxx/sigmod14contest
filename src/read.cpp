@@ -1,10 +1,12 @@
 //File: read.cpp
-//Date: Wed Mar 12 20:02:32 2014 +0800
+//Date: Sat Mar 15 01:30:04 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
 #include <algorithm>
 #include <mutex>
+#include <fstream>
+#include <queue>
 #include <thread>
 #include <stdio.h>
 
@@ -14,53 +16,8 @@
 #include "lib/common.h"
 #include "read.h"
 #include "data.h"
+#include "lib/fast_read.h"
 using namespace std;
-
-namespace {
-	const int BUFFER_LEN = 1024 * 1024 * 5;
-}
-
-#define safe_open(fname) \
-	FILE* fin = fopen((fname).c_str(), "r"); \
-	m_assert(fin != NULL);
-
-#define PTR_NEXT() \
-{ \
-	ptr ++; \
-	if (ptr == buf_end) \
-	{ \
-		ptr = buffer; \
-		buf_end = buffer + fread(buffer, 1, BUFFER_LEN, fin); \
-	} \
-}
-
-// only read non-negative int
-#define READ_INT(_x_) \
-{ \
-	while (*ptr < '0' || *ptr > '9') \
-		PTR_NEXT(); \
-	int _n_ = 0; \
-	while (*ptr >= '0' && *ptr <= '9') \
-	{ \
-		_n_ = _n_ * 10 + *ptr - '0'; \
-		PTR_NEXT(); \
-	} \
-	(_x_) = (_n_); \
-}
-
-#define READ_STR(_s_) \
-{ \
-	char *_p_ = (_s_); \
-	while (*ptr != '|') \
-	{ \
-		*(_p_ ++) = *ptr; \
-		PTR_NEXT(); \
-	} \
-	*_p_ = 0; \
-}
-
-#define READ_TILL_EOL() \
-	while (*ptr != '\n') PTR_NEXT();
 
 void read_person_file(const string& dir) {
 	char buffer[BUFFER_LEN];
@@ -124,8 +81,8 @@ void read_person_knows_person(const string& dir) {
 	fclose(fin);
 }
 
-namespace { char buffer[BUFFER_LEN];	}	// WARNING: GLOBAL VARIABLE
 void read_comments(string dir) {
+	static char buffer[BUFFER_LEN];
 	char *ptr, *buf_end;
 
 	vector<int> owner;
@@ -137,7 +94,7 @@ void read_comments(string dir) {
 
 		READ_TILL_EOL();
 		unsigned cid, pid;
-		owner.reserve(4000000);
+		if (Data::nperson > 9000) owner.reserve(20100000);
 		while (true) {
 			READ_INT(cid);
 			if (buffer == buf_end) break;
@@ -147,12 +104,12 @@ void read_comments(string dir) {
 			owner.push_back(pid);
 		}
 		fclose(fin);
-	}
+	}		// only scan: 0.5s. push_back: 0.9s
 
 	// read comment->comment
 	int ** comment_map = new int*[Data::nperson];
 	for (int i = 0; i < Data::nperson; i ++)
-		comment_map[i] = new int[Data::nperson]();
+		comment_map[i] = new int[Data::nperson]();		// TODO this takes 0.2s!
 	{
 		GuardedTimer guarded_timer("read comment_replyOf_comment.csv");
 		safe_open(dir + "/comment_replyOf_comment.csv");
@@ -163,14 +120,14 @@ void read_comments(string dir) {
 		while (true) {
 			READ_INT(cid1);
 			if (buffer == buf_end) break;
-			READ_INT(cid2);
+			READ_INT(cid2);		// max difference cid1 - cdi2 is 180
 
-			int p1 = owner[cid1 / 10], p2 = owner[cid2 / 10];
-			//if (not Data::pp_map[p1][p2]) continue;
+			int p1 = owner[cid1 / 10], p2 = owner[cid2 / 10];		// TODO this takes 0.5s
 			comment_map[p1][p2] += 1;		// p1 reply to p2
 		}
 		fclose(fin);
-	}
+	}	// THIS is 1s
+
 
 	for (int i = 0; i < Data::nperson; i ++) {
 		auto& fs = Data::friends[i];
@@ -190,22 +147,85 @@ void read_comments(string dir) {
 	free_2d<int>(comment_map, Data::nperson);
 	print_debug("Read comment spent %lf secs\n", timer.get_time());
 
-	Data::comment_read = true;
-	Data::comment_read_cv.notify_all();
+	comment_read = true;
+	comment_read_cv.notify_all();
 }
 
-namespace { char buffer2[BUFFER_LEN]; }
-void read_tags_forums_places(string dir) {
-	char* buffer = buffer2;
-	char *ptr, *buf_end;
+void read_forum(const string& dir, unordered_map<int, int>& id_map, const unordered_set<int>& q4_tag_ids) {
+	static char buffer[BUFFER_LEN];
+	Timer timer;
+	char* ptr, *buf_end;
+	Data::tag_forums.resize(Data::ntag);
+	int fid, tid, pid;
+	unordered_map<int, vector<int>> forum_to_tags;		// fid -> continuous tids
+#ifdef GOOGLE_HASH
+	forum_to_tags.set_empty_key(-1);
+#endif
+	{
+		safe_open(dir + "/forum_hasTag_tag.csv");
+		ptr = buffer, buf_end = ptr + 1;
+		READ_TILL_EOL();
+		while (true) {
+			READ_INT(fid);
+			if (buffer == buf_end) break;
+			READ_INT(tid);
+			if (not q4_tag_ids.count(tid))
+				continue;
+			m_assert(id_map.find(tid) != id_map.end());
+			int c_tid = id_map[tid];
+			forum_to_tags[fid].push_back(c_tid);
+		}
+		fclose(fin);
+	}
 
+	{
+		safe_open(dir + "/forum_hasMember_person.csv");
+		ptr = buffer, buf_end = ptr + 1;
+		READ_TILL_EOL();
+		deque<int> person_in_now_forum;			// XXX QAQ cannot use list
+		int old_fid = -1;
+		while (true) {
+			READ_INT(fid);
+			if (buffer == buf_end) break;
+
+			if (fid != old_fid && old_fid != -1) {
+				auto itr = forum_to_tags.find(old_fid);
+				if (itr != forum_to_tags.end()) {
+					Forum* forum = new Forum();		// XXX these memory will never be freed until program exited.
+					FOR_ITR(p, person_in_now_forum)
+						forum->persons.insert(PersonInForum(*p));
+					FOR_ITR(titr, itr->second) {
+						Data::tag_forums[*titr].push_back(forum);
+					}
+				}
+				person_in_now_forum.clear();
+			}
+			old_fid = fid;
+			READ_INT(pid);
+			READ_TILL_EOL();
+			person_in_now_forum.push_back(pid);
+		}
+		fclose(fin);
+	}
+
+	print_debug("Read forum spent %lf secs\n", timer.get_time());
+
+	forum_read = true;
+	forum_read_cv.notify_all();
+}
+
+
+void read_tags_forums_places(const string& dir) {
+	char buffer[1024];
 	Timer timer;
 
 	unordered_map<int, int> id_map; // map from real id to continuous id
+	unordered_set<int> q4_tag_ids;	// tag id (real id) used in q4
 #ifdef GOOGLE_HASH
+	q4_tag_ids.set_empty_key(-1);
 	id_map.set_empty_key(-1);
 #endif
-	int tid, pid, fid;
+	int tid, pid;
 	{		// read tag and tag names
 		safe_open(dir + "/tag.csv");
 		fgets(buffer, BUFFER_LEN, fin);
@@ -215,6 +235,9 @@ void read_tags_forums_places(string dir) {
 				buffer[k++] = c;
 			string tag_name(buffer, k);
 			id_map[tid] = (int)Data::tag_name.size();
+
+			if (q4_tag_set.count(tag_name))		// cache all q4 tid (real tid)
+				q4_tag_ids.insert(tid);
 #ifdef DEBUG
 			Data::real_tag_id.push_back(tid);
 #endif
@@ -227,6 +250,7 @@ void read_tags_forums_places(string dir) {
 		fclose(fin);
 	}
 	Data::person_in_tags.resize(Data::ntag);
+	q4_tag_set.clear();
 
 	{		// read person->tags
 		safe_open(dir + "/person_hasInterest_tag.csv");
@@ -242,60 +266,11 @@ void read_tags_forums_places(string dir) {
 	//read places, need tag data to sort
 	read_places(dir);
 
-	Data::tag_read = true;
-	Data::tag_read_cv.notify_all();
+	tag_read = true;
+	tag_read_cv.notify_all();
 
 	print_debug("Read tag and places spent %lf secs\n", timer.get_time());
-	timer.reset();
-
-	unordered_map<int, Forum*> forum_idmap;
-#ifdef GOOGLE_HASH
-	forum_idmap.set_empty_key(-1);
-#endif
-	Data::tag_forums.resize(Data::ntag);
-	{
-		safe_open(dir + "/forum_hasMember_person.csv");
-		ptr = buffer, buf_end = ptr + 1;
-		READ_TILL_EOL();
-		while (true) {
-			READ_INT(fid);
-			if (buffer == buf_end) break;
-			READ_INT(pid);
-			READ_TILL_EOL();
-
-			unordered_map<int, Forum*>::const_iterator itr = forum_idmap.find(fid);
-			if (itr != forum_idmap.end()) {
-				itr->second->persons.insert(PersonInForum(pid));
-			} else {
-				Forum* forum = new Forum();		// XXX these memory will never be freed until program exited.
-#ifdef DEBUG
-				forum->id = fid;
-#endif
-				forum->persons.insert(PersonInForum(pid));
-				forum_idmap[fid] = forum;
-			}
-		}
-		fclose(fin);
-	}
-	{
-		safe_open(dir + "/forum_hasTag_tag.csv");
-		ptr = buffer, buf_end = ptr + 1;
-		READ_TILL_EOL();
-		while (true) {
-			READ_INT(fid);
-			if (buffer == buf_end) break;
-			READ_INT(tid);
-			m_assert(id_map.find(tid) != id_map.end());
-			if (forum_idmap.find(fid) == forum_idmap.end()) continue;		// forums with no person in
-			int c_tid = id_map[tid];
-			Data::tag_forums[c_tid].push_back(forum_idmap[fid]);
-		}
-		fclose(fin);
-	}
-	print_debug("Read forum spent %lf secs\n", timer.get_time());
-
-	Data::forum_read = true;
-	Data::forum_read_cv.notify_all();
+	read_forum(dir, id_map, q4_tag_ids);
 }
 
 void read_org_places(const string& fname, const vector<int>& org_places) {

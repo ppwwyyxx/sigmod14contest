@@ -1,11 +1,30 @@
 //File: hash_lib.h
-//Date: Tue Mar 11 11:27:11 2014 +0800
+//Date: Fri Mar 14 23:05:31 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
 
 #include <string>
 #include <cstring>
+
+#ifdef GOOGLE_HASH
+
+#include <google/dense_hash_map>
+#include <google/dense_hash_set>
+using google::dense_hash_map;
+using google::dense_hash_set;
+#define unordered_map dense_hash_map
+#define unordered_set dense_hash_set
+
+#else
+
+#include <unordered_map>
+#include <unordered_set>
+using std::unordered_map;
+using std::unordered_set;
+
+#endif
+
 
 uint64_t MurmurHash64A ( const void * key, int len, unsigned int seed );
 
@@ -40,22 +59,3 @@ typedef MurmurHasher<std::string> StringHashFunc;
  *    { return (s1 == s2) || (s1 && s2 && strcmp(s1, s2) == 0); }
  *};
  */
-
-#ifdef GOOGLE_HASH
-
-#include <google/dense_hash_map>
-#include <google/dense_hash_set>
-using google::dense_hash_map;
-using google::dense_hash_set;
-#define unordered_map dense_hash_map
-#define unordered_set dense_hash_set
-
-#else
-
-#include <unordered_map>
-#include <unordered_set>
-using std::unordered_map;
-using std::unordered_set;
-
-#endif
-

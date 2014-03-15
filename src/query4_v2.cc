@@ -1,6 +1,6 @@
 /*
  * $File: query4_v2.cc
- * $Date: Sat Mar 15 01:43:14 2014 +0000
+ * $Date: Sat Mar 15 01:44:40 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -131,7 +131,8 @@ long long check_compute_s(int v) {
 		for (size_t j = 0; j < size; j ++) {
 			size_t u = q.front();
 			q.pop_front();
-			for (auto &w: friends[u]) {
+			FOR_ITR(itr, friends[u]) {
+				auto&w = *itr;
 				if (hash[w])
 					continue;
 				hash[w] = true;

@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Wed Mar 12 20:06:39 2014 +0800
+//Date: Fri Mar 14 23:13:49 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -66,6 +66,7 @@ void read_query(const string& fname) {
 					fscanf(fin, "%d, %s", &k, buf);
 					string tag_name(buf, strlen(buf) - 1);
 					q4_set.push_back(Query4(k, tag_name));
+					q4_tag_set.insert(tag_name);
 					break;
 				}
 			default:
@@ -108,7 +109,7 @@ void add_all_query(int type) {
 	lk.unlock();
 
 inline void start_4() {
-	WAIT_FOR(Data::forum_read);
+	WAIT_FOR(forum_read);
 
 	Timer timer;
 	timer.reset();
@@ -118,7 +119,7 @@ inline void start_4() {
 
 inline void start_1() {
 	Timer timer;
-	WAIT_FOR(Data::comment_read);
+	WAIT_FOR(comment_read);
 	{
 		std::lock_guard<mutex> lg(q2.mt_work_done);
 		std::lock_guard<mutex> lgg(q3.mt_work_done);
@@ -132,7 +133,7 @@ inline void start_1() {
 inline void start_2() {
 	//add_all_query(2);
 	Timer timer;
-	WAIT_FOR(Data::tag_read);
+	WAIT_FOR(tag_read);
 
 	{
 		std::lock_guard<mutex> lk(q2.mt_work_done);
@@ -143,7 +144,7 @@ inline void start_2() {
 }
 
 inline void start_3() {
-	WAIT_FOR(Data::tag_read);
+	WAIT_FOR(tag_read);
 	{
 		std::lock_guard<mutex> lk(q3.mt_work_done);
 		Timer timer;
@@ -156,11 +157,17 @@ inline void start_3() {
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char* argv[]) {
+	// initialize global variables...
+#ifdef GOOGLE_HASH
+	q4_tag_set.set_empty_key("");
+#endif
+	// end
+	read_query(string(argv[2]));		// read query first, so we can read data optionally later
+
 	memset(tot_time, 0, 5 * sizeof(double));
 	Timer timer;
 	read_data(string(argv[1]));
 	print_debug("Read return at %lf secs\n", timer.get_time());
-	read_query(string(argv[2]));
 
 #ifdef USE_THREAD
 	thread th_q1(start_1);

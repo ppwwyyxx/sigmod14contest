@@ -56,7 +56,7 @@ double Timer::get_time_microsec() {
 GuardedTimer::GuardedTimer(const char *fmt, ...) {
 	const int BUF_SIZE = 256;
 	const int MAX_SIZE = 1 << 20;
-	thread_local char buf[BUF_SIZE];
+	char buf[BUF_SIZE];
 
 	va_list arg;
 	int byte_to_print;

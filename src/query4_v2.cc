@@ -1,6 +1,6 @@
 /*
  * $File: query4_v2.cc
- * $Date: Sat Mar 15 01:44:40 2014 +0000
+ * $Date: Sat Mar 15 03:23:31 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -203,6 +203,7 @@ void Query4Handler::add_query(int k, const string& s) {
 	vector<PersonInForum> persons = get_tag_persons(s);
 	np = persons.size();
 	friends.resize(np);
+#pragma omp parallel for schedule(dynamic)
 	REP(i, np) {
 		friends[i].clear();
 		auto& fs = Data::friends[persons[i]];
@@ -221,15 +222,18 @@ void Query4Handler::add_query(int k, const string& s) {
 
 	// estimate centrality
 	int est_dist_max = 2;  // TODO: this parameter needs tune
-	CentralityEstimator estimator;
 	vector<HeapEle> heap_ele_buf(np);
+#pragma omp parallel for schedule(dynamic)
 	for (int i = 0; i < (int)np; i ++) {
+		CentralityEstimator estimator;
 		double centrality = estimator.estimate(i, est_dist_max);
 		heap_ele_buf[i] = HeapEle(i, centrality);
 //        q.push(HeapEle(i, centrality));
 //        fprintf(stderr, "cent %lu = %f\n", i, centrality);
 	}
 	priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
+
+	CentralityEstimator estimator;
 
 	// calculate answer
 	ans.push_back(vector<int>());

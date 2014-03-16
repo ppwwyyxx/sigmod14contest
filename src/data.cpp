@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Sun Mar 16 15:24:22 2014 +0800
+//Date: Sun Mar 16 23:23:49 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -33,6 +33,7 @@ condition_variable comment_read_cv;
 condition_variable tag_read_cv;
 condition_variable forum_read_cv;
 
+mutex friends_change_lock;
 unordered_set<string, StringHashFunc> q4_tag_set;
 // global variables
 

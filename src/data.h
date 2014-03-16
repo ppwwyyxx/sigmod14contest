@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Sun Mar 16 15:24:30 2014 +0800
+//Date: Sun Mar 16 23:23:08 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -12,7 +12,6 @@
 #include "lib/hash_lib.h"
 
 #include <set>
-#include <bitset>
 
 struct ConnectedPerson {
 // Data structure to store a connected person for a specific person
@@ -122,6 +121,8 @@ extern bool tag_read;
 extern std::mutex forum_read_mt;
 extern std::condition_variable forum_read_cv;
 extern bool forum_read;
+
+extern std::mutex friends_change_lock;
 
 extern unordered_set<std::string, StringHashFunc> q4_tag_set;
 // end of global variables!!

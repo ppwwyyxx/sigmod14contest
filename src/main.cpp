@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Sun Mar 16 16:20:54 2014 +0800
+//Date: Sun Mar 16 23:53:13 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -122,8 +122,8 @@ inline void start_1() {
 	Timer timer;
 	WAIT_FOR(comment_read);
 	{
-		std::lock_guard<mutex> lg(q2.mt_work_done);
-		std::lock_guard<mutex> lgg(q3.mt_work_done);
+		std::lock_guard<mutex> lgg(q2.mt_work_done);
+		std::lock_guard<mutex> lg(q3.mt_work_done);
 		timer.reset();
 		q1.pre_work();		// sort Data::friends
 	}

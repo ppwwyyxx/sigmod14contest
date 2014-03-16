@@ -133,7 +133,6 @@ void Query2Handler::work() {
 }
 
 void Query2Handler::print_result() {
-	lock_guard<mutex> lg(mt_work_done);
 	for (int i = 0; i < (int)queries.size(); i++) {
 		for (int j = 0; j < (int)ans[i].size(); j++) {
 			if (j > 0) printf(" ");

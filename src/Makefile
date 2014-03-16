@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Sun Mar 16 15:30:20 2014 +0800
+# $Date: Sun Mar 16 23:44:50 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -12,7 +12,7 @@ DEFINES += -DGOOGLE_HASH
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
 #OPTFLAGS += -g -O0
-OPTFLAGS += -O3
+OPTFLAGS += -O3 -g
 
 ifeq ($(BUILD), submit)
 OPTFLAGS = -O3

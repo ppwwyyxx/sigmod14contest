@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Sat Mar 15 01:22:01 2014 +0800
+//Date: Sun Mar 16 12:07:35 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -110,6 +110,7 @@ private:
 	void operator=(Data const &);
 };
 
+// global variables!!
 extern std::mutex comment_read_mt;
 extern std::condition_variable comment_read_cv;
 extern bool comment_read;
@@ -123,3 +124,4 @@ extern std::condition_variable forum_read_cv;
 extern bool forum_read;
 
 extern unordered_set<std::string, StringHashFunc> q4_tag_set;
+// end of global variables!!

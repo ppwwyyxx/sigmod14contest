@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Sat Mar 15 12:08:56 2014 +0800
+# $Date: Sun Mar 16 12:08:43 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -65,9 +65,18 @@ $(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
 	@$(CXX) $^ -o $@ $(LDFLAGS)
 	@echo "done."
 
+$(OBJ_DIR)/gen_query.o: gen_query.cc
+	@echo "[gen_query.o] ..."
+	@$(CXX) -c $< -o $@ $(CXXFLAGS)
+
+gen_query: $(filter-out $(OBJ_DIR)/main.o $(OBJ_DIR)/query2.o, $(OBJS)) $(OBJ_DIR)/gen_query.o
+	@echo "Linking gen_query"
+	@$(CXX) $^ -o $@ $(LDFLAGS)
+	@echo "done."
+
 
 clean:
-	@rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR) gen_query
 
 rebuild:
 	@+make clean

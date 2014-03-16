@@ -5,8 +5,12 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstdarg>
+#include <mutex>
+#include <string>
 
 #include "Timer.h"
+#include "common.h"
+using namespace std;
 
 Timer::Timer() {
 #ifdef WIN32
@@ -101,4 +105,20 @@ GuardedTimer::~GuardedTimer() {
 	print_debug("%s %f secs\n", msg.c_str(), timer.get_time_sec());
 }
 
+TotalTimer::TotalTimer(const string & _msg):msg(_msg) {
+	//if (rst.find(msg) == rst.end()) rst[msg] = 0;
+	timer.reset();
+}
 
+TotalTimer::~TotalTimer() {
+	static mutex mt;
+	lock_guard<mutex> lg(mt);
+	rst[msg] += timer.get_time();
+}
+
+void TotalTimer::print() {
+	FOR_ITR(itr, rst) {
+		print_debug("%s spent %lf secs in all\n", itr->first.c_str(), itr->second);
+	}
+}
+std::map<std::string, double> TotalTimer::rst;

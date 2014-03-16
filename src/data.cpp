@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Sat Mar 15 01:21:52 2014 +0800
+//Date: Sun Mar 16 15:24:22 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -40,13 +40,12 @@ unordered_set<string, StringHashFunc> q4_tag_set;
 vector<int> Data::real_tag_id;
 #endif
 
-void Data::allocate(int max_pid) {
+void Data::allocate() {
 #ifdef GOOGLE_HASH
 	tagid.set_empty_key("");
 	placeid.set_empty_key("");
 #endif
-	m_assert(nperson == 0);
-	Data::nperson = max_pid + 1;
+	m_assert(nperson != 0);
 
 	/*
 	 *pp_map = new bool*[nperson];

@@ -1,6 +1,6 @@
 /*
- * $File: ThreadPool.hh
- * $Date: Sat Mar 15 12:49:01 2014 +0800
+ * $File: a.cpp
+ * $Date: Sun Mar 16 12:56:36 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -63,13 +63,27 @@ public:
 
 			auto task = std::make_shared<std::function<void()>>(
 					std::bind(__ThreadPoolImpl::runner_wrapper,
-						std::make_shared<__ThreadPoolImpl::runner<Function, Callback>>(f, callback)));
+						std::make_shared<__ThreadPoolImpl::runner<Function, Callback>>(std::move(f), callback)));
 			{
 				std::unique_lock<std::mutex> lock(queue_mutex);
 				tasks.push(std::bind(__ThreadPoolImpl::task_wrapper, task));
 			}
 			condition.notify_one();
 		}
+
+	template<class Function>
+		void enqueue(Function &&f) {
+			if (stop)
+				throw std::runtime_error("enqueue on stopped ThreadPool");
+
+			auto task = std::make_shared<std::function<void()>>(f);
+			{
+				std::unique_lock<std::mutex> lock(queue_mutex);
+				tasks.push(std::bind(__ThreadPoolImpl::task_wrapper, task));
+			}
+			condition.notify_one();
+		}
+
 	~ThreadPool();
 private:
 	friend void __ThreadPoolImpl::worker(ThreadPool *tp);
@@ -92,7 +106,6 @@ private:
 	for(size_t i = 0;i<threads;++i)
 		workers.emplace_back(std::bind(__ThreadPoolImpl::worker, this));
 }
-
 
 
 // the destructor joins all threads
@@ -126,4 +139,3 @@ namespace __ThreadPoolImpl
 /*
  * vim: syntax=cpp11.doxygen foldmethod=marker
  */
-

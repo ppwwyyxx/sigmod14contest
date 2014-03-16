@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Mar 15 11:58:28 2014 +0800
+//Date: Sun Mar 16 15:24:56 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -16,6 +16,7 @@
 #include "lib/Timer.h"
 #include "lib/common.h"
 #include "read.h"
+#include "cache.h"
 #include "data.h"
 #include "lib/fast_read.h"
 using namespace std;
@@ -36,7 +37,9 @@ void read_person_file(const string& dir) {
 		update_max(maxid, pid);
 		READ_TILL_EOL();
 	}
-	Data::allocate(maxid);
+	Data::nperson = maxid + 1;
+	Data::allocate();
+	CachedNeighbor::init(Data::nperson);
 
 	// read birthday
 	rewind(fin);

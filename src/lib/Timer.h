@@ -9,6 +9,8 @@
 #include <sys/time.h>
 #endif
 
+#include <map>
+#include <string>
 #include "debugutils.h"
 
 
@@ -48,5 +50,19 @@ class GuardedTimer {
 	protected:
 		std::string msg;
 		Timer timer;
+};
+
+class TotalTimer {
+	public:
+		TotalTimer(const std::string& msg);
+		~TotalTimer();
+
+		static void print();
+
+		std::string msg;
+		Timer timer;
+
+	private:
+		static std::map<std::string, double> rst;
 };
 

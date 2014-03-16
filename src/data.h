@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Sun Mar 16 12:07:35 2014 +0800
+//Date: Sun Mar 16 15:24:30 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -101,7 +101,7 @@ public:
 	static std::vector<int> real_tag_id;		// continuous id -> real id
 #endif
 
-	static void allocate(int max_person_id);
+	static void allocate();
 	static void free();
 private:
 	Data(){};

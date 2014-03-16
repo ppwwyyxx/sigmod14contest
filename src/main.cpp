@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Sat Mar 15 01:44:12 2014 +0800
+//Date: Sun Mar 16 16:20:54 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -11,6 +11,7 @@
 #include "lib/debugutils.h"
 #include "lib/common.h"
 #include "data.h"
+#include "cache.h"
 #include "read.h"
 
 #include "query1.h"
@@ -158,6 +159,7 @@ inline void start_3() {
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char* argv[]) {
 	// initialize global variables...
+
 #ifdef GOOGLE_HASH
 	q4_tag_set.set_empty_key("");
 #endif
@@ -196,4 +198,5 @@ int main(int argc, char* argv[]) {
 		fprintf(stderr, "q%d: %.4fs\t", i, tot_time[i]);
 	Data::free();
 	fprintf(stderr, "\nTime: %.4fs\n", timer.get_time());
+	TotalTimer::print();
 }

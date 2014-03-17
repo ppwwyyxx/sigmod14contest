@@ -2,6 +2,6 @@
 
 Use threadpool
 
-Timer计一段代码总时间.
+q2重排序, 复制一下再搞
 
 缓存一个点出发1～2步能到的所有点. 用hash. 求交O(min(n1, n2)) lazy求值

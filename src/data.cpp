@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Sun Mar 16 23:23:49 2014 +0800
+//Date: Mon Mar 17 21:16:08 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -22,21 +22,6 @@ vector<vector<Forum*> > Data::tag_forums;
 unordered_map<string, vector<int>, StringHashFunc> Data::placeid;
 vector<PlaceNode> Data::places;
 
-// global variables
-mutex comment_read_mt;
-mutex tag_read_mt;
-mutex forum_read_mt;
-bool comment_read = false;
-bool tag_read = false;
-bool forum_read = false;
-condition_variable comment_read_cv;
-condition_variable tag_read_cv;
-condition_variable forum_read_cv;
-
-mutex friends_change_lock;
-unordered_set<string, StringHashFunc> q4_tag_set;
-// global variables
-
 #ifdef DEBUG
 vector<int> Data::real_tag_id;
 #endif
@@ -48,21 +33,12 @@ void Data::allocate() {
 #endif
 	m_assert(nperson != 0);
 
-	/*
-	 *pp_map = new bool*[nperson];
-	 *for (int i = 0; i < nperson; i ++)
-	 *    pp_map[i] = new bool[nperson]();
-	 */
-
 	birthday = new int[nperson];
 	friends.resize(nperson);
 	tags.resize(nperson);
 }
 
 void Data::free() {
-	/*
-	 *free_2d<bool>(pp_map, nperson);
-	 */
 	delete[] birthday;
 }
 

@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Sun Mar 16 23:52:56 2014 +0800
+ * $Date: Tue Mar 18 00:18:49 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -176,6 +176,11 @@ class CentralityEstimator {
 					FOR_ITR(itr, fs) {
 						// found a friend in the forum
 						size_t index = *itr;
+						/*
+						 *if (index > np) {
+						 *    PA(fs);
+						 *}
+						 */
 						if (hash[index] == timestamp_counter)
 							continue;
 						hash[index] = timestamp_counter;
@@ -199,10 +204,16 @@ class CentralityEstimator {
 };
 
 void Query4Handler::add_query(int k, const string& s) {
+	TotalTimer timer("Q4");
 	// build graph
 	vector<PersonInForum> persons = get_tag_persons(s);
 	np = persons.size();
 	friends.resize(np);
+
+	{
+		lock_guard<mutex> lg(mt_friends_data_changing);
+		friends_data_reader ++;
+	}
 #pragma omp parallel for schedule(dynamic) num_threads(NUM_THREADS)
 	REP(i, np) {
 		friends[i].clear();
@@ -214,6 +225,8 @@ void Query4Handler::add_query(int k, const string& s) {
 			}
 		}
 	}
+	friends_data_reader --;
+	cv_friends_data_changing.notify_one();
 
 	// compute degree
 	degree = new int[np];

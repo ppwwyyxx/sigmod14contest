@@ -62,7 +62,6 @@ class TotalTimer {
 		std::string msg;
 		Timer timer;
 
-	private:
 		static std::map<std::string, double> rst;
 };
 

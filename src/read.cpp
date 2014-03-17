@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sun Mar 16 15:24:56 2014 +0800
+//Date: Mon Mar 17 21:56:04 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -169,8 +169,7 @@ void read_comments(const string& dir) {
 	 *vector<unordered_map<int, int>> comment_map(Data::nperson);
 	 *FOR_ITR(itr, comment_map) itr->set_empty_key(-1);
 	 */
-	vector<vector<int>> comment_map(Data::nperson);
-	FOR_ITR(itr, comment_map) itr->resize(Data::nperson);
+	vector<vector<int>> comment_map(Data::nperson, vector<int>(Data::nperson));
 
 	while (true) {
 		READ_INT_s(_c, cid1);
@@ -199,8 +198,6 @@ void read_comments(const string& dir) {
 	}
 
 	print_debug("Read comment spent %lf secs\n", timer.get_time());
-	comment_read = true;
-	comment_read_cv.notify_all();
 }
 
 
@@ -262,9 +259,6 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 	}
 
 	print_debug("Read forum spent %lf secs\n", timer.get_time());
-
-	forum_read = true;
-	forum_read_cv.notify_all();
 }
 
 
@@ -317,12 +311,14 @@ void read_tags_forums_places(const string& dir) {
 	}
 
 	//read places, need tag data to sort
+	PP(dir);
 	read_places(dir);
 
 	tag_read = true;
 	tag_read_cv.notify_all();
 
 	print_debug("Read tag and places spent %lf secs\n", timer.get_time());
+	PP(dir);
 	read_forum(dir, id_map, q4_tag_ids);
 }
 
@@ -416,12 +412,4 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 	read_person_file(dir);
 	read_person_knows_person(dir);
 	print_debug("Read person spent %lf secs\n", timer.get_time());
-	timer.reset();
-#ifdef USE_THREAD
-	thread(read_comments, dir).detach();		// peak memory will be large
-	thread(read_tags_forums_places, dir).detach();
-#else
-	read_comments(dir);
-	read_tags_forums_places(dir);
-#endif
 }

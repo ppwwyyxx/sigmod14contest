@@ -1,6 +1,6 @@
 /*
- * $File: a.cpp
- * $Date: Sun Mar 16 12:56:36 2014 +0800
+ * $File: ThreadPool.hh
+ * $Date: Tue Mar 18 00:09:02 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -29,24 +29,24 @@ namespace __ThreadPoolImpl {
 	template<class Function, class Callback>
 	class runner : public runner_base {
 		public:
-			Function f;
-			Callback &callback;
+			Function &&f;
+			Callback &&callback;
 
-			runner(Function f, Callback &callback) :
-				f(f), callback(callback)
-			{
-			}
+			runner(Function &&f, Callback &&callback) :
+				f(std::forward<Function>(f)), callback(std::forward<Callback>(callback))
+			{ }
+
 			virtual void run() {
 				callback(f());
 			}
 	};
 
-	void runner_wrapper(std::shared_ptr<runner_base> rn) {
+	inline void runner_wrapper(std::shared_ptr<runner_base> rn) {
 		rn->run();
 	}
 
 	void worker(ThreadPool *tp);
-	void task_wrapper(std::shared_ptr<std::function<void()>> func) {
+	inline void task_wrapper(std::shared_ptr<std::function<void()>> func) {
 		(*func)();
 	}
 }
@@ -63,7 +63,9 @@ public:
 
 			auto task = std::make_shared<std::function<void()>>(
 					std::bind(__ThreadPoolImpl::runner_wrapper,
-						std::make_shared<__ThreadPoolImpl::runner<Function, Callback>>(std::move(f), callback)));
+						std::make_shared<__ThreadPoolImpl::runner<Function, Callback>>(
+							std::forward<Function>(f), std::forward<Callback>(callback))));
+			//auto task = std::make_shared<std::function<void()>>(std::bind(std::forward<Callback>(callback), (std::forward<Function>(f))()));
 			{
 				std::unique_lock<std::mutex> lock(queue_mutex);
 				tasks.push(std::bind(__ThreadPoolImpl::task_wrapper, task));
@@ -85,13 +87,13 @@ public:
 		}
 
 	~ThreadPool();
+	// the task queue
+	std::queue<std::function<void()> > tasks;
 private:
 	friend void __ThreadPoolImpl::worker(ThreadPool *tp);
 
 	// need to keep track of threads so we can join them
 	std::vector< std::thread > workers;
-	// the task queue
-	std::queue< std::function<void()> > tasks;
 
 	// synchronization
 	std::mutex queue_mutex;
@@ -100,8 +102,8 @@ private:
 };
 
 // the constructor just launches some amount of workers
-	inline ThreadPool::ThreadPool(size_t threads)
-:   stop(false)
+inline ThreadPool::ThreadPool(size_t threads)
+	: stop(false)
 {
 	for(size_t i = 0;i<threads;++i)
 		workers.emplace_back(std::bind(__ThreadPoolImpl::worker, this));
@@ -121,21 +123,33 @@ inline ThreadPool::~ThreadPool()
 }
 
 namespace __ThreadPoolImpl
-{
-	void worker(ThreadPool *tp) {
-		for (; ;) {
-			std::unique_lock<std::mutex> lock(tp->queue_mutex);
-			while (!tp->stop && tp->tasks.empty())
-				tp->condition.wait(lock);
-			if (tp->stop && tp->tasks.empty())
-				return;
-			std::function<void()> task(tp->tasks.front());
-			tp->tasks.pop();
-			lock.unlock();
-			task();
-		}
-	}
-}
+{ void worker(ThreadPool *tp); }
 /*
  * vim: syntax=cpp11.doxygen foldmethod=marker
+ */
+
+/*
+ *#include <cstdio>
+ *int fint(int k) {
+ *    std::this_thread::sleep_for(std::chrono::seconds(2));
+ *    return k + 1;
+ *}
+ *
+ *void getint(int a) {
+ *    printf("%d\n", a);
+ *}
+ *
+ *void fvoid(int k) {
+ *    std::this_thread::sleep_for(std::chrono::seconds(2));
+ *    printf("haha%d\n", k + 100);
+ *}
+ *
+ *int main() {
+ *    ThreadPool p(4);
+ *    int a = 1;
+ *    p.enqueue(std::bind(fint, std::ref( a )), getint);
+ *
+ *    p.enqueue(std::bind(fvoid, std::ref(a)));
+ *    a = 2;
+ *}
  */

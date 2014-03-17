@@ -1,5 +1,5 @@
 //File: gen_query.cc
-//Date: Sun Mar 16 12:02:50 2014 +0800
+//Date: Mon Mar 17 21:17:08 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -20,9 +20,9 @@ int num_q[4];
 void make_q1()
 {
 	for (int i = 0; i < num_q[0]; ++i)
-		printf("query1(%d, %d, %d)\n", 
-				random(0, Data::nperson - 1), 
-				random(0, Data::nperson - 1), 
+		printf("query1(%d, %d, %d)\n",
+				random(0, Data::nperson - 1),
+				random(0, Data::nperson - 1),
 				random(-1, q1_max_comment));
 }
 
@@ -70,6 +70,8 @@ void make_q4()
 
 int main(int argc, char* argv[]) {
 	srand((unsigned)time(NULL));
+	q4_tag_set.set_empty_key("");
+
 	read_data(string(argv[1]));
 	freopen(argv[2], "w", stdout);
 	for (int i = 3; i < 7; ++i)

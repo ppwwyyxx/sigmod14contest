@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Sun Mar 16 23:53:13 2014 +0800
+//Date: Tue Mar 18 00:24:29 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -11,6 +11,7 @@
 #include "lib/debugutils.h"
 #include "lib/common.h"
 #include "data.h"
+#include "job_wrapper.h"
 #include "cache.h"
 #include "read.h"
 
@@ -25,7 +26,6 @@ Query2Handler q2;
 Query3Handler q3;
 Query4Handler q4;
 
-double tot_time[5];
 vector<Query1> q1_set;
 vector<Query2> q2_set;
 vector<Query3> q3_set;
@@ -78,114 +78,56 @@ void read_query(const string& fname) {
 	fclose(fin);
 }
 
-void add_all_query(int type) {
-	Timer timer;
-	switch (type) {
-		case 1:
-#pragma omp parallel for num_threads(NUM_THREADS)
-			for (size_t i = 0; i < q1_set.size(); i ++)
-				q1.add_query(q1_set[i], i);
-			break;
-		case 2:
-			FOR_ITR(itr, q2_set) {
-				q2.add_query(*itr);
-			}
-			break;
-		case 3:
-			FOR_ITR(itr, q3_set) {
-				q3.add_query(itr->k, itr->hop, itr->place);
-			}
-			break;
-		case 4:
-			FOR_ITR(itr, q4_set) {
-				q4.add_query(itr->k, itr->tag);
-			}
-			break;
-	}
-}
-
-#define WAIT_FOR(s) \
-	unique_lock<mutex> lk(s ## _mt); \
-	while (!s) (s ## _cv).wait(lk); \
-	lk.unlock();
-
-inline void start_4() {
-	WAIT_FOR(forum_read);
-
-	Timer timer;
-	timer.reset();
-	add_all_query(4);
-	tot_time[4] += timer.get_time();
-}
-
-inline void start_1() {
-	Timer timer;
-	WAIT_FOR(comment_read);
-	{
-		std::lock_guard<mutex> lgg(q2.mt_work_done);
-		std::lock_guard<mutex> lg(q3.mt_work_done);
-		timer.reset();
-		q1.pre_work();		// sort Data::friends
-	}
-	add_all_query(1);
-	tot_time[1] += timer.get_time();
-}
-
-inline void start_2() {
-	//add_all_query(2);
-	Timer timer;
-	WAIT_FOR(tag_read);
-
-	{
-		std::lock_guard<mutex> lk(q2.mt_work_done);
-		timer.reset();
-		q2.work();
-		tot_time[2] += timer.get_time();
-	}
-}
-
-inline void start_3() {
-	WAIT_FOR(tag_read);
-	{
-		std::lock_guard<mutex> lk(q3.mt_work_done);
-		Timer timer;
-		timer.reset();
-		add_all_query(3);
-		tot_time[3] += timer.get_time();
-	}
-}
-
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char* argv[]) {
+	threadpool = new ThreadPool(NUM_THREADS);
+	Timer timer;
 	// initialize global variables...
-
 #ifdef GOOGLE_HASH
 	q4_tag_set.set_empty_key("");
 #endif
 	// end
+	string dir(argv[1]);
+
+
 	read_query(string(argv[2]));		// read query first, so we can read data optionally later
 
-	memset(tot_time, 0, 5 * sizeof(double));
-	Timer timer;
-	read_data(string(argv[1]));
+	read_data(dir);
 	print_debug("Read return at %lf secs\n", timer.get_time());
+	do_read_comments(dir);
+	do_read_tags_forums_places(dir);
 
-#ifdef USE_THREAD
-	thread th_q1(start_1);
-	thread th_q4(start_4);
-	thread th_q2(start_2);
-	thread th_q3(start_3);
-	th_q1.join();
-	th_q2.join();
-	th_q3.join();
-	th_q4.join();
-#else
-	start_1();
+	start_1(1);
 	start_2();
 	start_3();
-	start_4();
-#endif
+	start_4(1);
+
+	/*
+	 *threadpool->enqueue(bind(do_read_comments, dir), start_1);
+	 *threadpool->enqueue(bind(do_read_tags_forums_places, dir), start_4);
+	 *WAIT_FOR(tag_read);
+	 *threadpool->enqueue(start_2);
+	 *start_3();
+	 */
+
+/*
+ *#ifdef USE_THREAD
+ *    thread th_q1(start_1);
+ *    thread th_q4(start_4);
+ *    thread th_q2(start_2);
+ *    thread th_q3(start_3);
+ *    th_q1.join();
+ *    th_q2.join();
+ *    th_q3.join();
+ *    th_q4.join();
+ *#else
+ *    start_1();
+ *    start_2();
+ *    start_3();
+ *    start_4();
+ *#endif
+ */
 
 	q1.print_result();
 	q2.print_result();
@@ -194,6 +136,8 @@ int main(int argc, char* argv[]) {
 
 	print_debug("nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);
 	fprintf(stderr, "%lu\t%lu\t%lu\t%lu\n", q1_set.size(), q2_set.size(), q3_set.size(), q4_set.size());
+	tot_time[3] += TotalTimer::rst["Q3"];
+	tot_time[4] += TotalTimer::rst["Q4"];
 	for (int i = 1; i <= 4; i ++)
 		fprintf(stderr, "q%d: %.4fs\t", i, tot_time[i]);
 	Data::free();

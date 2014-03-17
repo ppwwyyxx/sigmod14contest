@@ -1,9 +1,10 @@
-//File: query3_version3.cc
+//File: query3.cpp
 //Author: Wenbo Tao.
 //Method:	Inverted List.
 
 #include "query3.h"
 #include "lib/common.h"
+#include "lib/Timer.h"
 #include <algorithm>
 #include <queue>
 #include <vector>
@@ -81,6 +82,11 @@ int get_common_tag(int p1, int p2)
 }
 
 void Query3Handler::add_query(int k, int h, const string& p) {
+	{
+		lock_guard<mutex> lg(mt_friends_data_changing);
+		friends_data_reader ++;
+	}
+	TotalTimer timer("Q3");
 	//printf("\t\t\t%s\n", p.c_str());
 	//init
 	pset.clear();
@@ -218,6 +224,9 @@ void Query3Handler::add_query(int k, int h, const string& p) {
 	for (int i = 0; i < min((int)tmp1.size(), k); i ++)
 		tmp2.push_back(tmp1[i]);
 	global_answer.push_back(tmp2);
+
+	friends_data_reader --;
+	cv_friends_data_changing.notify_one();
 	return ;
 }
 

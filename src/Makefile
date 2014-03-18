@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Tue Mar 18 15:07:41 2014 +0800
+# $Date: Tue Mar 18 16:57:47 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -7,8 +7,9 @@ TARGET = ./main
 BUILD ?= develop
 
 INCLUDE_DIR = -Iinclude -Ithird-party
+
 DEFINES += -DGOOGLE_HASH
-#DEFINES += -DUSE_THREAD
+#DEFINES += -DNUM_THREADS=1		# to disable multi-threading
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
 OPTFLAGS += -fnothrow-opt -fno-rtti
@@ -19,10 +20,10 @@ ifeq ($(BUILD), submit)
 OPTFLAGS = -O3
 LDFLAGS += -Wl,--wrap=memcpy
 LDFLAGS += -static-libstdc++
-DEFINES += -DUSE_THREAD
+DEFINES += -DNUM_THREADS=8
 else
 DEFINES += -DDEBUG
-LDFLAGS += -lprofiler
+#LDFLAGS += -lprofiler
 OPTFLAGS += -Wall -Wextra -Wconversion
 endif
 

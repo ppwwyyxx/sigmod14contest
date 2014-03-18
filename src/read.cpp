@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Tue Mar 18 14:19:15 2014 +0800
+//Date: Tue Mar 18 16:48:00 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -7,7 +7,6 @@
 #include <mutex>
 #include <fstream>
 #include <list>
-#include <queue>
 #include <thread>
 #include <stdio.h>
 
@@ -79,8 +78,8 @@ void read_person_knows_person(const string& dir) {
 		PTR_NEXT();
 		//Data::pp_map[p1][p2] = Data::pp_map[p2][p1] = true;
 
-		Data::friends[p1].push_back(ConnectedPerson(p2, 0));
-		Data::friends[p2].push_back(ConnectedPerson(p1, 0));
+		Data::friends[p1].emplace_back(p2, 0);
+		Data::friends[p2].emplace_back(p1, 0);
 	}
 	fclose(fin);
 }
@@ -106,7 +105,7 @@ void read_comments_old(const string &dir) {
 			READ_INT(pid);
 			m_assert(cid % 10 == 0);
 			m_assert(cid / 10 == owner.size());
-			owner.push_back(pid);
+			owner.emplace_back(pid);
 		}
 		fclose(fin);
 	}		// 0.6s
@@ -223,7 +222,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 				continue;
 			m_assert(id_map.find(tid) != id_map.end());
 			int c_tid = id_map[tid];
-			forum_to_tags[fid].push_back(c_tid);
+			forum_to_tags[fid].emplace_back(c_tid);
 		}
 		fclose(fin);
 	}
@@ -232,7 +231,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		safe_open(dir + "/forum_hasMember_person.csv");
 		ptr = buffer, buf_end = ptr + 1;
 		READ_TILL_EOL();
-		deque<int> person_in_now_forum;			// XXX QAQ cannot use list
+		list<int> person_in_now_forum;
 		int old_fid = -1;
 		while (true) {
 			READ_INT(fid);
@@ -245,7 +244,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 					FOR_ITR(p, person_in_now_forum)
 						forum->persons.insert(PersonInForum(*p));
 					FOR_ITR(titr, itr->second) {
-						Data::tag_forums[*titr].push_back(forum);
+						Data::tag_forums[*titr].emplace_back(forum);
 					}
 				}
 				person_in_now_forum.clear();
@@ -253,7 +252,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 			old_fid = fid;
 			READ_INT(pid);
 			READ_TILL_EOL();
-			person_in_now_forum.push_back(pid);
+			person_in_now_forum.emplace_back(pid);
 		}
 		fclose(fin);
 	}
@@ -286,11 +285,11 @@ void read_tags_forums_places(const string& dir) {
 			if (q4_tag_set.count(tag_name))		// cache all q4 tid (real tid)
 				q4_tag_ids.insert(tid);
 #ifdef DEBUG
-			Data::real_tag_id.push_back(tid);
+			Data::real_tag_id.emplace_back(tid);
 #endif
-			Data::tag_name.push_back(tag_name);
+			Data::tagid[tag_name] = (int)Data::tag_name.size();
+			Data::tag_name.emplace_back(move(tag_name));
 			m_assert(Data::tagid.count(tag_name) == 0);		//  no repeated tag name
-			Data::tagid[tag_name] = (int)Data::tag_name.size() - 1;
 			fgets(buffer, BUFFER_LEN, fin);
 		}
 		Data::ntag = (int)Data::tag_name.size();
@@ -305,7 +304,7 @@ void read_tags_forums_places(const string& dir) {
 		while (fscanf(fin, "%d|%d", &pid, &tid) == 2) {
 			int c_id = id_map[tid];
 			Data::tags[pid].insert(c_id);
-			Data::person_in_tags[c_id].push_back(pid);
+			Data::person_in_tags[c_id].emplace_back(pid);
 		}
 		fclose(fin);
 	}
@@ -329,8 +328,7 @@ void read_org_places(const string& fname, const vector<int>& org_places) {
 		fgets(buffer, BUFFER_LEN, fin);
 		m_assert(oid % 10 == 0);
 
-		Data::places[org_places[oid / 10]].persons.push_back(
-				PersonInPlace(pid));
+		Data::places[org_places[oid / 10]].persons.emplace_back(pid);
 	}
 	fclose(fin);
 }
@@ -346,7 +344,7 @@ void build_places_tree(const string& dir) {
 			while ((c = (char)fgetc(fin)) != '|')
 				buffer[k++] = c;
 			string place_name(buffer, k);
-			Data::placeid[place_name].push_back(pid);
+			Data::placeid[place_name].emplace_back(pid);
 			update_max(max_pid, pid);
 			fgets(buffer, BUFFER_LEN, fin);
 		}
@@ -359,7 +357,7 @@ void build_places_tree(const string& dir) {
 		fgets(buffer, BUFFER_LEN, fin);
 		int p1, p2;
 		while (fscanf(fin, "%d|%d", &p1, &p2) == 2) {
-			Data::places[p2].sub_places.push_back(&Data::places[p1]);
+			Data::places[p2].sub_places.emplace_back(&Data::places[p1]);
 			Data::places[p1].parent = &Data::places[p2];
 		}
 		fclose(fin);
@@ -375,8 +373,7 @@ void read_places(const string& dir) {
 		fgets(buffer, BUFFER_LEN, fin);
 		int person, place;
 		while (fscanf(fin, "%d|%d", &person, &place) == 2) {
-			Data::places[place].persons.push_back(
-					PersonInPlace(person));
+			Data::places[place].persons.emplace_back(person);
 		}
 		fclose(fin);
 	}
@@ -389,7 +386,7 @@ void read_places(const string& dir) {
 		while (fscanf(fin, "%d|%d", &oid, &pid) == 2) {
 			m_assert(oid % 10 == 0);
 			m_assert(oid / 10 == (int)org_places.size());
-			org_places.push_back(pid);
+			org_places.emplace_back(pid);
 		}
 		fclose(fin);
 	}

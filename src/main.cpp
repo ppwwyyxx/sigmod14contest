@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Tue Mar 18 14:34:45 2014 +0800
+//Date: Tue Mar 18 16:44:40 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -42,7 +42,7 @@ void read_query(const string& fname) {
 				{
 					int p1, p2, x;
 					fscanf(fin, "%d, %d, %d)", &p1, &p2, &x);
-					q1_set.push_back(Query1(p1, p2, x));
+					q1_set.emplace_back(p1, p2, x);
 					break;
 				}
 			case 2:
@@ -50,7 +50,7 @@ void read_query(const string& fname) {
 					int k, y, m, d;
 					fscanf(fin, "%d, %d-%d-%d)", &k, &y, &m, &d);
 					d = 10000 * y + 100 * m + d;
-					q2_set.push_back(Query2(k, d, (int)q2_set.size()));
+					q2_set.emplace_back(k, d, (int)q2_set.size());
 					break;
 				}
 			case 3:
@@ -58,7 +58,7 @@ void read_query(const string& fname) {
 					int k, h;
 					fscanf(fin, "%d, %d, %s", &k, &h, buf);
 					string place(buf, strlen(buf) - 1);
-					q3_set.push_back(Query3(k, h, place));
+					q3_set.emplace_back(k, h, place);
 					break;
 				}
 			case 4:
@@ -66,7 +66,7 @@ void read_query(const string& fname) {
 					int k;
 					fscanf(fin, "%d, %s", &k, buf);
 					string tag_name(buf, strlen(buf) - 1);
-					q4_set.push_back(Query4(k, tag_name));
+					q4_set.emplace_back(k, tag_name);
 					q4_tag_set.insert(tag_name);
 					break;
 				}

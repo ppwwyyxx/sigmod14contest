@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Mon Mar 17 21:56:04 2014 +0800
+//Date: Tue Mar 18 14:19:15 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -311,14 +311,12 @@ void read_tags_forums_places(const string& dir) {
 	}
 
 	//read places, need tag data to sort
-	PP(dir);
 	read_places(dir);
 
 	tag_read = true;
 	tag_read_cv.notify_all();
 
 	print_debug("Read tag and places spent %lf secs\n", timer.get_time());
-	PP(dir);
 	read_forum(dir, id_map, q4_tag_ids);
 }
 

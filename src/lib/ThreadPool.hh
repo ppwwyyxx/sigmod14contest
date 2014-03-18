@@ -1,6 +1,6 @@
 /*
  * $File: ThreadPool.hh
- * $Date: Tue Mar 18 00:09:02 2014 +0800
+ * $Date: Tue Mar 18 14:29:37 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -58,8 +58,10 @@ public:
 	ThreadPool(size_t);
 	template<class Function, class Callback>
 		void enqueue(Function &&f, Callback &&callback) {
-			if (stop)
-				throw std::runtime_error("enqueue on stopped ThreadPool");
+			/*
+			 *if (stop)
+			 *    throw std::runtime_error("enqueue on stopped ThreadPool");
+			 */
 
 			auto task = std::make_shared<std::function<void()>>(
 					std::bind(__ThreadPoolImpl::runner_wrapper,
@@ -75,8 +77,10 @@ public:
 
 	template<class Function>
 		void enqueue(Function &&f) {
-			if (stop)
-				throw std::runtime_error("enqueue on stopped ThreadPool");
+			/*
+			 *if (stop)
+			 *    throw std::runtime_error("enqueue on stopped ThreadPool");
+			 */
 
 			auto task = std::make_shared<std::function<void()>>(f);
 			{

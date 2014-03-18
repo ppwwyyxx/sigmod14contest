@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Tue Mar 18 00:18:49 2014 +0800
+ * $Date: Tue Mar 18 14:32:41 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -17,13 +17,6 @@
 #include <cassert>
 
 using namespace std;
-
-namespace {
-	int * degree;
-	size_t *que;
-	size_t np;
-	vector<vector<int>> friends;
-}
 
 vector<PersonInForum> get_tag_persons(const string& s) {
 	int tagid = Data::tagid[s];
@@ -43,7 +36,6 @@ vector<PersonInForum> get_tag_persons(const string& s) {
 }
 
 namespace {
-//    static int timestamp_counter;
 	struct HeapEle {
 		int pid;
 		double centrality;
@@ -62,33 +54,35 @@ namespace {
 
 }
 
-int check_compute_degree(int v) {
-	deque<size_t> q;
-	q.push_back(v);
-	vector<bool> hash(np);
-	hash[v] = true;
-	int deg = 1;
-	while (!q.empty()) {
-		size_t size = q.size();
-		for (size_t j = 0; j < size; j ++) {
-			size_t u = q.front();
-			q.pop_front();
-			auto &fr = friends[u];
-			for (auto it = fr.begin(); it != fr.end(); it ++) {
-				auto &w = *it;
-				if (hash[w])
-					continue;
-				hash[w] = true;
-				deg ++;
-				q.push_back(w);
-			}
-		}
-	}
-//    fprintf(stderr, "deg %d = %d\n", v, deg);
-	return deg;
-}
-
-void compute_degree() {
+/*
+ *int check_compute_degree(int v) {
+ *    deque<size_t> q;
+ *    q.push_back(v);
+ *    vector<bool> hash(np);
+ *    hash[v] = true;
+ *    int deg = 1;
+ *    while (!q.empty()) {
+ *        size_t size = q.size();
+ *        for (size_t j = 0; j < size; j ++) {
+ *            size_t u = q.front();
+ *            q.pop_front();
+ *            auto &fr = friends[u];
+ *            for (auto it = fr.begin(); it != fr.end(); it ++) {
+ *                auto &w = *it;
+ *                if (hash[w])
+ *                    continue;
+ *                hash[w] = true;
+ *                deg ++;
+ *                q.push_back(w);
+ *            }
+ *        }
+ *    }
+ *    fprintf(stderr, "deg %d = %d\n", v, deg);
+ *    return deg;
+ *}
+ *
+ */
+void Query4Calculator::compute_degree() {
 	for (size_t i = 0; i < np; i ++)
 		degree[i] = -1;
 
@@ -118,52 +112,55 @@ void compute_degree() {
 //    }
 }
 
-long long check_compute_s(int v) {
-	deque<size_t> q;
-	q.push_back(v);
-	vector<bool> hash(np);
-	hash[v] = true;
-	long long ret = 0;
-	int depth = 0;
-	while (!q.empty()) {
-		size_t size = q.size();
-		depth ++;
-		for (size_t j = 0; j < size; j ++) {
-			size_t u = q.front();
-			q.pop_front();
-			FOR_ITR(itr, friends[u]) {
-				auto&w = *itr;
-				if (hash[w])
-					continue;
-				hash[w] = true;
-				ret += depth;
-				q.push_back(w);
-			}
-		}
-	}
-//    fprintf(stderr, "s %d = %lld\n", v, ret);
-	return ret;
-}
-
+/*
+ *long long check_compute_s(int v) {
+ *    deque<size_t> q;
+ *    q.push_back(v);
+ *    vector<bool> hash(np);
+ *    hash[v] = true;
+ *    long long ret = 0;
+ *    int depth = 0;
+ *    while (!q.empty()) {
+ *        size_t size = q.size();
+ *        depth ++;
+ *        for (size_t j = 0; j < size; j ++) {
+ *            size_t u = q.front();
+ *            q.pop_front();
+ *            FOR_ITR(itr, friends[u]) {
+ *                auto&w = *itr;
+ *                if (hash[w])
+ *                    continue;
+ *                hash[w] = true;
+ *                ret += depth;
+ *                q.push_back(w);
+ *            }
+ *        }
+ *    }
+ *    fprintf(stderr, "s %d = %lld\n", v, ret);
+ *    return ret;
+ *}
+ *
+ */
 
 class CentralityEstimator {
 	public:
-		deque<size_t> q;
-		vector<int> hash;
-		int timestamp_counter;
-		CentralityEstimator() :
-			hash(np), timestamp_counter(0) {
-		}
+		size_t np;
+		const std::vector<std::vector<int>>& friends;
+		int* degree;
+
+		CentralityEstimator(const vector<vector<int>>& fr, int* deg) :
+			np(fr.size()), friends(fr), degree(deg)
+		{ }
+
 		double estimate(int v0, int dist_max) {
-			timestamp_counter ++;
-			q.clear();
-			q.push_back(v0);
-			size_t qsize;
+			vector<bool> hash(np, false);
+			deque<size_t> q; q.push_back(v0);
+
 			long long s = 0;
 			size_t nr_remain = degree[v0];
 			int depth = 0;
-			hash[v0] = timestamp_counter;
-			while ((qsize = q.size())) {
+			hash[v0] = true;
+			while (size_t qsize = q.size()) {
 				s += qsize * depth;
 //                assert(nr_remain >= qsize);
 				nr_remain -= qsize;
@@ -176,47 +173,77 @@ class CentralityEstimator {
 					FOR_ITR(itr, fs) {
 						// found a friend in the forum
 						size_t index = *itr;
-						/*
-						 *if (index > np) {
-						 *    PA(fs);
-						 *}
-						 */
-						if (hash[index] == timestamp_counter)
-							continue;
-						hash[index] = timestamp_counter;
+						if (hash[index]) continue;
+						hash[index] = 1;
 						q.push_back(index);
 					}
 				}
 			}
-//            assert(nr_remain == 0);
 			s += nr_remain * (dist_max + 1);
-//            assert(s == check_compute_s(v0));
 
-			double ret = 0;
-			if (s == 0) {
-//                assert(degree[v0] == 1);
-				ret = 0;
-			}
+			if (s == 0)
+				return 0;
 			else
-				ret = ::sqr(degree[v0] - 1.0)  / (double)s / (double)(np - 1);
-			return ret;
+				return ::sqr(degree[v0] - 1.0)  / (double)s / (double)(np - 1);
 		}
 };
 
-void Query4Handler::add_query(int k, const string& s) {
+vector<int> Query4Calculator::work() {
+	// estimate centrality
+	CentralityEstimator estimator(friends, degree);
+	int est_dist_max = 2;  // TODO: this parameter needs tune
+
+
+	vector<HeapEle> heap_ele_buf(np);
+#pragma omp parallel for schedule(static) num_threads(NUM_THREADS)
+	for (int i = 0; i < (int)np; i ++) {
+		double centrality = estimator.estimate(i, est_dist_max);
+		heap_ele_buf[i] = HeapEle(i, centrality);
+//        q.push(HeapEle(i, centrality));
+//        fprintf(stderr, "cent %lu = %f\n", i, centrality);
+	}
+	priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
+
+
+	// calculate answer
+	vector<int> ans;
+	double last_centrality = 1e100;
+	int last_pid = -1;
+	int cnt = 0;
+	while (!q.empty()) {
+		auto he = q.top(); q.pop();
+		auto pid = he.pid;
+		auto centrality = he.centrality;
+		assert(centrality <= last_centrality);
+		if (centrality == last_centrality && pid == last_pid) {
+			//fprintf(stderr, "%f\n", centrality);
+			ans.emplace_back(pid);
+			if ((int)ans.size() == k)
+				break;
+		} else {
+			cnt ++;
+			q.push(HeapEle(pid, estimator.estimate(pid, (int)np)));
+		}
+		last_centrality = centrality;
+		last_pid = pid;
+	}
+	return move(ans);
+}
+
+
+void Query4Handler::add_query(int k, const string& s, int index) {
 	TotalTimer timer("Q4");
 	// build graph
 	vector<PersonInForum> persons = get_tag_persons(s);
-	np = persons.size();
-	friends.resize(np);
+	size_t np = persons.size();
+	vector<vector<int>> friends(np);
 
 	{
 		lock_guard<mutex> lg(mt_friends_data_changing);
 		friends_data_reader ++;
 	}
-#pragma omp parallel for schedule(dynamic) num_threads(NUM_THREADS)
+#pragma omp parallel for schedule(static) num_threads(NUM_THREADS)
 	REP(i, np) {
-		friends[i].clear();
 		auto& fs = Data::friends[persons[i]];
 		FOR_ITR(itr, fs) {
 			auto lb_itr = lower_bound(persons.begin(), persons.end(), itr->pid);
@@ -228,57 +255,16 @@ void Query4Handler::add_query(int k, const string& s) {
 	friends_data_reader --;
 	cv_friends_data_changing.notify_one();
 
-	// compute degree
-	degree = new int[np];
-	que = new size_t[np];
-	compute_degree();
-
-	// estimate centrality
-	int est_dist_max = 2;  // TODO: this parameter needs tune
-	vector<HeapEle> heap_ele_buf(np);
-#pragma omp parallel for schedule(dynamic) num_threads(NUM_THREADS)
-	for (int i = 0; i < (int)np; i ++) {
-		CentralityEstimator estimator;
-		double centrality = estimator.estimate(i, est_dist_max);
-		heap_ele_buf[i] = HeapEle(i, centrality);
-//        q.push(HeapEle(i, centrality));
-//        fprintf(stderr, "cent %lu = %f\n", i, centrality);
+	Query4Calculator worker(friends, k);
+	auto now_ans = worker.work();
+	FOR_ITR(itr, now_ans) {
+		*itr = persons[*itr];
 	}
-	priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
-
-	CentralityEstimator estimator;
-
-	// calculate answer
-	ans.push_back(vector<int>());
-	auto &line = ans.back();
-	double last_centrality = 1e100;
-	int last_pid = -1;
-	int cnt = 0;
-	while (!q.empty()) {
-		auto he = q.top(); q.pop();
-		auto pid = he.pid;
-		auto centrality = he.centrality;
-		assert(centrality <= last_centrality);
-		if (centrality == last_centrality && pid == last_pid) {
-			//fprintf(stderr, "%f\n", centrality);
-			line.push_back(persons[pid]);
-			if ((int)line.size() == k)
-				break;
-		} else {
-			cnt ++;
-			q.push(HeapEle(pid, estimator.estimate(pid, (int)np)));
-		}
-		last_centrality = centrality;
-		last_pid = pid;
-	}
-	//fprintf(stderr, "cnt: %d/%d\n", cnt, k);
-	delete[] degree;
-	delete[] que;
+	ans[index] = move(now_ans);
 }
 
-void Query4Handler::work() {
-}
 
+void Query4Handler::work() { }
 void Query4Handler::print_result() {
 	lock_guard<mutex> lg(mt_work_done);
 	FOR_ITR(itr, ans) {

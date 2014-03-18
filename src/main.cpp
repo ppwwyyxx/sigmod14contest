@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Tue Mar 18 00:24:29 2014 +0800
+//Date: Tue Mar 18 14:34:45 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -92,49 +92,34 @@ int main(int argc, char* argv[]) {
 
 
 	read_query(string(argv[2]));		// read query first, so we can read data optionally later
+	q4.ans.resize(q4_set.size());
+	q3.global_answer.resize(q3_set.size());
 
 	read_data(dir);
 	print_debug("Read return at %lf secs\n", timer.get_time());
-	do_read_comments(dir);
-	do_read_tags_forums_places(dir);
-
-	start_1(1);
-	start_2();
-	start_3();
-	start_4(1);
 
 	/*
-	 *threadpool->enqueue(bind(do_read_comments, dir), start_1);
-	 *threadpool->enqueue(bind(do_read_tags_forums_places, dir), start_4);
-	 *WAIT_FOR(tag_read);
-	 *threadpool->enqueue(start_2);
+	 *do_read_comments(dir);
+	 *do_read_tags_forums_places(dir);
+	 *start_1(1);
+	 *start_2();
 	 *start_3();
+	 *start_4(1);
 	 */
 
-/*
- *#ifdef USE_THREAD
- *    thread th_q1(start_1);
- *    thread th_q4(start_4);
- *    thread th_q2(start_2);
- *    thread th_q3(start_3);
- *    th_q1.join();
- *    th_q2.join();
- *    th_q3.join();
- *    th_q4.join();
- *#else
- *    start_1();
- *    start_2();
- *    start_3();
- *    start_4();
- *#endif
- */
+	threadpool->enqueue(bind(do_read_comments, dir), start_1);
+	threadpool->enqueue(bind(do_read_tags_forums_places, dir), start_4);
+	WAIT_FOR(tag_read);
+	threadpool->enqueue(start_2);
+	threadpool->enqueue(start_3);
+	delete threadpool;		// will wait to join all thread
 
 	q1.print_result();
 	q2.print_result();
 	q3.print_result();
 	q4.print_result();
 
-	print_debug("nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);
+	fprintf(stderr, "nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);
 	fprintf(stderr, "%lu\t%lu\t%lu\t%lu\n", q1_set.size(), q2_set.size(), q3_set.size(), q4_set.size());
 	tot_time[3] += TotalTimer::rst["Q3"];
 	tot_time[4] += TotalTimer::rst["Q4"];

@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Tue Mar 18 00:12:04 2014 +0800
+# $Date: Tue Mar 18 15:07:41 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -11,12 +11,14 @@ DEFINES += -DGOOGLE_HASH
 #DEFINES += -DUSE_THREAD
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
-OPTFLAGS += -g -O0
-#OPTFLAGS += -O3
+OPTFLAGS += -fnothrow-opt -fno-rtti
+#OPTFLAGS += -g -O0
+OPTFLAGS += -O3
 
 ifeq ($(BUILD), submit)
 OPTFLAGS = -O3
 LDFLAGS += -Wl,--wrap=memcpy
+LDFLAGS += -static-libstdc++
 DEFINES += -DUSE_THREAD
 else
 DEFINES += -DDEBUG
@@ -28,7 +30,7 @@ CONCURFLAGS = -fopenmp -pthread
 CXXFLAGS = $(INCLUDE_DIR)
 CXXFLAGS += -std=c++0x $(CONCURFLAGS)
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
-LDFLAGS += $(CONCURFLAGS)
+LDFLAGS += $(CONCURFLAGS) $(OPTFLAGS)
 
 
 CC = gcc

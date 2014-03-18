@@ -1,5 +1,5 @@
 //File: hash_lib.h
-//Date: Fri Mar 14 23:05:31 2014 +0800
+//Date: Tue Mar 18 14:43:57 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once

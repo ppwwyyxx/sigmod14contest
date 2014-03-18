@@ -81,7 +81,7 @@ int get_common_tag(int p1, int p2)
 	return ret;
 }
 
-void Query3Handler::add_query(int k, int h, const string& p) {
+void Query3Handler::add_query(int k, int h, const string& p, int index) {
 	{
 		lock_guard<mutex> lg(mt_friends_data_changing);
 		friends_data_reader ++;
@@ -213,7 +213,6 @@ void Query3Handler::add_query(int k, int h, const string& p) {
 		totPair += (int) ansList[curPerson].size();
 	}
 	vector<Answer3> tmp1, tmp2;
-	tmp1.clear(), tmp2.clear();
 	FOR_ITR(it, pset) {
 		int curPerson = it->pid;
 		for (int i = 0; i < (int) ansList[curPerson].size(); i ++)
@@ -223,8 +222,9 @@ void Query3Handler::add_query(int k, int h, const string& p) {
 	sort(tmp1.begin(), tmp1.end());
 	for (int i = 0; i < min((int)tmp1.size(), k); i ++)
 		tmp2.push_back(tmp1[i]);
-	global_answer.push_back(tmp2);
 
+
+	global_answer[index] = move(tmp2);
 	friends_data_reader --;
 	cv_friends_data_changing.notify_one();
 	return ;
@@ -233,8 +233,7 @@ void Query3Handler::add_query(int k, int h, const string& p) {
 void Query3Handler::work() { }
 
 void Query3Handler::print_result() {
-	for (auto it = global_answer.begin(); it != global_answer.end(); ++it)
-	{
+	FOR_ITR(it, global_answer) {
 		for (auto it1 = it->begin(); it1 != it->end(); ++it1) {
 			if (it1 != it->begin())	 printf(" ");
 			printf("%d|%d", it1->p1, it1->p2);

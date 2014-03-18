@@ -1,5 +1,5 @@
 //File: query3.h
-//Date: Wed Mar 12 19:52:06 2014 +0800
+//Date: Tue Mar 18 14:22:31 2014 +0800
 
 #pragma once
 
@@ -43,7 +43,7 @@ struct Answer3 {
 class Query3Handler {
 	public:
 		std::mutex mt_work_done;
-		void add_query(int k, int h, const std::string& p);
+		void add_query(int k, int h, const std::string& p, int index);
 
 		void work();
 
@@ -52,11 +52,11 @@ class Query3Handler {
 		void bfs(int, int, int);		// for version2
 		void bfs(int, int);				// for force
 
+		std::vector<std::vector<Answer3> > global_answer;
 	protected:
 		PersonSet pset;
 		std::set<int> pinplace;
 		std::vector<Answer3> answers;
-		std::vector<std::vector<Answer3> > global_answer;
 		std::vector<std::set<int> > invList[101010];
 		std::vector<Answer3> ansList[101010];
 };

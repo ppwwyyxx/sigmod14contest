@@ -103,12 +103,23 @@ void Query3Handler::add_query(int k, int h, const string& p, int index) {
 				tmp.begin(), tmp.end(), pset.begin());
 		pset.resize(std::distance(pset.begin(), pset_end));
 	}
-
+	
+	//
+	int maxPerson = 0, maxTag = 0;
+	FOR_ITR(it1, pset)
+	{
+		int curPerson = it1->pid;
+		maxPerson = max(maxPerson, curPerson);
+		for (TagSet::iterator i = Data::tags[curPerson].begin(); i != Data::tags[curPerson].end(); i ++)
+			maxTag = max(maxTag, (*i));
+	}
+	
 	vector<vector<int> > invertedList;
 	vector<int> people;
-	invertedList.resize(6000);			//This number needs to be fixed.
-	for (int i = 0; i < 5000; i ++)		//This number as well.
-		invertedList[i].clear();
+	invertedList.resize(maxTag + 10);
+	invList.resize(maxPerson + 10);	
+	ansList.resize(maxPerson + 10);		
+	
 
 	people.clear();
 	FOR_ITR(it1, pset)
@@ -138,7 +149,8 @@ void Query3Handler::add_query(int k, int h, const string& p, int index) {
 			invList[curPerson].push_back(set<int>(r.begin(), r.end()));
 		}
 	}
-
+	
+//	cout << maxTag << " " << maxPerson << endl;
 	int totPair = 0;
 	//Arsenal is the champion!!
 
@@ -212,6 +224,7 @@ void Query3Handler::add_query(int k, int h, const string& p, int index) {
 
 		totPair += (int) ansList[curPerson].size();
 	}
+	
 	vector<Answer3> tmp1, tmp2;
 	FOR_ITR(it, pset) {
 		int curPerson = it->pid;

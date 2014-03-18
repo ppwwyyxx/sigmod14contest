@@ -57,6 +57,8 @@ class Query3Handler {
 		PersonSet pset;
 		std::set<int> pinplace;
 		std::vector<Answer3> answers;
-		std::vector<std::set<int> > invList[101010];
-		std::vector<Answer3> ansList[101010];
+
+		std::vector<std::vector<std::set<int> > >invList;
+		std::vector<std::vector<Answer3> > ansList;
+
 };

@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Wed Mar 19 12:11:49 2014 +0800
+//Date: Wed Mar 19 12:30:21 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -28,7 +28,7 @@ void add_all_query(int);
 
 inline int do_read_comments(const std::string dir) {
 	Timer timer;
-	read_comments_2file(dir);
+	read_comments(dir);
 	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
 	return 0;
 }

@@ -1,6 +1,6 @@
 /*
- * $File: query4_v2.cc
- * $Date: Wed Mar 19 10:11:01 2014 +0800
+ * $File: query4.cpp
+ * $Date: Wed Mar 19 12:53:25 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -180,7 +180,8 @@ class CentralityEstimator {
 				}
 			}
 			s += nr_remain * (dist_max + 1);
-
+			if (np == 14301)
+				print_debug("degree[v0]-nr_remain:%d\n", degree[v0] - nr_remain);
 			if (s == 0)
 				return 0;
 			else
@@ -190,18 +191,21 @@ class CentralityEstimator {
 
 vector<int> Query4Calculator::work() {
 	// estimate centrality
+	Timer timer;
 	CentralityEstimator estimator(friends, degree);
 	int est_dist_max = 2;  // TODO: this parameter needs tune
 	if (np > 2400 and Data::nperson > 11000) est_dist_max = 3;
 
-
 	vector<HeapEle> heap_ele_buf(np);
+	{
+		GuardedTimer timer("omp2");
 #pragma omp parallel for schedule(static) num_threads(4)
-	for (int i = 0; i < (int)np; i ++) {
-		double centrality = estimator.estimate(i, est_dist_max);
-		heap_ele_buf[i] = HeapEle(i, centrality);
-//        q.push(HeapEle(i, centrality));
-//        fprintf(stderr, "cent %lu = %f\n", i, centrality);
+		for (int i = 0; i < (int)np; i ++) {
+			double centrality = estimator.estimate(i, est_dist_max);
+			heap_ele_buf[i] = HeapEle(i, centrality);
+			//        q.push(HeapEle(i, centrality));
+			//        fprintf(stderr, "cent %lu = %f\n", i, centrality);
+		}
 	}
 	priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
 
@@ -211,6 +215,8 @@ vector<int> Query4Calculator::work() {
 	double last_centrality = 1e100;
 	int last_pid = -1;
 	int cnt = 0;
+	{
+	GuardedTimer timer("haha")	;
 	while (!q.empty()) {
 		auto he = q.top(); q.pop();
 		auto pid = he.pid;
@@ -228,6 +234,12 @@ vector<int> Query4Calculator::work() {
 		last_centrality = centrality;
 		last_pid = pid;
 	}
+	}
+
+	if (timer.get_time() > 0.1) {
+		print_debug("----------------------------->%lf\n", timer.get_time());
+	}
+	print_debug("cnt: %d, k: %d, np: %d\n", cnt, k, np);
 	return move(ans);
 }
 
@@ -237,20 +249,22 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 	// build graph
 	vector<PersonInForum> persons = get_tag_persons(s);
 	size_t np = persons.size();
-	PP(np);
 	vector<vector<int>> friends(np);
 
 	{
 		lock_guard<mutex> lg(mt_friends_data_changing);
 		friends_data_reader ++;
 	}
+	{
+		GuardedTimer timer("omp1");
 #pragma omp parallel for schedule(static) num_threads(4)
-	REP(i, np) {
-		auto& fs = Data::friends[persons[i]];
-		FOR_ITR(itr, fs) {
-			auto lb_itr = lower_bound(persons.begin(), persons.end(), itr->pid);
-			if (lb_itr != persons.end() and *lb_itr == itr->pid) {
-				friends[i].push_back((int)distance(persons.begin(), lb_itr));
+		REP(i, np) {
+			auto& fs = Data::friends[persons[i]];
+			FOR_ITR(itr, fs) {
+				auto lb_itr = lower_bound(persons.begin(), persons.end(), itr->pid);
+				if (lb_itr != persons.end() and *lb_itr == itr->pid) {
+					friends[i].push_back((int)distance(persons.begin(), lb_itr));
+				}
 			}
 		}
 	}

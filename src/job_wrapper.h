@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Tue Mar 18 16:55:51 2014 +0800
+//Date: Wed Mar 19 12:11:49 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -26,8 +26,18 @@ extern std::vector<Query4> q4_set;
 
 void add_all_query(int);
 
-inline int do_read_comments(const std::string dir) { read_comments(dir); return 0; }
-inline int do_read_tags_forums_places(const std::string dir) { read_tags_forums_places(dir); return 0; }
+inline int do_read_comments(const std::string dir) {
+	Timer timer;
+	read_comments_2file(dir);
+	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
+	return 0;
+}
+inline int do_read_tags_forums_places(const std::string dir) {
+	Timer timer;
+	read_tags_forums_places(dir);
+	if (Data::nperson > 11000) fprintf(stderr, "npl:%lu, forut:%.4lf\n", Data::placeid.size(), timer.get_time());
+	return 0;
+}
 
 #define WAIT_FOR(s) \
 	unique_lock<mutex> lk(s ## _mt); \
@@ -37,7 +47,6 @@ inline int do_read_tags_forums_places(const std::string dir) { read_tags_forums_
 inline void start_1(int) {
 	Timer timer;
 	{
-		std::lock_guard<std::mutex> lg(q2.mt_work_done);
 		std::unique_lock<std::mutex> lgg(mt_friends_data_changing);
 		while (friends_data_reader) {
 			cv_friends_data_changing.wait(lgg);
@@ -57,18 +66,21 @@ inline void start_2() {
 	tot_time[2] += timer.get_time();
 }
 
+Timer globaltimer;
 inline void start_3() {
+	Timer timer;
 	size_t s = q3_set.size();
 	REP(i, s) {
-		q3.add_query(q3_set[i].k, q3_set[i].hop, q3_set[i].place, i);
-		//threadpool->enqueue(bind(&Query3Handler::add_query, &q3, q3_set[i].k, q3_set[i].hop, q3_set[i].place, i));
+		//q3.add_query(q3_set[i].k, q3_set[i].hop, q3_set[i].place, i);
+		//print_debug("finish q3 %lu at %lf\n", i, timer.get_time());
+		threadpool->enqueue(bind(&Query3Handler::add_query, &q3, q3_set[i].k, q3_set[i].hop, q3_set[i].place, i));
 	}
 }
 
 inline void start_4(int) {
+	Timer timer;
 	size_t s = q4_set.size();
 	REP(i, s) {
-	//	q4.add_query(q4_set[i].k, q4_set[i].tag, i);
 		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i));
 	}
 }

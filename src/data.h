@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Mon Mar 17 21:16:47 2014 +0800
+//Date: Tue Mar 18 18:31:40 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -77,7 +77,6 @@ class Data {
 public:
 	static int nperson, ntag;
 
-	static bool ** pp_map;		// person_knows_person
 	static std::vector<std::vector<ConnectedPerson> > friends;
 	// friends[i] is a vector(sorted by 'ncomment') of friends of the person with id=i
 

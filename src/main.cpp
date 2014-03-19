@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Tue Mar 18 16:44:40 2014 +0800
+//Date: Wed Mar 19 12:11:27 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -78,9 +78,18 @@ void read_query(const string& fname) {
 	fclose(fin);
 }
 
+void print_stat() {
+	int n_edge = 0;
+	FOR_ITR(itr, Data::friends) n_edge += itr->size();
+	fprintf(stderr, "nedge: %d, nplaces: %lu\n", n_edge, Data::places.size());
+	fprintf(stderr, "%lu\t%lu\t%lu\t%lu\n", q1_set.size(), q2_set.size(), q3_set.size(), q4_set.size());
+	fflush(stderr);
+}
+
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char* argv[]) {
+	globaltimer.reset();
 	threadpool = new ThreadPool(NUM_THREADS);
 	Timer timer;
 	// initialize global variables...
@@ -97,6 +106,10 @@ int main(int argc, char* argv[]) {
 
 	read_data(dir);
 	print_debug("Read return at %lf secs\n", timer.get_time());
+	if (Data::nperson > 11000) {
+		int n_edge = 0;
+		FOR_ITR(itr, Data::friends) n_edge += itr->size();
+	}
 
 	/*
 	 *do_read_comments(dir);
@@ -106,12 +119,52 @@ int main(int argc, char* argv[]) {
 	 *start_3();
 	 *start_4(1);
 	 */
+#if 0
+	if (Data::nperson > 11000) {
+		do_read_tags_forums_places(dir);
+		fprintf(stderr, "Read tags at %lf secs\n", timer.get_time());
+		fflush(stderr);
+		do_read_comments(dir);
+		fprintf(stderr, "Read comments return at %lf secs\n", timer.get_time());
+		fflush(stderr);
+		if (timer.get_time() > 550)
+			return 0;
+		/*
+		 *start_1(1);
+		 *fprintf(stderr, "query1 return at %lf secs\n", timer.get_time());
+		 *fflush(stderr);
+		 *if (timer.get_time() > 550)
+		 *    return 0;
+		 *start_2();
+		 *fprintf(stderr, "query2 return at %lf secs\n", timer.get_time());
+		 *fflush(stderr);
+		 *if (timer.get_time() > 550)
+		 *    return 0;
+		 */
+		/*
+		 *start_3();
+		 *fprintf(stderr, "query3 return at %lf secs\n", timer.get_time());
+		 *fflush(stderr);
+		 */
+
+		start_4(1);
+		fprintf(stderr, "query4 return at %lf secs\n", timer.get_time());
+		fflush(stderr);
+		if (timer.get_time() > 550)
+			return 0;
+
+		delete threadpool;
+		return 0;
+	}
+#endif
 
 	threadpool->enqueue(bind(do_read_comments, dir), start_1);
 	threadpool->enqueue(bind(do_read_tags_forums_places, dir), start_4);
 	WAIT_FOR(tag_read);
+	//fprintf(stderr, "nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);		// print this earlier, in case of crash
+
 	threadpool->enqueue(start_2);
-	threadpool->enqueue(start_3);
+	start_3();
 	delete threadpool;		// will wait to join all thread
 
 	q1.print_result();
@@ -119,13 +172,12 @@ int main(int argc, char* argv[]) {
 	q3.print_result();
 	q4.print_result();
 
-	fprintf(stderr, "nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);
-	fprintf(stderr, "%lu\t%lu\t%lu\t%lu\n", q1_set.size(), q2_set.size(), q3_set.size(), q4_set.size());
+	//fprintf(stderr, "%lu\t%lu\t%lu\t%lu\n", q1_set.size(), q2_set.size(), q3_set.size(), q4_set.size());
 	tot_time[3] += TotalTimer::rst["Q3"];
 	tot_time[4] += TotalTimer::rst["Q4"];
 	for (int i = 1; i <= 4; i ++)
-		fprintf(stderr, "q%d: %.4fs\t", i, tot_time[i]);
+		fprintf(stderr, "q%d:%.4fs\t", i, tot_time[i]);
+	//fprintf(stderr, "\nTime: %.4fs\n", timer.get_time());
 	Data::free();
-	fprintf(stderr, "\nTime: %.4fs\n", timer.get_time());
 	TotalTimer::print();
 }

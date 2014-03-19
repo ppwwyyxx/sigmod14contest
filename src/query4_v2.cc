@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Tue Mar 18 14:32:41 2014 +0800
+ * $File: query4_v2.cc
+ * $Date: Wed Mar 19 10:11:01 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -192,10 +192,11 @@ vector<int> Query4Calculator::work() {
 	// estimate centrality
 	CentralityEstimator estimator(friends, degree);
 	int est_dist_max = 2;  // TODO: this parameter needs tune
+	if (np > 2400 and Data::nperson > 11000) est_dist_max = 3;
 
 
 	vector<HeapEle> heap_ele_buf(np);
-#pragma omp parallel for schedule(static) num_threads(NUM_THREADS)
+#pragma omp parallel for schedule(static) num_threads(4)
 	for (int i = 0; i < (int)np; i ++) {
 		double centrality = estimator.estimate(i, est_dist_max);
 		heap_ele_buf[i] = HeapEle(i, centrality);
@@ -236,13 +237,14 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 	// build graph
 	vector<PersonInForum> persons = get_tag_persons(s);
 	size_t np = persons.size();
+	PP(np);
 	vector<vector<int>> friends(np);
 
 	{
 		lock_guard<mutex> lg(mt_friends_data_changing);
 		friends_data_reader ++;
 	}
-#pragma omp parallel for schedule(static) num_threads(NUM_THREADS)
+#pragma omp parallel for schedule(static) num_threads(4)
 	REP(i, np) {
 		auto& fs = Data::friends[persons[i]];
 		FOR_ITR(itr, fs) {
@@ -254,6 +256,7 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 	}
 	friends_data_reader --;
 	cv_friends_data_changing.notify_one();
+	// finish building graph
 
 	Query4Calculator worker(friends, k);
 	auto now_ans = worker.work();
@@ -266,7 +269,6 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 
 void Query4Handler::work() { }
 void Query4Handler::print_result() {
-	lock_guard<mutex> lg(mt_work_done);
 	FOR_ITR(itr, ans) {
 		vector<int>& line = *itr;
 		for (size_t k = 0; k < line.size(); k ++) {

@@ -1,5 +1,5 @@
 //File: gen_query.cc
-//Date: Mon Mar 17 21:17:08 2014 +0800
+//Date: Wed Mar 19 09:32:47 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -52,7 +52,7 @@ void make_q3()
 				random(1, q3_max_k),
 				random(1, q3_max_h));
 		int p = random(0, Data::placeid.size() - 1);
-		unordered_map<std::string, std::vector<int>, StringHashFunc>::iterator it = Data::placeid.begin();
+		auto it = Data::placeid.begin();
 		while (p--)
 			++it;
 		cout << it->first << ")" << endl;
@@ -71,8 +71,10 @@ void make_q4()
 int main(int argc, char* argv[]) {
 	srand((unsigned)time(NULL));
 	q4_tag_set.set_empty_key("");
+	string dir(argv[1]);
 
-	read_data(string(argv[1]));
+	read_data(dir);
+	read_tags_forums_places(dir);
 	freopen(argv[2], "w", stdout);
 	for (int i = 3; i < 7; ++i)
 		num_q[i - 3] = atoi(argv[i]);

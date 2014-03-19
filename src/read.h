@@ -1,5 +1,5 @@
 //File: read.h
-//Date: Mon Mar 17 21:21:44 2014 +0800
+//Date: Tue Mar 18 20:04:21 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -7,6 +7,7 @@
 
 void read_data(const std::string&);
 void read_comments(const std::string&);
+void read_comments_2file(const std::string&);
 void read_tags_forums_places(const std::string&);
 
 

@@ -1,10 +1,11 @@
 //File: read.cpp
-//Date: Tue Mar 18 16:48:00 2014 +0800
+//Date: Wed Mar 19 09:34:13 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
 #include <algorithm>
 #include <mutex>
+#include <cstdio>
 #include <fstream>
 #include <list>
 #include <thread>
@@ -84,8 +85,7 @@ void read_person_knows_person(const string& dir) {
 	fclose(fin);
 }
 
-#if 0
-void read_comments_old(const string &dir) {
+void read_comments(const string &dir) {
 	static char buffer[BUFFER_LEN];
 	char *ptr, *buf_end;
 
@@ -109,14 +109,16 @@ void read_comments_old(const string &dir) {
 		}
 		fclose(fin);
 	}		// 0.6s
+	if (Data::nperson > 11000) {
+		fprintf(stderr, "ncomments: %lu\n", owner.size());
+		fflush(stderr);
+	}
 
+
+	int max_diff = 0;
 	// read comment->comment
-	/*
-	 *vector<unordered_map<int, int>> comment_map(Data::nperson);
-	 *FOR_ITR(itr, comment_map) itr->set_empty_key(-1);
-	 */
-	vector<vector<int>> comment_map(Data::nperson);
-	FOR_ITR(itr, comment_map) itr->resize(Data::nperson);
+	vector<unordered_map<int, int>> comment_map(Data::nperson);
+	FOR_ITR(itr, comment_map) itr->set_empty_key(-1);
 	{
 		GuardedTimer guarded_timer("read comment_replyOf_comment.csv");
 		safe_open(dir + "/comment_replyOf_comment.csv");
@@ -128,12 +130,14 @@ void read_comments_old(const string &dir) {
 			READ_INT(cid1);
 			if (buffer == buf_end) break;
 			READ_INT(cid2);		// max difference cid1 - cdi2 is 180
+			update_max(max_diff, cid1 - cid2);
 
-			int p1 = owner[cid1 / 10], p2 = owner[cid2 / 10];		// TODO this takes 0.5s
+			int p1 = owner[cid1 / 10], p2 = owner[cid2 / 10];
 			comment_map[p1][p2] += 1;		// p1 reply to p2
 		}
 		fclose(fin);
-	}	// THIS is 1s
+	}
+	PP(max_diff);
 
 	REP(i, Data::nperson) {
 		auto& fs = Data::friends[i];
@@ -143,12 +147,9 @@ void read_comments_old(const string &dir) {
 		}
 	}
 	print_debug("Read comment spent %lf secs\n", timer.get_time());
-	comment_read = true;
-	comment_read_cv.notify_all();
 }
-#endif
 
-void read_comments(const string& dir) {
+void read_comments_2file(const string& dir) {
 	// This function assumes that when comment a reply to b, a - b < COMMENT_CACHE_LEN
 	const int COMMENT_CACHE_LEN = 512;		// 10k: max(cid1 - cdi2) = 180
 
@@ -164,11 +165,9 @@ void read_comments(const string& dir) {
 	int comment_owner[COMMENT_CACHE_LEN];
 	int cid, pid, cid1, cid2;
 
-	/*
-	 *vector<unordered_map<int, int>> comment_map(Data::nperson);
-	 *FOR_ITR(itr, comment_map) itr->set_empty_key(-1);
-	 */
-	vector<vector<int>> comment_map(Data::nperson, vector<int>(Data::nperson));
+	vector<unordered_map<int, int>> comment_map(Data::nperson);
+	FOR_ITR(itr, comment_map) itr->set_empty_key(-1);
+	//vector<vector<int>> comment_map(Data::nperson, vector<int>(Data::nperson));
 
 	while (true) {
 		READ_INT_s(_c, cid1);
@@ -198,7 +197,6 @@ void read_comments(const string& dir) {
 
 	print_debug("Read comment spent %lf secs\n", timer.get_time());
 }
-
 
 void read_forum(const string& dir, unordered_map<int, int>& id_map, const unordered_set<int>& q4_tag_ids) {
 	static char buffer[BUFFER_LEN];

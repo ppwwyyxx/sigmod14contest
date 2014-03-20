@@ -8,6 +8,7 @@
 #include <mutex>
 #include <map>
 #include <unordered_set>
+#include <queue>
 #include "data.h"
 
 struct Query3 {
@@ -60,13 +61,13 @@ class Query3Calculator {
 		std::map<int, int> invPeople;
 		std::set<Answer3> answerHeap;
 		std::vector<Answer3> answers;
-		std::vector<std::vector<std::set<int> > > invList;
-		std::vector<std::set<int>::iterator> map_itr;
+		std::vector<std::vector<std::vector<int> > > invList;
+		std::vector<std::vector<int>::iterator> map_itr;
 		std::vector<int> i_itr, zero_itr, curRound;
 		std::vector<unordered_map<int, int> > candidate;
-		std::vector<std::vector<std::set<int> > > pool;
+		std::vector<std::vector<std::priority_queue<int> > > pool;
 		std::vector<unordered_set<int> > forsake;
-		std::vector<std::set<std::pair<int, int> > > oneHeap;
+//		std::vector<std::set<std::pair<int, int> > > oneHeap;
 				
 };
 

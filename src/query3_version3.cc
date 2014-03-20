@@ -142,7 +142,7 @@ void Query3Calculator::init(const string &p)
 	pool.resize(people.size());
 	curRound.resize(people.size());
 	first.resize(people.size());
-	oneHeap.resize(people.size());
+//	oneHeap.resize(people.size());
 	forsake.resize(people.size());
 	for (int i = 0; i < (int) candidate.size(); i ++)
 		candidate[i].set_empty_key(-1);
@@ -186,15 +186,16 @@ void Query3Calculator::calcInvertedList()
 		//generate local inverted list
 		for (int i = 0; i < (int) curTags.size(); i ++)
 		{
-			vector<int> &r = invertedList[curTags[i].second];
-			invList[g].push_back(set<int>(r.begin(), r.end()));
+			vector<int> r = invertedList[curTags[i].second];
+			sort(r.begin(), r.end());
+			invList[g].push_back(r);
 		}
 	}
 }
 
 void Query3Calculator::moveOneStep(int g, int h, int f)
 {
-	vector<set<int> > &r = invList[g];
+	vector<vector<int> > &r = invList[g];
 	int curPerson = people[g];		
 	
 	for (; i_itr[g] < (int) r.size(); i_itr[g] ++)
@@ -220,9 +221,8 @@ void Query3Calculator::moveOneStep(int g, int h, int f)
 		//
 		while (! pool[g][curLen].empty())
 		{
-			set<int>::iterator iter = pool[g][curLen].begin();
-			int cur = *iter;
-			pool[g][curLen].erase(iter);
+			int cur = pool[g][curLen].top();
+			pool[g][curLen].pop();
 			if (bfs3(curPerson, cur, -1, h) <= h)
 				insHeap(Answer3(curLen, curPerson, cur), g, f);
 		}	
@@ -236,11 +236,23 @@ void Query3Calculator::moveOneStep(int g, int h, int f)
 				forsake[g].insert(j);										
 				int tot = candidate[g][j];
 				for (int p = i + 1; p < (int) r.size(); p ++)
-					if (r[p].count(j)) tot ++;				
+				{
+					int flag = 0;
+					for (int lo = 0, hi = (int) r[p].size() - 1; lo <= hi; )
+					{
+						int mid = (lo + hi) / 2;
+						if (r[p][mid] == j)
+						{
+							flag = 1; break;
+						}
+						if (r[p][mid] < j) lo = mid + 1; else hi = mid - 1;
+					}
+					if (flag) tot ++;				
+				}	
 			
 				if (tot != (int) r.size() - i) 
 				{
-					pool[g][tot].insert(j);
+					pool[g][tot].push(j);
 					continue;
 				}
 				if (bfs3(curPerson, j, -1, h) > h) 
@@ -306,9 +318,10 @@ void Query3Calculator::work(int k, int h, const string &p, std::vector<Answer3> 
 		forsake[g].clear();
 		pool[g].resize(invList[g].size() + 2);			
 		forsake[g].insert(people[g]);
+/*
 		//init oneHeap
 		for (int i = 0; i < (int) invList[g].size(); i ++)
-			oneHeap[g].insert(make_pair(*(invList[g][i].begin()), i));
+			oneHeap[g].insert(make_pair(*(invList[g][i].begin()), i));*/
 		moveOneStep(g, h, 0);
 	}
 //	return ;

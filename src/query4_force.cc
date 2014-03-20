@@ -121,7 +121,7 @@ void Query4Handler::add_query(int k, const string& s) {
 	}
 
 	//print_debug("Before cal SP %lf\n", timer.get_time());
-	calculate_SP(persons);
+	ucalculate_SP(persons);
 	//print_debug("After cal SP %lf\n", timer.get_time());
 
 	priority_queue<HeapEle> q;		// need a fixed-size queue later

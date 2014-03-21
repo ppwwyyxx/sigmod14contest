@@ -7,6 +7,7 @@
 #include <vector>
 #include <mutex>
 #include <string>
+#include "lib/hash_lib.h"
 
 struct Query4 {
 	int k;
@@ -33,18 +34,21 @@ class Query4Calculator {
 		const std::vector<std::vector<int>>& friends;
 		int k;
 
+		int contract_dist;
+
 		Query4Calculator(const std::vector<std::vector<int>>& _friends, int _k):
 			np(_friends.size()), friends(_friends), k(_k) {
 
 			degree = new int[np];
 			que = new size_t[np];
 			compute_degree();
+
+			contract_dist = 2;
 		}
 
 		std::vector<int> work();
 
 
-		void compute_degree();
 
 		~Query4Calculator() {
 			delete[] degree;
@@ -53,6 +57,29 @@ class Query4Calculator {
 
 
 	protected:
+		void compute_degree();
+		void contract_graph();
+
+		//! estimate s using contracted graph
+		long long estimate_s_using_cgraph(int source);
+
+		long long get_extact_s(int source);
+
+
+		std::vector<std::vector<int>> cgraph;
+		std::vector<int> cgraph_vtx_weight;
+
+		std::vector<int> vtx_old2new;
+		std::vector<std::vector<int>> vtx_new2old;
+
 		int* degree;
 		size_t* que;
+
+		static int dummy;
+
+		std::vector<long long> cgraph_estimated_s_inner;
+		std::vector<long long> cgraph_estimated_s_outter;
+		std::vector<long long> cgraph_estimated_s;
+
+		double get_centrality_by_vtx_and_s(int v, long long s);
 };

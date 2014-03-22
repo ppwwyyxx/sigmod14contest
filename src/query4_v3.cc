@@ -1,6 +1,6 @@
 /*
  * $File: query4_v3.cc
- * $Date: Sat Mar 22 11:59:15 2014 +0000
+ * $Date: Sat Mar 22 12:57:50 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -383,14 +383,10 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 #pragma omp parallel for schedule(static) num_threads(4)
 		REP(i, np) {
 			auto& fs = Data::friends[persons[i]];
-			std::vector<bool> hash(np);
 			FOR_ITR(itr, fs) {
 				auto lb_itr = lower_bound(persons.begin(), persons.end(), itr->pid);
 				if (lb_itr != persons.end() and *lb_itr == itr->pid) {
 					int v = (int)distance(persons.begin(), lb_itr);
-					if (hash[v])
-						continue;
-					hash[v] = true;
 					friends[i].push_back(v);
 				}
 			}

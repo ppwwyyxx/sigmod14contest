@@ -1,6 +1,6 @@
 /*
  * $File: query4_v3.cc
- * $Date: Sat Mar 22 11:59:15 2014 +0000
+ * $Date: Sat Mar 22 15:14:35 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <set>
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include <fstream>
 
@@ -254,6 +255,29 @@ void output_dot_graph(string fname, const vector<vector<int>> &friends) {
 	fout << "}\n";
 }
 
+void Query4Calculator::bfs_diameter(const std::vector<vector<int>> &g, int source, int &farthest_vtx,
+		int &dist_max, vector<bool> &hash) {
+	queue<int> q;
+	q.push(source);
+	hash[source] = true;
+	farthest_vtx = source;
+	dist_max = 0;
+	for (int depth = 0; !q.empty(); depth ++) {
+		int qsize = q.size();
+		for (int i = 0; i < qsize; i ++) {
+			int v0 = q.front(); q.pop();
+			for (auto &v1: g[v0]) {
+				if (hash[v1])
+					continue;
+				hash[v1] = true;
+				farthest_vtx = v1;
+				dist_max = depth + 1;
+				q.push(v1);
+			}
+		}
+	}
+}
+
 vector<int> Query4Calculator::work() {
 
 	Timer timer;
@@ -281,7 +305,25 @@ vector<int> Query4Calculator::work() {
 	}
 
 	int est_dist_max = 2;  // TODO: this parameter needs tune
-	if (np > 2400 and Data::nperson > 11000) est_dist_max = 3;
+//    if (np > 2400 and Data::nperson > 11000) est_dist_max = 3;
+//    if (np == 2567 && k == 4) est_dist_max = 4;
+	int farthest_vtx = -1, diameter = -1;
+	std::vector<bool> diameter_hash(np), h2(np);
+	for (int i = 0; i < np; i ++) {
+		if (diameter_hash[i])
+			continue;
+		int fv, d;
+		bfs_diameter(friends, i, fv, d, h2);
+		bfs_diameter(friends, fv, fv, d, diameter_hash);
+		if (d > diameter)
+			diameter = d, farthest_vtx = fv;
+	}
+//    assert(diameter != -1);
+
+	est_dist_max = max(2, (int)floor(log((double)diameter) / log(2.0) + 0.5));
+//    if (np == 8544 && k == 3)
+//        est_dist_max = 3;
+
 
 	vector<HeapEle> heap_ele_buf(np);
 	estimated_s.resize(np);
@@ -320,7 +362,9 @@ vector<int> Query4Calculator::work() {
 			assert(centrality <= last_centrality);
 			if (centrality == last_centrality && vtx == last_vtx) {
 				ans.emplace_back(vtx);
-//                cerr << "vtx: " << he.centrality << endl;
+//                if (np == 3453 && k == 1) {
+//                    cerr << "vtx: " << he.centrality << endl;
+//                }
 				if ((int)ans.size() == k)
 					break;
 			} else {
@@ -328,22 +372,26 @@ vector<int> Query4Calculator::work() {
 				long long s = get_extact_s(vtx);
 				long long es = estimated_s[vtx];
 				double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
-//                cerr << "failed vtx: " << vtx << endl;
-//                cerr << "deg: " << degree[vtx] << endl;
-//                cerr << "s: " << s << " " << es << endl;
-//                cerr << "cent: " << centrality << " " << he.centrality << endl;
+//                if (np == 3453 && k == 1) {
+//                    cerr << "failed vtx: " << vtx << endl;
+//                    cerr << "deg: " << degree[vtx] << endl;
+//                    cerr << "s: " << s << " " << es << endl;
+//                    cerr << "cent: " << centrality << " " << he.centrality << endl;
+//                }
 				q.push(HeapEle(vtx, new_centrality));
 			}
 
 			last_centrality = centrality;
 			last_vtx = vtx;
 		}
-		print_debug("cnt: %d/%d/%d\n", np, cnt, k);
+		print_debug("cnt: %d/%d/%d/%d/%d\n", np, cnt, k, (int)diameter, (int)est_dist_max);
 
 #if 0
 
-		if ((np == 1420 && cnt == 1279 && k == 4) || (
-				np == 13097 && cnt == 4 && k == 2)) {
+		if ((np == 1420 && cnt == 1279 && k == 4) ||
+				(np == 13097 && cnt == 4 && k == 2) ||
+				(np == 708 && cnt == 20 && k == 6) ||
+				(np == 2567 && cnt == 2431 && k == 4)) {
 			auto name = get_graph_name(np, cnt, k, est_dist_max);
 			output_dot_graph(name + ".dot", friends);
 			output_tgf_graph(name + ".tgf", friends);

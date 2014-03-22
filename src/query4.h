@@ -85,5 +85,7 @@ class Query4Calculator {
 
 		std::vector<long long> estimated_s;
 		double get_centrality_by_vtx_and_s(int v, long long s);
-		long long estimate_s_limit_depth(int source, int depth_max);
+	 	long long estimate_s_limit_depth(int source, int depth_max);
+		void bfs_diameter(const std::vector<std::vector<int>> &g, int source, int &farthest_vtx,
+				int &dist_max, std::vector<bool> &hash);
 };

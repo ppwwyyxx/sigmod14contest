@@ -35,6 +35,7 @@ class Query4Calculator {
 		int k;
 
 		int contract_dist;
+		int contract_nr_vtx;
 
 		Query4Calculator(const std::vector<std::vector<int>>& _friends, int _k):
 			np(_friends.size()), friends(_friends), k(_k) {
@@ -43,7 +44,8 @@ class Query4Calculator {
 			que = new size_t[np];
 			compute_degree();
 
-			contract_dist = 2;
+			contract_dist = np;
+			contract_nr_vtx = 3;
 		}
 
 		std::vector<int> work();
@@ -81,5 +83,7 @@ class Query4Calculator {
 		std::vector<long long> cgraph_estimated_s_outter;
 		std::vector<long long> cgraph_estimated_s;
 
+		std::vector<long long> estimated_s;
 		double get_centrality_by_vtx_and_s(int v, long long s);
+		long long estimate_s_limit_depth(int source, int depth_max);
 };

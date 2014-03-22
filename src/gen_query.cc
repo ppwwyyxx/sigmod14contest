@@ -69,6 +69,10 @@ void make_q4()
 }
 
 int main(int argc, char* argv[]) {
+	if (argc != 7) {
+		printf("Usage: %s <data_dir> <output> <#q1> <#q2> <#q3> <#q4>\n", argv[0]);
+		exit(1);
+	}
 	srand((unsigned)time(NULL));
 	q4_tag_set.set_empty_key("");
 	string dir(argv[1]);

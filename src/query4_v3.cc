@@ -1,6 +1,6 @@
 /*
  * $File: query4_v3.cc
- * $Date: Fri Mar 21 20:43:10 2014 +0800
+ * $Date: Sat Mar 22 11:59:15 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -15,6 +15,8 @@
 #include <algorithm>
 #include <set>
 #include <cassert>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -80,7 +82,6 @@ void Query4Calculator::compute_degree() {
 }
 
 void Query4Calculator::contract_graph() {
-	int contract_dist = 2;
 	std::vector<int> dist(np);
 	vtx_old2new.resize(np, -1);
 	std::vector<std::vector<int>> &nodes = vtx_new2old;
@@ -102,14 +103,14 @@ void Query4Calculator::contract_graph() {
 
 		int nr_remain = degree[source];
 		long long s_inner = 0, s_outter = 0;
-		for (int depth = 0; depth < contract_dist; depth ++) {
+		for (int depth = 0; depth < contract_dist && qt != contract_nr_vtx; depth ++) {
 			int qsize = qt - qh;
 			s_inner += qsize * depth;
 			nr_remain -= qsize;
 			int d1 = depth + 1;
 			if (qsize == 0)
 				break;
-			for (int i = 0; i < qsize; i ++) {
+			for (int i = 0; i < qsize && qt != contract_nr_vtx; i ++) {
 				int v0 = q[qh ++];
 				for (auto &v1: friends[v0]) {
 					if (vtx_old2new[v1] != -1)
@@ -117,6 +118,8 @@ void Query4Calculator::contract_graph() {
 					vtx_old2new[v1] = cur_vtx;
 					dist[v1] = d1;
 					qt ++; q.push_back(v1);
+					if (qt == contract_nr_vtx)
+						break;
 				}
 			}
 		}
@@ -167,8 +170,37 @@ long long Query4Calculator::get_extact_s(int source) {
 			}
 		}
 	}
+//    assert(s != 0);
 	return s;
 }
+
+long long Query4Calculator::estimate_s_limit_depth(int source, int depth_max) {
+	std::vector<bool> hash(np);
+	std::queue<int> q;
+	hash[source] = true;
+	q.push(source);
+	long long s = 0;
+	int nr_remain = degree[source];
+	for (int depth = 0; !q.empty(); depth ++) {
+		int qsize = (int)q.size();
+		s += depth * qsize;
+		nr_remain -= qsize;
+		if (depth == depth_max)
+			break;
+		for (int i = 0; i < qsize; i ++) {
+			int v0 = q.front(); q.pop();
+			for (auto &v1: friends[v0]) {
+				if (hash[v1])
+					continue;
+				hash[v1] = true;
+				q.push(v1);
+			}
+		}
+	}
+	s += nr_remain * (depth_max + 1);
+	return s;
+}
+
 
 
 long long Query4Calculator::estimate_s_using_cgraph(int source) {
@@ -195,22 +227,80 @@ long long Query4Calculator::estimate_s_using_cgraph(int source) {
 	return s;
 }
 
+string get_graph_name(int np, int cnt, int k, int est_dist) {
+	char buf[1000];
+	sprintf(buf, "%d-%d-%d-%d", np, cnt, k, est_dist);
+	return buf;
+}
+
+void output_tgf_graph(string fname, const vector<vector<int>> &friends) {
+	ofstream fout(fname);
+	for (size_t i = 0; i < friends.size(); i ++)
+		fout << i + 1<< ' ' << i + 1 << endl;
+	fout << "#" << endl;
+	for (size_t i = 0; i < friends.size(); i ++) {
+		for (auto &j: friends[i])
+			fout << i + 1 << ' ' << j + 1 << endl;
+	}
+}
+
+void output_dot_graph(string fname, const vector<vector<int>> &friends) {
+	ofstream fout(fname);
+	fout << "graph {\n";
+	for (size_t i = 0; i < friends.size(); i ++) {
+		for (auto &j: friends[i])
+			fout << "    " << i << " -- " << j << ";\n";
+	}
+	fout << "}\n";
+}
+
 vector<int> Query4Calculator::work() {
-	contract_graph();
 
-	// estimate s using contracted graph
-	int nr_vtx = (int)cgraph.size();
-	cgraph_estimated_s.resize(nr_vtx);
+	Timer timer;
 
-	for (int i = 0; i < nr_vtx; i ++) {
-		cgraph_estimated_s[i] = estimate_s_using_cgraph(i);
+	int test_nvtx = -1;
+
+	if (np == test_nvtx) {
+		{
+			GuardedTimer timer("contract graph");
+			contract_graph();
+		}
+
+
+		// estimate s using contracted graph
+		int nr_vtx = (int)cgraph.size();
+		fprintf(stderr, "contract_graph: nr_vtx: %d/%d\n", nr_vtx, np);
+		cgraph_estimated_s.resize(nr_vtx);
+
+		{
+			GuardedTimer timer("estimate s using contract graph");
+			for (int i = 0; i < nr_vtx; i ++) {
+				cgraph_estimated_s[i] = estimate_s_using_cgraph(i);
+			}
+		}
 	}
 
-	// build heap
+	int est_dist_max = 2;  // TODO: this parameter needs tune
+	if (np > 2400 and Data::nperson > 11000) est_dist_max = 3;
+
 	vector<HeapEle> heap_ele_buf(np);
-	for (int i = 0; i < (int)np; i ++) {
-		double centrality = get_centrality_by_vtx_and_s(i, cgraph_estimated_s[vtx_old2new[i]]);
-		heap_ele_buf[i] = HeapEle(i, centrality);
+	estimated_s.resize(np);
+	// build heap
+	{
+		GuardedTimer timer("build heap");
+
+#pragma omp parallel for schedule(static) num_threads(4)
+		for (int i = 0; i < (int)np; i ++) {
+			if (np == test_nvtx) {
+				int vtx = vtx_old2new[i];
+				estimated_s[i] = cgraph_estimated_s[vtx];
+			} else {
+				estimated_s[i] = estimate_s_limit_depth(i, est_dist_max);
+			}
+			int es = estimated_s[i];
+			double centrality = get_centrality_by_vtx_and_s(i, es);
+			heap_ele_buf[i] = HeapEle(i, centrality);
+		}
 	}
 
 	priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
@@ -218,32 +308,62 @@ vector<int> Query4Calculator::work() {
 	// iterate
 	vector<int> ans;
 
-	double last_centrality = 1e100;
-	int last_vtx = -1;
-	int cnt = 0;
-	while (!q.empty()) {
-		auto he = q.top(); q.pop();
-		int vtx = he.vtx;
-		double centrality = he.centrality;
-		if (centrality == last_centrality && vtx == last_vtx) {
-			ans.emplace_back(vtx);
-			if ((int)ans.size() == k)
-				break;
-		} else {
-			cnt ++;
-			q.push(HeapEle(vtx, get_centrality_by_vtx_and_s(vtx, get_extact_s(vtx))));
-		}
+	{
+		GuardedTimer timer("iterate");
+		double last_centrality = 1e100;
+		int last_vtx = -1;
+		int cnt = 0;
+		while (!q.empty()) {
+			auto he = q.top(); q.pop();
+			int vtx = he.vtx;
+			double centrality = he.centrality;
+			assert(centrality <= last_centrality);
+			if (centrality == last_centrality && vtx == last_vtx) {
+				ans.emplace_back(vtx);
+//                cerr << "vtx: " << he.centrality << endl;
+				if ((int)ans.size() == k)
+					break;
+			} else {
+				cnt ++;
+				long long s = get_extact_s(vtx);
+				long long es = estimated_s[vtx];
+				double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
+//                cerr << "failed vtx: " << vtx << endl;
+//                cerr << "deg: " << degree[vtx] << endl;
+//                cerr << "s: " << s << " " << es << endl;
+//                cerr << "cent: " << centrality << " " << he.centrality << endl;
+				q.push(HeapEle(vtx, new_centrality));
+			}
 
-		last_centrality = centrality;
-		last_vtx = vtx;
+			last_centrality = centrality;
+			last_vtx = vtx;
+		}
+		print_debug("cnt: %d/%d/%d\n", np, cnt, k);
+
+#if 0
+
+		if ((np == 1420 && cnt == 1279 && k == 4) || (
+				np == 13097 && cnt == 4 && k == 2)) {
+			auto name = get_graph_name(np, cnt, k, est_dist_max);
+			output_dot_graph(name + ".dot", friends);
+			output_tgf_graph(name + ".tgf", friends);
+		}
+#endif
 	}
 
+	auto time = timer.get_time();
+	print_debug("total: %f secs\n", time);
+	if (time > 0.1)
+		print_debug("---------------------------\n");
 	return move(ans);
-
 }
 
 double Query4Calculator::get_centrality_by_vtx_and_s(int v, long long s) {
-	return ::sqr(degree[v] - 1.0) / (double)s / ((int)np - 1);
+	if (s == 0)
+		return 0;
+	double ret = ::sqr(degree[v] - 1.0) / (double)s / ((int)np - 1);
+//    assert(!isnan((long double)ret));
+	return ret;
 }
 
 
@@ -263,12 +383,21 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 #pragma omp parallel for schedule(static) num_threads(4)
 		REP(i, np) {
 			auto& fs = Data::friends[persons[i]];
+			std::vector<bool> hash(np);
 			FOR_ITR(itr, fs) {
 				auto lb_itr = lower_bound(persons.begin(), persons.end(), itr->pid);
 				if (lb_itr != persons.end() and *lb_itr == itr->pid) {
-					friends[i].push_back((int)distance(persons.begin(), lb_itr));
+					int v = (int)distance(persons.begin(), lb_itr);
+					if (hash[v])
+						continue;
+					hash[v] = true;
+					friends[i].push_back(v);
 				}
 			}
+
+//            set<int> s(friends[i].begin(), friends[i].end());
+//            friends[i].resize(s.size());
+//            std::copy(s.begin(), s.end(), friends[i].begin());
 		}
 	}
 	friends_data_reader --;

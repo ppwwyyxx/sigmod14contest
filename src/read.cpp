@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Wed Mar 19 09:34:13 2014 +0800
+//Date: Sat Mar 22 12:53:03 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -80,7 +80,7 @@ void read_person_knows_person(const string& dir) {
 		//Data::pp_map[p1][p2] = Data::pp_map[p2][p1] = true;
 
 		Data::friends[p1].emplace_back(p2, 0);
-		Data::friends[p2].emplace_back(p1, 0);
+		//Data::friends[p2].emplace_back(p1, 0);
 	}
 	fclose(fin);
 }

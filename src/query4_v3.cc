@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Sat Mar 22 15:41:59 2014 +0800
+ * $File: query4_v3.cc
+ * $Date: Sat Mar 22 18:54:01 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -345,6 +345,7 @@ vector<int> Query4Calculator::work() {
 		}
 	}
 
+	double time_phase1 = timer.get_time();
 	priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
 
 	// iterate
@@ -400,8 +401,16 @@ vector<int> Query4Calculator::work() {
 
 	auto time = timer.get_time();
 	print_debug("total: %f secs\n", time);
-	if (time > 0.5)
-		fprintf(stderr, "cnt: %ul/%d/%d/%d/%d\n", np, cnt, k, (int)diameter, (int)est_dist_max);
+/*
+ *    if (time > 0.5) {
+ *        static int print = false;
+ *        if (!print)  {
+ *            print = true;
+ *            fprintf(stderr, "%lf-%lf %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
+ *        }
+ *		print_debug("cnt: %lu/%d/%d/%d/%d\n", np, cnt, k, (int)diameter, (int)est_dist_max);
+ *    }
+ */
 	return move(ans);
 }
 

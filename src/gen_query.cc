@@ -1,12 +1,16 @@
 //File: gen_query.cc
-//Date: Wed Mar 19 09:32:47 2014 +0800
+//Date: Sat Mar 22 19:24:08 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
+#include <cstdio>
+#include <ctime>
+#include <stdio.h>
+#include <cstdlib>
 
 #include "data.h"
 #include "read.h"
-#include <cstdio>
-#include <ctime>
-#include <cstdlib>
+#include "query4.h"
+#include "lib/common.h"
 #define random(l, r) (rand() % ((r) - (l) + 1) + (l))
 using namespace std;
 
@@ -61,10 +65,20 @@ void make_q3()
 
 void make_q4()
 {
-	for (int i = 0; i < num_q[3]; ++i)
-	{
-		printf("query4(%d, ", random(1, q4_max_k));
-		cout << Data::tag_name[random(0, Data::tag_name.size() - 1)] << ")" << endl;
+	/*
+	 *for (int i = 0; i < num_q[3]; ++i)
+	 *{
+	 *    printf("query4(%d, ", random(1, q4_max_k));
+	 *    cout << Data::tag_name[random(0, Data::tag_name.size() - 1)] << ")" << endl;
+	 *}
+	 */
+	REP(i, Data::ntag) {
+		string name = Data::tag_name[i];
+		auto p = get_tag_persons(name);
+		if (p.size() > 10000) {
+			PP(p.size());
+			printf("query4(%d, %s)\n", random(1, q4_max_k), name.c_str());
+		}
 	}
 }
 
@@ -74,8 +88,27 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 	srand((unsigned)time(NULL));
+#ifdef GOOGLE_HASH
 	q4_tag_set.set_empty_key("");
+#endif
 	string dir(argv[1]);
+
+	// read all tag names first
+	char buffer[1024];
+	FILE* fin = fopen((dir + "/tag.csv").c_str(), "r");
+	fgets(buffer, 1024, fin);
+	int tid;
+	while (fscanf(fin, "%d|", &tid) == 1) {
+		int k = 0; char c;
+		while ((c = (char)fgetc(fin)) != '|')
+			buffer[k++] = c;
+		string tag_name(buffer, k);
+		q4_tag_set.insert(tag_name);
+		fgets(buffer, 1024, fin);
+	}
+	fclose(fin);
+
+
 
 	read_data(dir);
 	read_tags_forums_places(dir);

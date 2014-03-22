@@ -1,5 +1,5 @@
 //File: query3.h
-//Date: Tue Mar 18 14:22:31 2014 +0800
+//Date: Sat Mar 22 16:37:03 2014 +0800
 
 #pragma once
 
@@ -50,10 +50,12 @@ class Query3Calculator {
 		void moveOneStep(int g, int h, int f);
 		void init(const std::string &p);
 		void insHeap(Answer3 cur, int g, int f);
-		
+
+		Query3Calculator():sum(0), heapSize(0){}
+
 	protected:
-		int sum = 0;
-		int heapSize = 0, qk;
+		int sum;
+		int heapSize, qk;
 		PersonSet pset;
 		std::set<int> pinplace;
 		std::vector<int> people;
@@ -68,7 +70,7 @@ class Query3Calculator {
 		std::vector<std::vector<std::priority_queue<int> > > pool;
 		std::vector<unordered_set<int> > forsake;
 //		std::vector<std::set<std::pair<int, int> > > oneHeap;
-				
+
 };
 
 class Query3Handler {
@@ -83,6 +85,6 @@ class Query3Handler {
 		void bfs(int, int, int);		// for version2
 		void bfs(int, int);				// for force
 
-		std::vector<std::vector<Answer3> > global_answer;	
+		std::vector<std::vector<Answer3> > global_answer;
 
 };

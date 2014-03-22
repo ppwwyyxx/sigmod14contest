@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Sat Mar 22 15:16:35 2014 +0000
+ * $Date: Sat Mar 22 15:41:59 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -350,11 +350,11 @@ vector<int> Query4Calculator::work() {
 	// iterate
 	vector<int> ans;
 
+	int cnt = 0;
 	{
 		GuardedTimer timer("iterate");
 		double last_centrality = 1e100;
 		int last_vtx = -1;
-		int cnt = 0;
 		while (!q.empty()) {
 			auto he = q.top(); q.pop();
 			int vtx = he.vtx;
@@ -384,7 +384,6 @@ vector<int> Query4Calculator::work() {
 			last_centrality = centrality;
 			last_vtx = vtx;
 		}
-		print_debug("cnt: %d/%d/%d/%d/%d\n", np, cnt, k, (int)diameter, (int)est_dist_max);
 
 #if 0
 
@@ -401,8 +400,8 @@ vector<int> Query4Calculator::work() {
 
 	auto time = timer.get_time();
 	print_debug("total: %f secs\n", time);
-	if (time > 0.1)
-		print_debug("---------------------------\n");
+	if (time > 0.5)
+		fprintf(stderr, "cnt: %ul/%d/%d/%d/%d\n", np, cnt, k, (int)diameter, (int)est_dist_max);
 	return move(ans);
 }
 

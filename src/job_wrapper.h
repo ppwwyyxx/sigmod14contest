@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Wed Mar 19 12:30:21 2014 +0800
+//Date: Sat Mar 22 16:51:42 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -29,13 +29,15 @@ void add_all_query(int);
 inline int do_read_comments(const std::string dir) {
 	Timer timer;
 	read_comments(dir);
-	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
+	PP("after comment read");
+//	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
 	return 0;
 }
 inline int do_read_tags_forums_places(const std::string dir) {
 	Timer timer;
 	read_tags_forums_places(dir);
-	if (Data::nperson > 11000) fprintf(stderr, "npl:%lu, forut:%.4lf\n", Data::placeid.size(), timer.get_time());
+	PP("after forum read");
+//	if (Data::nperson > 11000) fprintf(stderr, "npl:%lu, forut:%.4lf\n", Data::placeid.size(), timer.get_time());
 	return 0;
 }
 
@@ -45,6 +47,7 @@ inline int do_read_tags_forums_places(const std::string dir) {
 	lk.unlock();
 
 inline void start_1(int) {
+	PP("start1");
 	Timer timer;
 	{
 		std::unique_lock<std::mutex> lgg(mt_friends_data_changing);
@@ -78,6 +81,7 @@ inline void start_3() {
 }
 
 inline void start_4(int) {
+	PP("start4");
 	Timer timer;
 	size_t s = q4_set.size();
 	REP(i, s) {

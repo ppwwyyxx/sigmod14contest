@@ -1,6 +1,6 @@
 /*
  * $File: ThreadPool.hh
- * $Date: Tue Mar 18 14:29:37 2014 +0800
+ * $Date: Sat Mar 22 17:00:57 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -71,6 +71,7 @@ public:
 			{
 				std::unique_lock<std::mutex> lock(queue_mutex);
 				tasks.push(std::bind(__ThreadPoolImpl::task_wrapper, task));
+
 			}
 			condition.notify_one();
 		}
@@ -102,12 +103,15 @@ private:
 	// synchronization
 	std::mutex queue_mutex;
 	std::condition_variable condition;
+	std::mutex nr_active_thread_mutex;
+
+	int nr_active_thread;
 	bool stop;
 };
 
 // the constructor just launches some amount of workers
 inline ThreadPool::ThreadPool(size_t threads)
-	: stop(false)
+	: nr_active_thread(0), stop(false)
 {
 	for(size_t i = 0;i<threads;++i)
 		workers.emplace_back(std::bind(__ThreadPoolImpl::worker, this));
@@ -121,7 +125,7 @@ inline ThreadPool::~ThreadPool()
 		std::unique_lock<std::mutex> lock(queue_mutex);
 		stop = true;
 	}
-	condition.notify_all();
+	//condition.notify_all();
 	for(size_t i = 0;i<workers.size();++i)
 		workers[i].join();
 }

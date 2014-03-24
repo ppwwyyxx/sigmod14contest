@@ -44,7 +44,7 @@ class Query4Calculator {
 			que = new size_t[np];
 			compute_degree();
 
-			contract_dist = np;
+			contract_dist = (int)np;
 			contract_nr_vtx = 3;
 		}
 
@@ -88,4 +88,13 @@ class Query4Calculator {
 	 	long long estimate_s_limit_depth(int source, int depth_max);
 		void bfs_diameter(const std::vector<std::vector<int>> &g, int source, int &farthest_vtx,
 				int &dist_max, std::vector<bool> &hash);
+
+
+		void estimate_all_s_using_delta_bfs(int est_dist_max);
+
+		//! return number of vertex traversed
+		int bfs(const std::vector<std::vector<int>> &graph,
+				int source, int base_dist, int est_dist_max, std::vector<int> &dist,
+				std::vector<int> &dist_count);
+		long long get_s_by_dist_count(int vtx, const std::vector<int> &dist_count, int begin, int finish);
 };

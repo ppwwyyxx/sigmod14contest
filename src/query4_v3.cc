@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Sat Mar 22 15:41:59 2014 +0800
+ * $File: query4_v3.cc
+ * $Date: Mon Mar 24 12:15:47 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -263,7 +263,7 @@ void Query4Calculator::bfs_diameter(const std::vector<vector<int>> &g, int sourc
 	farthest_vtx = source;
 	dist_max = 0;
 	for (int depth = 0; !q.empty(); depth ++) {
-		int qsize = q.size();
+		int qsize = (int)q.size();
 		for (int i = 0; i < qsize; i ++) {
 			int v0 = q.front(); q.pop();
 			for (auto &v1: g[v0]) {
@@ -284,7 +284,7 @@ vector<int> Query4Calculator::work() {
 
 	int test_nvtx = -1;
 
-	if (np == test_nvtx) {
+	if ((int)np == test_nvtx) {
 		{
 			GuardedTimer timer("contract graph");
 			contract_graph();
@@ -293,7 +293,7 @@ vector<int> Query4Calculator::work() {
 
 		// estimate s using contracted graph
 		int nr_vtx = (int)cgraph.size();
-		fprintf(stderr, "contract_graph: nr_vtx: %d/%d\n", nr_vtx, np);
+		fprintf(stderr, "contract_graph: nr_vtx: %d/%d\n", nr_vtx, (int)np);
 		cgraph_estimated_s.resize(nr_vtx);
 
 		{
@@ -307,16 +307,16 @@ vector<int> Query4Calculator::work() {
 	int est_dist_max = 2;  // TODO: this parameter needs tune
 //    if (np > 2400 and Data::nperson > 11000) est_dist_max = 3;
 //    if (np == 2567 && k == 4) est_dist_max = 4;
-	int farthest_vtx = -1, diameter = -1;
+	int diameter = -1;
 	std::vector<bool> diameter_hash(np), h2(np);
-	for (int i = 0; i < np; i ++) {
+	for (int i = 0; i < (int)np; i ++) {
 		if (diameter_hash[i])
 			continue;
 		int fv, d;
 		bfs_diameter(friends, i, fv, d, h2);
 		bfs_diameter(friends, fv, fv, d, diameter_hash);
 		if (d > diameter)
-			diameter = d, farthest_vtx = fv;
+			diameter = d;
 	}
 //    assert(diameter != -1);
 
@@ -327,23 +327,35 @@ vector<int> Query4Calculator::work() {
 
 	vector<HeapEle> heap_ele_buf(np);
 	estimated_s.resize(np);
-	// build heap
-	{
-		GuardedTimer timer("build heap");
 
-#pragma omp parallel for schedule(static) num_threads(4)
-		for (int i = 0; i < (int)np; i ++) {
-			if (np == test_nvtx) {
-				int vtx = vtx_old2new[i];
-				estimated_s[i] = cgraph_estimated_s[vtx];
-			} else {
-				estimated_s[i] = estimate_s_limit_depth(i, est_dist_max);
-			}
-			int es = estimated_s[i];
-			double centrality = get_centrality_by_vtx_and_s(i, es);
-			heap_ele_buf[i] = HeapEle(i, centrality);
-		}
+	estimate_all_s_using_delta_bfs(est_dist_max);
+
+	for (int i = 0; i < (int)np; i ++) estimated_s[i] = estimate_s_limit_depth(i, est_dist_max);
+
+	for (int i = 0; i < (int)np; i ++) {
+		double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
+		heap_ele_buf[i] = HeapEle(i, centrality);
 	}
+
+	 // build heap
+//    {
+//        GuardedTimer timer("build heap");
+
+//#pragma omp parallel for schedule(static) num_threads(4)
+//        for (int i = 0; i < (int)np; i ++) {
+//            if (np == test_nvtx) {
+//                int vtx = vtx_old2new[i];
+//                estimated_s[i] = cgraph_estimated_s[vtx];
+//            } else {
+//                estimated_s[i] = estimate_s_limit_depth(i, est_dist_max);
+//            }
+//            int es = estimated_s[i];
+//            double centrality = get_centrality_by_vtx_and_s(i, es);
+//            heap_ele_buf[i] = HeapEle(i, centrality);
+//        }
+//    }
+
+	auto time_1 = timer.get_time();
 
 	priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
 
@@ -362,27 +374,27 @@ vector<int> Query4Calculator::work() {
 			assert(centrality <= last_centrality);
 			if (centrality == last_centrality && vtx == last_vtx) {
 				ans.emplace_back(vtx);
-//                if (np == 3453 && k == 1) {
-//                    cerr << "vtx: " << he.centrality << endl;
-//                }
+				//                if (np == 3453 && k == 1) {
+				//                    cerr << "vtx: " << he.centrality << endl;
+				//                }
 				if ((int)ans.size() == k)
 					break;
 			} else {
 				cnt ++;
 				long long s = get_extact_s(vtx);
-				long long es = estimated_s[vtx];
+				// long long es = estimated_s[vtx];
 				double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
-//                if (np == 3453 && k == 1) {
-//                    cerr << "failed vtx: " << vtx << endl;
-//                    cerr << "deg: " << degree[vtx] << endl;
-//                    cerr << "s: " << s << " " << es << endl;
-//                    cerr << "cent: " << centrality << " " << he.centrality << endl;
-//                }
+				//                if (np == 3453 && k == 1) {
+				//                    cerr << "failed vtx: " << vtx << endl;
+				//                    cerr << "deg: " << degree[vtx] << endl;
+				//                    cerr << "s: " << s << " " << es << endl;
+				//                    cerr << "cent: " << centrality << " " << he.centrality << endl;
+				//                }
 				q.push(HeapEle(vtx, new_centrality));
 			}
 
-			last_centrality = centrality;
-			last_vtx = vtx;
+				last_centrality = centrality;
+				last_vtx = vtx;
 		}
 
 #if 0
@@ -400,8 +412,8 @@ vector<int> Query4Calculator::work() {
 
 	auto time = timer.get_time();
 	print_debug("total: %f secs\n", time);
-	if (time > 0.5)
-		fprintf(stderr, "cnt: %ul/%d/%d/%d/%d\n", np, cnt, k, (int)diameter, (int)est_dist_max);
+	if (time > 0.1)
+		fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
 	return move(ans);
 }
 
@@ -409,10 +421,109 @@ double Query4Calculator::get_centrality_by_vtx_and_s(int v, long long s) {
 	if (s == 0)
 		return 0;
 	double ret = ::sqr(degree[v] - 1.0) / (double)s / ((int)np - 1);
-//    assert(!isnan((long double)ret));
+	//    assert(!isnan((long double)ret));
 	return ret;
 }
 
+
+long long Query4Calculator::get_s_by_dist_count(int vtx, const std::vector<int> &dist_count, int begin, int finish) {
+	long long s = 0;
+	int nr_remain = degree[vtx];
+	for (int i = begin; i <= finish; i ++) {
+		s += (i - begin) * dist_count[i];
+		nr_remain -= dist_count[i];
+	}
+
+	s += (finish - begin + 1) * (long long)nr_remain;
+	return s;
+}
+
+
+void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
+	vector<bool> is_done(np);
+
+	int nr_expect_to_search = 0;
+	int nr_searched = 0;
+	int nr_search_restart = 0;
+
+
+	for (int root = 0; root < (int)np; root ++) {
+		if (is_done[root])
+			continue;
+
+		nr_search_restart ++;
+
+		int base_dist = (int)np - 1;
+
+		vector<int> dist(np, (int)np + est_dist_max);
+		vector<int> dist_count(np + est_dist_max + 1);
+
+		dist_count[np + est_dist_max] = (int)np;
+
+		int cur_vtx = root;
+		for (; ;) {
+			nr_searched += bfs(friends, cur_vtx, base_dist, est_dist_max, dist,
+					dist_count);
+
+			for (int i = 0; i <= est_dist_max; i ++)
+				nr_expect_to_search += dist_count[base_dist + i];
+
+			estimated_s[cur_vtx] = get_s_by_dist_count(cur_vtx, dist_count,
+					base_dist, base_dist + est_dist_max);
+
+			is_done[cur_vtx] = true;
+
+			// XXX: CHECK
+//            long long exact_s = estimate_s_limit_depth(cur_vtx, est_dist_max);
+//            m_assert(estimated_s[cur_vtx] == exact_s);
+
+			// next round
+			int next_vtx = -1;
+			for (auto &v: friends[cur_vtx])
+				if (!is_done[v]) {
+					next_vtx = v;
+					break;
+				}
+			if (next_vtx == -1)
+				break;
+			cur_vtx = next_vtx;
+			base_dist --;
+		}
+	}
+
+	fprintf(stderr, "search_cutoff: %f %d/%d restart: %d\n", nr_expect_to_search, nr_searched,
+			(double)nr_searched / nr_expect_to_search, nr_search_restart);
+}
+
+int Query4Calculator::bfs(const std::vector<std::vector<int>> &graph,
+		int source, int base_dist, int est_dist_max,
+		std::vector<int> &dist, std::vector<int> &dist_count) {
+	std::queue<int> q;
+	dist_count[dist[source]] --;
+	dist[source] = base_dist;
+	dist_count[base_dist] ++;
+	q.push(source);
+	int nr_vtx_traversed = 0;
+	for (int depth = 0; !q.empty(); depth ++) {
+		int qsize = (int)q.size();
+		nr_vtx_traversed += qsize;
+		if (depth == est_dist_max)
+			break;
+		int d1 = base_dist + depth + 1;
+		for (int i = 0; i < qsize; i ++) {
+			int v0 = q.front(); q.pop();
+			for (auto &v1: graph[v0]) {
+				if (dist[v1] <= d1)
+					continue;
+				dist_count[dist[v1]] --;
+				dist_count[d1] ++;
+				dist[v1] = d1;
+				q.push(v1);
+			}
+		}
+	}
+	return nr_vtx_traversed;
+}
 
 void Query4Handler::add_query(int k, const string& s, int index) {
 	TotalTimer timer("Q4");
@@ -438,9 +549,9 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 				}
 			}
 
-//            set<int> s(friends[i].begin(), friends[i].end());
-//            friends[i].resize(s.size());
-//            std::copy(s.begin(), s.end(), friends[i].begin());
+			//            set<int> s(friends[i].begin(), friends[i].end());
+			//            friends[i].resize(s.size());
+			//            std::copy(s.begin(), s.end(), friends[i].begin());
 		}
 	}
 	friends_data_reader --;

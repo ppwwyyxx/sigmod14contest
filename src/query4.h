@@ -5,6 +5,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 #include <mutex>
 #include <string>
 #include "lib/hash_lib.h"
@@ -95,9 +96,40 @@ class Query4Calculator {
 
 		void estimate_all_s_using_delta_bfs(int est_dist_max);
 
+		//! change_vtx is a vector of pair (vtx, dist)
 		//! return number of vertex traversed
 		int bfs(const std::vector<std::vector<int>> &graph,
 				int source, int base_dist, int est_dist_max, std::vector<int> &dist,
-				std::vector<int> &dist_count);
+				std::vector<int> &dist_count,
+				std::vector<std::pair<int, int>> *changed_vtx = NULL);
+
 		long long get_s_by_dist_count(int vtx, const std::vector<int> &dist_count, int begin, int finish);
+
+
+		void estimate_all_s_using_delta_bfs_and_schedule(int est_dist_max);
+
+		struct ScheduleNode {
+			int vtx;
+			ScheduleNode(int vtx) : vtx(vtx) {}
+			std::vector<std::shared_ptr<ScheduleNode>> children;
+		};
+
+
+		//! A scheduler returns a ScheduleNode, which is the
+		typedef std::function<std::shared_ptr<ScheduleNode>(const std::vector<std::vector<int>> &)> scheduler_t;
+
+		static std::shared_ptr<ScheduleNode> scheduler_bfs(const std::vector<std::vector<int>> &graph);
+
+		typedef std::priority_queue<std::pair<double, int>> TopKList;
+
+		void process_est(std::shared_ptr<ScheduleNode> &node,
+				int base_dist, std::vector<int> &dist, std::vector<int> &dist_count,
+				int est_dist_max);
+
+		void process_est_rollback(std::vector<int> &dist,
+				std::vector<int> &dist_count, const std::vector<std::pair<int, int>> &changed_vtx);
 };
+
+/*
+ * vim: syntax=cpp11.doxygen foldmethod=marker
+ */

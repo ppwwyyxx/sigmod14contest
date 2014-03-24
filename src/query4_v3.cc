@@ -1,6 +1,6 @@
 /*
  * $File: query4_v3.cc
- * $Date: Mon Mar 24 21:43:56 2014 +0800
+ * $Date: Mon Mar 24 22:27:47 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -328,9 +328,15 @@ vector<int> Query4Calculator::work() {
 	vector<HeapEle> heap_ele_buf(np);
 	estimated_s.resize(np);
 
-	estimate_all_s_using_delta_bfs(est_dist_max);
+	// ESTIMATE LOWER_BOUND OF S {
+//    estimate_all_s_using_delta_bfs(est_dist_max);
 
-	for (int i = 0; i < (int)np; i ++) estimated_s[i] = estimate_s_limit_depth(i, est_dist_max);
+	estimate_all_s_using_delta_bfs_and_schedule(est_dist_max);
+
+//#pragma omp parallel for schedule(static) num_threads(4)
+//    for (int i = 0; i < (int)np; i ++) estimated_s[i] = estimate_s_limit_depth(i, est_dist_max);
+
+	//  }
 
 	for (int i = 0; i < (int)np; i ++) {
 		double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
@@ -393,10 +399,8 @@ vector<int> Query4Calculator::work() {
 
 	auto time = timer.get_time();
 	print_debug("total: %f secs\n", time);
-	/*
-	 *if (time > 0.1)
-	 *    fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time, time, np, cnt, k, (int)diameter, (int)est_dist_max);
-	 */
+	if (time > 0.1)
+		fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
 	return move(ans);
 }
 
@@ -421,6 +425,94 @@ long long Query4Calculator::get_s_by_dist_count(int vtx, const std::vector<int> 
 	return s;
 }
 
+
+std::shared_ptr<Query4Calculator::ScheduleNode> Query4Calculator::scheduler_bfs(
+		const std::vector<std::vector<int>> &graph) {
+
+
+	// Step one: choose a source
+	int source = 0;
+
+
+	// Step two: build a shortest path tree
+	std::vector<std::shared_ptr<ScheduleNode>> tree(graph.size());
+	for (int i = 0; i < (int)graph.size(); i ++)
+		tree[i] = std::move(make_shared<ScheduleNode>(i));
+
+	std::vector<bool> hash(graph.size());
+	std::queue<int> q;
+	hash[source] = true;
+	q.push(source);
+//    long long s = 0;
+	for (int depth = 0; !q.empty(); depth ++) {
+		int qsize = (int)q.size();
+		for (int i = 0; i < qsize; i ++) {
+			int v0 = q.front(); q.pop();
+//            s += depth;
+			for (auto &v1: graph[v0]) {
+				if (hash[v1])
+					continue;
+				hash[v1] = true;
+				tree[v0]->children.push_back(tree[v1]);
+				q.push(v1);
+			}
+		}
+	}
+
+	auto ret = make_shared<ScheduleNode>(-1);
+	ret->children.push_back(tree[source]);
+	return ret;
+}
+
+
+void Query4Calculator::estimate_all_s_using_delta_bfs_and_schedule(int est_dist_max) {
+
+	//! NOTE: you should implement your own scheduler.
+	//! Scheduler is defined as a std::function to ease further investigation
+	//! on different Schedulers.
+	scheduler_t scheduler = scheduler_bfs;
+
+	auto schedule = scheduler(friends);
+
+	for (auto &p: schedule->children) {
+		std::vector<int> dist(np, (int)np + est_dist_max);
+		std::vector<int> dist_count(np + est_dist_max + 1);
+		dist_count[np + est_dist_max] = (int)np;
+
+		int base_dist = (int)np - 1;
+		process_est(p, base_dist - 1, dist, dist_count, est_dist_max);
+	}
+}
+
+void Query4Calculator::process_est(std::shared_ptr<ScheduleNode> &node,
+	int base_dist, std::vector<int> &dist, std::vector<int> &dist_count,
+	int est_dist_max) {
+
+	std::vector<std::pair<int, int>> changed_vtx;
+
+	bfs(friends, node->vtx, base_dist, est_dist_max, dist, dist_count, &changed_vtx);
+
+	long long s = get_s_by_dist_count(node->vtx, dist_count,
+			base_dist, base_dist + est_dist_max);
+
+	estimated_s[node->vtx] = s;
+
+	for (auto &child: node->children) {
+		process_est(child, base_dist - 1, dist, dist_count, est_dist_max);
+	}
+
+	process_est_rollback(dist, dist_count, changed_vtx);
+}
+
+void Query4Calculator::process_est_rollback(std::vector<int> &dist,
+		std::vector<int> &dist_count, const std::vector<std::pair<int, int>> &changed_vtx) {
+	for (auto &p: changed_vtx) {
+		int v = p.first, d = p.second;
+		dist_count[dist[v]] --;
+		dist_count[d] ++;
+		dist[v] = d;
+	}
+}
 
 void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 	vector<bool> is_done(np);
@@ -474,14 +566,18 @@ void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 		}
 	}
 
-	fprintf(stderr, "search_cutoff: %f %d/%d restart: %d\n", nr_expect_to_search, nr_searched,
-			(double)nr_searched / nr_expect_to_search, nr_search_restart);
+	fprintf(stderr, "search_cutoff: %f %d/%d restart: %d\n",
+			(double)nr_searched / nr_expect_to_search, nr_expect_to_search,
+			nr_searched, nr_search_restart);
 }
 
 int Query4Calculator::bfs(const std::vector<std::vector<int>> &graph,
 		int source, int base_dist, int est_dist_max,
-		std::vector<int> &dist, std::vector<int> &dist_count) {
+		std::vector<int> &dist, std::vector<int> &dist_count,
+		std::vector<std::pair<int, int>> *changed_vtx) {
 	std::queue<int> q;
+	if (changed_vtx)
+		changed_vtx->emplace_back(source, dist[source]);
 	dist_count[dist[source]] --;
 	dist[source] = base_dist;
 	dist_count[base_dist] ++;
@@ -498,6 +594,8 @@ int Query4Calculator::bfs(const std::vector<std::vector<int>> &graph,
 			for (auto &v1: graph[v0]) {
 				if (dist[v1] <= d1)
 					continue;
+				if (changed_vtx)
+					changed_vtx->emplace_back(v1, dist[v1]);
 				dist_count[dist[v1]] --;
 				dist_count[d1] ++;
 				dist[v1] = d1;

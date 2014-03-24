@@ -1,5 +1,5 @@
 //File: query4_force.cc
-//Date: Tue Mar 11 10:29:35 2014 +0800
+//Date: Mon Mar 24 23:53:38 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "query4.h"
@@ -26,23 +26,6 @@ namespace {
 	int * degree;
 	size_t np;
 	vector<vector<int>> friends;
-}
-
-vector<PersonInForum> get_tag_persons(const string& s) {
-	int tagid = Data::tagid[s];
-	auto& forums = Data::tag_forums[tagid];
-	vector<PersonInForum> persons;
-
-	for (auto itr = forums.begin(); itr != forums.end(); itr ++) {
-		set<PersonInForum>& persons_in_forum = (*itr)->persons;
-		vector<PersonInForum> tmp; tmp.swap(persons);
-		persons.resize(tmp.size() + persons_in_forum.size());
-		vector<PersonInForum>::iterator ret_end = set_union(
-				persons_in_forum.begin(), persons_in_forum.end(),
-				tmp.begin(), tmp.end(), persons.begin());
-		persons.resize(std::distance(persons.begin(), ret_end));
-	}
-	return persons;
 }
 
 void calculate_SP(const vector<PersonInForum>& ps) {		// TOO SLOW

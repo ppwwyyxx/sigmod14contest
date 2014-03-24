@@ -1,6 +1,6 @@
 /*
  * $File: query4_v3.cc
- * $Date: Mon Mar 24 22:27:47 2014 +0000
+ * $Date: Mon Mar 24 23:54:09 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -20,23 +20,6 @@
 #include <fstream>
 
 using namespace std;
-
-vector<PersonInForum> get_tag_persons(const string& s) {
-	int tagid = Data::tagid[s];
-	auto& forums = Data::tag_forums[tagid];
-	vector<PersonInForum> persons;
-
-	FOR_ITR(itr, forums) {
-		set<PersonInForum>& persons_in_forum = (*itr)->persons;
-		vector<PersonInForum> tmp; tmp.swap(persons);
-		persons.resize(tmp.size() + persons_in_forum.size());
-		vector<PersonInForum>::iterator ret_end = set_union(
-				persons_in_forum.begin(), persons_in_forum.end(),
-				tmp.begin(), tmp.end(), persons.begin());
-		persons.resize(std::distance(persons.begin(), ret_end));
-	}
-	return persons;
-}
 
 namespace {
 	struct HeapEle {

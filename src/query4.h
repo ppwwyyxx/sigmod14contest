@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Tue Mar 18 18:07:02 2014 +0800
+//Date: Sat Mar 22 19:08:11 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -8,6 +8,9 @@
 #include <mutex>
 #include <string>
 #include "lib/hash_lib.h"
+#include "data.h"
+
+std::vector<PersonInForum> get_tag_persons(const std::string& s);
 
 struct Query4 {
 	int k;

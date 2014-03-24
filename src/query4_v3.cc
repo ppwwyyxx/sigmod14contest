@@ -1,6 +1,6 @@
 /*
  * $File: query4_v3.cc
- * $Date: Mon Mar 24 12:15:47 2014 +0000
+ * $Date: Mon Mar 24 12:21:51 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -337,26 +337,7 @@ vector<int> Query4Calculator::work() {
 		heap_ele_buf[i] = HeapEle(i, centrality);
 	}
 
-	 // build heap
-//    {
-//        GuardedTimer timer("build heap");
-
-//#pragma omp parallel for schedule(static) num_threads(4)
-//        for (int i = 0; i < (int)np; i ++) {
-//            if (np == test_nvtx) {
-//                int vtx = vtx_old2new[i];
-//                estimated_s[i] = cgraph_estimated_s[vtx];
-//            } else {
-//                estimated_s[i] = estimate_s_limit_depth(i, est_dist_max);
-//            }
-//            int es = estimated_s[i];
-//            double centrality = get_centrality_by_vtx_and_s(i, es);
-//            heap_ele_buf[i] = HeapEle(i, centrality);
-//        }
-//    }
-
-	auto time_1 = timer.get_time();
-
+	double time_phase1 = timer.get_time();
 	priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
 
 	// iterate

@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Mar 22 12:53:03 2014 +0800
+//Date: Sat Mar 22 19:20:10 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -272,7 +272,7 @@ void read_tags_forums_places(const string& dir) {
 	int tid, pid;
 	{		// read tag and tag names
 		safe_open(dir + "/tag.csv");
-		fgets(buffer, BUFFER_LEN, fin);
+		fgets(buffer, 1024, fin);
 		while (fscanf(fin, "%d|", &tid) == 1) {
 			int k = 0; char c;
 			while ((c = (char)fgetc(fin)) != '|')
@@ -288,7 +288,7 @@ void read_tags_forums_places(const string& dir) {
 			Data::tagid[tag_name] = (int)Data::tag_name.size();
 			Data::tag_name.emplace_back(move(tag_name));
 			m_assert(Data::tagid.count(tag_name) == 0);		//  no repeated tag name
-			fgets(buffer, BUFFER_LEN, fin);
+			fgets(buffer, 1024, fin);
 		}
 		Data::ntag = (int)Data::tag_name.size();
 		fclose(fin);
@@ -406,3 +406,4 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 	read_person_knows_person(dir);
 	print_debug("Read person spent %lf secs\n", timer.get_time());
 }
+

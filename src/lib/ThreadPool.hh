@@ -1,6 +1,6 @@
 /*
  * $File: ThreadPool.hh
- * $Date: Sat Mar 22 17:00:57 2014 +0800
+ * $Date: Mon Mar 24 19:21:50 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -15,9 +15,18 @@
 #include <memory>
 #include <thread>
 #include <mutex>
+#include <utility>
 #include <condition_variable>
 #include <functional>
 #include <stdexcept>
+
+struct TaskCmp {
+	bool operator() (const std::pair<int, std::function<void()>>& p1,
+			const std::pair<int, std::function<void()>>& p2) {
+		return p1.first < p2.first;
+	}
+};
+
 
 class ThreadPool;
 namespace __ThreadPoolImpl {
@@ -57,11 +66,7 @@ private:
 public:
 	ThreadPool(size_t);
 	template<class Function, class Callback>
-		void enqueue(Function &&f, Callback &&callback) {
-			/*
-			 *if (stop)
-			 *    throw std::runtime_error("enqueue on stopped ThreadPool");
-			 */
+		void enqueue(Function &&f, Callback &&callback, int priority = 5) {
 
 			auto task = std::make_shared<std::function<void()>>(
 					std::bind(__ThreadPoolImpl::runner_wrapper,
@@ -69,31 +74,31 @@ public:
 							std::forward<Function>(f), std::forward<Callback>(callback))));
 			//auto task = std::make_shared<std::function<void()>>(std::bind(std::forward<Callback>(callback), (std::forward<Function>(f))()));
 			{
-				std::unique_lock<std::mutex> lock(queue_mutex);
-				tasks.push(std::bind(__ThreadPoolImpl::task_wrapper, task));
+				std::lock_guard<std::mutex> lock(queue_mutex);
+				tasks.emplace(priority, std::bind(__ThreadPoolImpl::task_wrapper, task));
 
 			}
 			condition.notify_one();
 		}
 
 	template<class Function>
-		void enqueue(Function &&f) {
-			/*
-			 *if (stop)
-			 *    throw std::runtime_error("enqueue on stopped ThreadPool");
-			 */
+		void enqueue(Function &&f, int priority = 5) {
 
-			auto task = std::make_shared<std::function<void()>>(f);
+			auto task = std::make_shared<std::function<void()>>(std::forward<Function>(f));
 			{
-				std::unique_lock<std::mutex> lock(queue_mutex);
-				tasks.push(std::bind(__ThreadPoolImpl::task_wrapper, task));
+				std::lock_guard<std::mutex> lock(queue_mutex);
+				tasks.emplace(priority, std::bind(__ThreadPoolImpl::task_wrapper, task));
 			}
 			condition.notify_one();
 		}
 
 	~ThreadPool();
+
+
 	// the task queue
-	std::queue<std::function<void()> > tasks;
+	std::priority_queue<std::pair<int, std::function<void()>>,
+		std::vector<std::pair<int, std::function<void()>>>,
+			TaskCmp> tasks;
 private:
 	friend void __ThreadPoolImpl::worker(ThreadPool *tp);
 
@@ -122,7 +127,7 @@ inline ThreadPool::ThreadPool(size_t threads)
 inline ThreadPool::~ThreadPool()
 {
 	{
-		std::unique_lock<std::mutex> lock(queue_mutex);
+		std::lock_guard<std::mutex> lock(queue_mutex);
 		stop = true;
 	}
 	//condition.notify_all();

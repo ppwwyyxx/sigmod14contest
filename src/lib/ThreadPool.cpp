@@ -1,5 +1,5 @@
 //File: ThreadPool.cpp
-//Date: Sat Mar 22 17:19:23 2014 +0800
+//Date: Mon Mar 24 19:22:06 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "ThreadPool.hh"
@@ -20,7 +20,7 @@ namespace __ThreadPoolImpl
 
 			m_assert(tp->tasks.size());
 
-			std::function<void()> task(tp->tasks.front());
+			std::function<void()> task(tp->tasks.top().second);
 			tp->tasks.pop();
 
 			lock.unlock();

@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Sat Mar 22 17:28:28 2014 +0800
+//Date: Mon Mar 24 19:17:15 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -114,15 +114,13 @@ int main(int argc, char* argv[]) {
 	 *start_4(1);
 	 */
 
-	threadpool->enqueue(bind(do_read_comments, dir), start_1);
 	threadpool->enqueue(bind(do_read_tags_forums_places, dir), start_4);
 	WAIT_FOR(tag_read);
-	PP("after tag read");
+	threadpool->enqueue(bind(do_read_comments, dir), start_1, 20);
 	//fprintf(stderr, "nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);		// print this earlier, in case of crash
 
 	threadpool->enqueue(start_2);
 	start_3();
-	PP("set stop=true");
 	delete threadpool;		// will wait to join all thread
 
 	q1.print_result();

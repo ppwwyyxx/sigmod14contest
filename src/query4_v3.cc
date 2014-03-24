@@ -1,6 +1,6 @@
 /*
  * $File: query4_v3.cc
- * $Date: Mon Mar 24 12:21:51 2014 +0000
+ * $Date: Mon Mar 24 21:43:56 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -393,8 +393,10 @@ vector<int> Query4Calculator::work() {
 
 	auto time = timer.get_time();
 	print_debug("total: %f secs\n", time);
-	if (time > 0.1)
-		fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
+	/*
+	 *if (time > 0.1)
+	 *    fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time, time, np, cnt, k, (int)diameter, (int)est_dist_max);
+	 */
 	return move(ans);
 }
 

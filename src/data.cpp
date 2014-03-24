@@ -1,9 +1,10 @@
 //File: data.cpp
-//Date: Mon Mar 17 21:16:08 2014 +0800
+//Date: Mon Mar 24 21:15:13 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
 #include "lib/debugutils.h"
+#include "lib/common.h"
 #include "lib/utils.h"
 #include <stdlib.h>
 #include <algorithm>
@@ -59,3 +60,20 @@ PersonSet PlaceNode::get_all_persons() {
 
 PersonInPlace::PersonInPlace(int _pid):
 	pid(_pid), ntags(int(Data::tags[_pid].size())) {}
+
+vector<PersonInForum> get_tag_persons(const string& s) {
+	int tagid = Data::tagid[s];
+	auto& forums = Data::tag_forums[tagid];
+	vector<PersonInForum> persons;
+
+	FOR_ITR(itr, forums) {
+		set<PersonInForum>& persons_in_forum = (*itr)->persons;
+		vector<PersonInForum> tmp; tmp.swap(persons);
+		persons.resize(tmp.size() + persons_in_forum.size());
+		vector<PersonInForum>::iterator ret_end = set_union(
+				persons_in_forum.begin(), persons_in_forum.end(),
+				tmp.begin(), tmp.end(), persons.begin());
+		persons.resize(std::distance(persons.begin(), ret_end));
+	}
+	return persons;
+}

@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Sat Mar 22 17:28:40 2014 +0800
+//Date: Mon Mar 24 19:14:33 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -35,7 +35,6 @@ inline int do_read_comments(const std::string dir) {
 inline int do_read_tags_forums_places(const std::string dir) {
 	Timer timer;
 	read_tags_forums_places(dir);
-	PP("after forum read");
 //	if (Data::nperson > 11000) fprintf(stderr, "npl:%lu, forut:%.4lf\n", Data::placeid.size(), timer.get_time());
 	return 0;
 }
@@ -84,7 +83,7 @@ inline void start_4(int) {
 	Timer timer;
 	size_t s = q4_set.size();
 	REP(i, s) {
-		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i));
+		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
 	}
 }
 

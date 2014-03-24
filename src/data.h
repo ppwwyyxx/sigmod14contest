@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Tue Mar 18 18:31:40 2014 +0800
+//Date: Mon Mar 24 21:14:57 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -108,3 +108,4 @@ private:
 	void operator=(Data const &);
 };
 
+std::vector<PersonInForum> get_tag_persons(const std::string& s);

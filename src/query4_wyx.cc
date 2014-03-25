@@ -1,6 +1,6 @@
 /*
- * $File: query4_wyx.cc
- * $Date: Tue Mar 25 14:25:31 2014 +0800
+ * $File: query4.cpp
+ * $Date: Tue Mar 25 20:04:32 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -190,18 +190,74 @@ vector<int> Query4Calculator::work() {
 
 	vector<HeapEle> heap_ele_buf(np);
 	estimated_s.resize(np);
+	pre_estimated_s.resize(np);
+
 
 
 	timer.reset();
 	if (np > 1e4) {
 		RandomChoiceEstimator estimator(friends, degree, pow(log(np), 0.333) / (4.2 * pow(np, 0.333)));
+		print_debug("random: %lf\n", timer.get_time());
+		double time_phase1 = timer.get_time();
 //		estimator.error();
 		REP(i, np)
-			estimated_s[i] = estimator.estimate(i) * 0.95;
+			estimated_s[i] = estimator.estimate(i);
+		for (int i = 0; i < (int)np; i ++) {
+			double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
+			heap_ele_buf[i] = HeapEle(i, centrality);
+		}
+
+		timer.reset();
+		priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
+		int cand_size = 80;
+		vector<int> cand(cand_size);
+		REP(i, cand_size) {
+			cand[i] = q.top().vtx;
+			q.pop();
+		}
+
+
+		REP(i, cand_size) {
+			auto partial_est = estimate_s_limit_depth(cand[i], 3);
+			double cent = get_centrality_by_vtx_and_s(cand[i], partial_est);
+			heap_ele_buf[i] = HeapEle(cand[i], cent);
+		}
+		priority_queue<HeapEle> q2(heap_ele_buf.begin(), heap_ele_buf.begin() + cand_size);
+		vector<int> ans;
+		int cnt = 0;
+		{
+			double last_centrality = 1e100;
+			int last_vtx = -1;
+			while (!q2.empty()) {
+				auto he = q2.top(); q2.pop();
+				int vtx = he.vtx;
+				double centrality = he.centrality;
+				m_assert(centrality <= last_centrality);
+				if (centrality == last_centrality && vtx == last_vtx) {
+					ans.emplace_back(vtx);
+					if ((int)ans.size() == k)
+						break;
+				} else {
+					cnt ++;
+					long long s = get_extact_s(vtx);
+					// long long es = estimated_s[vtx];
+					double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
+					q2.push(HeapEle(vtx, new_centrality));
+				}
+
+				last_centrality = centrality;
+				last_vtx = vtx;
+			}
+		}
+		if (np > 11000)
+			fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, timer.get_time(), np, cnt, k, (int)diameter, (int)est_dist_max);
+		return ans;
+
+		//estimate_all_s_using_delta_bfs(est_dist_max);
 	} else {
 #pragma omp parallel for schedule(static) num_threads(4)
 		REP(i, np)
-			estimated_s[i] = estimate_s_limit_depth(i, 3);
+			estimated_s[i] = estimate_s_limit_depth(i, 2);
 	}
 
 	/*
@@ -250,7 +306,7 @@ vector<int> Query4Calculator::work() {
 
 	auto time = timer.get_time();
 	//	print_debug("total: %f secs\n", time);
-	if (np > 30000)
+	if (np > 11000)
 		fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
 	return move(ans);
 }
@@ -304,14 +360,14 @@ void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 		for (; ;) {
 			int now_searched = bfs(friends, cur_vtx, base_dist, est_dist_max, dist,
 					dist_count);
-			if (last_vtx != -1)
-				nr_searched += now_searched;
+			//if (last_vtx != -1)
+			nr_searched += now_searched;
 
 			int should_searched = 0;
 			for (int i = 0; i <= est_dist_max; i ++)
 				should_searched += dist_count[base_dist + i];
-			if (last_vtx != -1)
-				nr_expect_to_search += should_searched;
+			//if (last_vtx != -1)
+			nr_expect_to_search += should_searched;
 
 			estimated_s[cur_vtx] = get_s_by_dist_count(cur_vtx, dist_count,
 					base_dist, base_dist + est_dist_max);
@@ -332,18 +388,18 @@ void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 
 			// next round
 			int next_vtx = -1;
-			int max_friends = 0;
+			int max_friends = -1;
 			int max_v = -1;
 			for (auto &v: friends[cur_vtx]) {
 				if (!is_done[v]) {
-					next_vtx = v; break;
-					if (update_max(max_friends, (int)estimated_s[v]))
+					//next_vtx = v; break;
+					if (update_max(max_friends, (int)pre_estimated_s[v]))
 						max_v = v;
 				}
 				next_vtx = max_v;
 			}
 			/*
-			 *if (estimated_s[next_vtx] < estimated_s[cur_vtx])
+			 *if (pre_estimated_s[next_vtx] < pre_estimated_s[cur_vtx])
 			 *    break;
 			 */
 			if (next_vtx == -1)

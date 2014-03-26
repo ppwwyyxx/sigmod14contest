@@ -1,5 +1,5 @@
 //File: common.h
-//Date: Tue Mar 18 16:52:35 2014 +0800
+//Date: Wed Mar 26 12:53:43 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once

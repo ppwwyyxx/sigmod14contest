@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Wed Mar 26 12:32:15 2014 +0800
+//Date: Wed Mar 26 12:53:56 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -47,7 +47,7 @@ inline int do_read_tags_forums_places(const std::string dir) {
 inline void start_1(int) {
 	PP("start1");
 	Timer timer;
-	q1.pre_work();		// sort Data::friends
+//	q1.pre_work();		// sort Data::friends
 	add_all_query(1);
 	tot_time[1] += timer.get_time();
 }

@@ -1,5 +1,5 @@
 //File: query1_force.cc
-//Date: Wed Mar 26 12:44:29 2014 +0800
+//Date: Wed Mar 26 12:53:17 2014 +0800
 
 #include "query1.h"
 #include "lib/common.h"
@@ -9,35 +9,6 @@
 #include <algorithm>
 #include <vector>
 using namespace std;
-
-/*
- *int force(int p1, int p2, int x) {			// 10k: 0.68 sec / 1500queries
- *    if (p1 == p2) return 0;
- *    vector<bool> vst(Data::nperson, false);
- *    deque<int> q;
- *    q.push_back(p1); vst[p1] = true;
- *    int depth = 0;
- *    while (auto now_size = q.size()) {
- *        depth ++;
- *        REP(k, now_size) {
- *            int now_ele = q.front();
- *            q.pop_front();
- *            vector<ConnectedPerson>& friends = Data::friends[now_ele];
- *            for (vector<ConnectedPerson>::iterator it = friends.begin();
- *                    it != friends.end(); it ++) {
- *                int person = it->pid;
- *                if (it->ncmts <= x) break;		// because friends are sorted by ncmts
- *                if (not vst[person]) {
- *                    if (person == p2) return depth;
- *                    q.push_back(person);
- *                    vst[person] = true;
- *                }
- *            }
- *        }
- *    }
- *    return -1;
- *}
- */
 
 int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 	if (p1 == p2) return 0;
@@ -58,7 +29,7 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 			auto& friends = Data::friends[now_ele];
 			for (auto it = friends.begin(); it != friends.end(); it ++) {
 				int person = it -> pid;
-//				if (it->ncmts <= x) break;
+				if (it->ncmts <= x) continue;
 				// TODO friends is not sorted by cmt because cmt is read later
 				if (not vst1[person]) {
 					if (vst2[person]) return depth1 + depth2;
@@ -75,7 +46,7 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 			auto& friends = Data::friends[now_ele];
 			for (auto it = friends.begin(); it != friends.end(); it ++) {
 				int person = it -> pid;
-//				if (it->ncmts <= x) break;
+				if (it->ncmts <= x) continue;
 				if (not vst2[person]) {
 					if (vst1[person]) return depth1 + depth2;
 					q2.push_back(person);

@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Mon Mar 24 19:17:15 2014 +0800
+//Date: Wed Mar 26 12:09:45 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -121,6 +121,7 @@ int main(int argc, char* argv[]) {
 
 	threadpool->enqueue(start_2);
 	start_3();
+	fprintf(stderr, "delete\n");
 	delete threadpool;		// will wait to join all thread
 
 	q1.print_result();
@@ -131,7 +132,7 @@ int main(int argc, char* argv[]) {
 	//fprintf(stderr, "%lu\t%lu\t%lu\t%lu\n", q1_set.size(), q2_set.size(), q3_set.size(), q4_set.size());
 	tot_time[3] += TotalTimer::rst["Q3"];
 	tot_time[4] += TotalTimer::rst["Q4"];
-	if (Data::nperson > 110000)
+	if (Data::nperson > 99999)
 		for (int i = 1; i <= 4; i ++)
 			fprintf(stderr, "q%d:%.4fs\t", i, tot_time[i]);
 	//fprintf(stderr, "\nTime: %.4fs\n", timer.get_time());

@@ -1,5 +1,5 @@
 //File: ThreadPool.cpp
-//Date: Mon Mar 24 19:22:06 2014 +0800
+//Date: Wed Mar 26 12:14:28 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "ThreadPool.hh"
@@ -13,7 +13,9 @@ namespace __ThreadPoolImpl
 			if (tp->stop && tp->nr_active_thread == 0 && tp->tasks.empty())
 				return;
 			while (tp->tasks.empty()) {
+		//		fprintf(stderr, "waiting %lu\n", tp->tasks.size());
 				tp->condition.wait(lock);
+		//		fprintf(stderr, "after waiting\n");
 				if (tp->stop && tp->nr_active_thread == 0 && tp->tasks.empty())
 					return;
 			}
@@ -29,15 +31,16 @@ namespace __ThreadPoolImpl
 			//	std::lock_guard<std::mutex> lock_queue(tp->queue_mutex);
 				std::lock_guard<std::mutex> lock(tp->nr_active_thread_mutex);
 				tp->nr_active_thread ++;
-//				print_debug("++: %d, q:%d\n", tp->nr_active_thread, (int)tp->tasks.size());
+			//	fprintf(stderr, "++: %d, q:%d\n", tp->nr_active_thread, (int)tp->tasks.size());
 			}
 			task();
 			{
 			//	std::lock_guard<std::mutex> lock_queue(tp->queue_mutex);
 				std::lock_guard<std::mutex> lock(tp->nr_active_thread_mutex);
 				tp->nr_active_thread --;
-//				print_debug("--: %d, q:%d\n", tp->nr_active_thread, (int)tp->tasks.size());
+			//	fprintf(stderr, "--: %d, q:%d\n", tp->nr_active_thread, (int)tp->tasks.size());
 				if (tp->stop && tp->nr_active_thread == 0 && tp->tasks.empty()) {
+			//		fprintf(stderr, "notify\n");
 					tp->condition.notify_all();
 					return;
 				}

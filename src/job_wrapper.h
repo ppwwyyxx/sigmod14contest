@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Tue Mar 25 12:43:11 2014 +0800
+//Date: Wed Mar 26 12:15:24 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -83,7 +83,8 @@ inline void start_4(int) {
 	Timer timer;
 	size_t s = q4_set.size();
 	REP(i, s) {
-		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
+		q4.add_query(q4_set[i].k, q4_set[i].tag, i);
+//		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
 	}
 }
 

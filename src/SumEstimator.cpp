@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Tue Mar 25 13:59:55 2014 +0800
+//Date: Wed Mar 26 11:31:25 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -8,12 +8,12 @@
 #include <limits>
 using namespace std;
 
-long long SumEstimator::get_exact_s(int source) {
+int SumEstimator::get_exact_s(int source) {
 	std::vector<bool> hash(np);
 	std::queue<int> q;
 	hash[source] = true;
 	q.push(source);
-	long long s = 0;
+	int s = 0;
 	for (int depth = 0; !q.empty(); depth ++) {
 		int qsize = (int)q.size();
 		s += depth * qsize;
@@ -51,7 +51,7 @@ void SumEstimator::error() {
 void RandomChoiceEstimator::work() {
 	vector<int> vst_cnt(np, 0);
 	int n = samples.size();
-	vector<long long> true_result(n);
+	vector<int> true_result(n);
 #pragma omp parallel for schedule(static) num_threads(4)
 	REP(i, n)
 		true_result[i] = bfs_all(samples[i], vst_cnt);
@@ -67,8 +67,8 @@ void RandomChoiceEstimator::work() {
 		result[samples[i]] = true_result[i];
 }
 
-long long RandomChoiceEstimator::bfs_all(int source, vector<int>& vst_cnt) {
-	long long sum = 0;
+int RandomChoiceEstimator::bfs_all(int source, vector<int>& vst_cnt) {
+	int sum = 0;
 	queue<int> q;
 	vector<bool> vst(np);
 	q.push(source);
@@ -89,4 +89,27 @@ long long RandomChoiceEstimator::bfs_all(int source, vector<int>& vst_cnt) {
 	return sum;
 }
 
-long long RandomChoiceEstimator::estimate(int i) { return result[i]; }
+void UnionSetDepthEstimator::work() {
+	for (int k = 2; k <= depth_max; k ++) {
+#pragma omp parallel for schedule(dynamic) num_threads(4)
+		REP(i, np) {
+			s[i].reset();
+			FOR_ITR(fr, graph[i])
+				s[i] |= s_prev[*fr];
+			s[i] &= (~s_prev[i]);
+
+			int c = s[i].count();
+			result[i] += c * k;
+			nr_remain[i] -= c;
+
+			s[i] |= s_prev[i];
+		}
+		s.swap(s_prev);
+	}
+	//s_prev is ans
+
+	REP(i, np)
+		result[i] += nr_remain[i] * (depth_max + 1);
+
+	s.clear();s_prev.clear();
+}

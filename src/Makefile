@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Sat Mar 22 17:05:34 2014 +0800
+# $Date: Wed Mar 26 01:16:55 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -12,7 +12,7 @@ DEFINES += -DGOOGLE_HASH
 #DEFINES += -DNUM_THREADS=1		# to disable multi-threading
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
-OPTFLAGS += -fnothrow-opt -fno-rtti
+OPTFLAGS += #-fnothrow-opt -fno-rtti -march=native -mfpmath=sse -Ofast -flto -funroll-loops
 #OPTFLAGS += -g -O0
 OPTFLAGS += -O3
 

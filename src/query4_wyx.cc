@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Tue Mar 25 20:04:32 2014 +0800
+ * $File: query4_wyx.cc
+ * $Date: Wed Mar 26 12:15:34 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -195,75 +195,81 @@ vector<int> Query4Calculator::work() {
 
 
 	timer.reset();
-	if (np > 1e4) {
-		RandomChoiceEstimator estimator(friends, degree, pow(log(np), 0.333) / (4.2 * pow(np, 0.333)));
-		print_debug("random: %lf\n", timer.get_time());
-		double time_phase1 = timer.get_time();
-//		estimator.error();
-		REP(i, np)
-			estimated_s[i] = estimator.estimate(i);
-		for (int i = 0; i < (int)np; i ++) {
-			double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
-			heap_ele_buf[i] = HeapEle(i, centrality);
-		}
-
-		timer.reset();
-		priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
-		int cand_size = 80;
-		vector<int> cand(cand_size);
-		REP(i, cand_size) {
-			cand[i] = q.top().vtx;
-			q.pop();
-		}
-
-
-		REP(i, cand_size) {
-			auto partial_est = estimate_s_limit_depth(cand[i], 3);
-			double cent = get_centrality_by_vtx_and_s(cand[i], partial_est);
-			heap_ele_buf[i] = HeapEle(cand[i], cent);
-		}
-		priority_queue<HeapEle> q2(heap_ele_buf.begin(), heap_ele_buf.begin() + cand_size);
-		vector<int> ans;
-		int cnt = 0;
-		{
-			double last_centrality = 1e100;
-			int last_vtx = -1;
-			while (!q2.empty()) {
-				auto he = q2.top(); q2.pop();
-				int vtx = he.vtx;
-				double centrality = he.centrality;
-				m_assert(centrality <= last_centrality);
-				if (centrality == last_centrality && vtx == last_vtx) {
-					ans.emplace_back(vtx);
-					if ((int)ans.size() == k)
-						break;
-				} else {
-					cnt ++;
-					long long s = get_extact_s(vtx);
-					// long long es = estimated_s[vtx];
-					double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
-					q2.push(HeapEle(vtx, new_centrality));
-				}
-
-				last_centrality = centrality;
-				last_vtx = vtx;
-			}
-		}
-		if (np > 11000)
-			fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, timer.get_time(), np, cnt, k, (int)diameter, (int)est_dist_max);
-		return ans;
-
-		//estimate_all_s_using_delta_bfs(est_dist_max);
-	} else {
+/*
+ *    if (np > 1e4) {
+ *        RandomChoiceEstimator estimator(friends, degree, pow(log(np), 0.333) / (4.2 * pow(np, 0.333)));
+ *        print_debug("random: %lf\n", timer.get_time());
+ *        double time_phase1 = timer.get_time();
+ *        estimator.error();
+ *        REP(i, np)
+ *            estimated_s[i] = estimator.estimate(i);
+ *        for (int i = 0; i < (int)np; i ++) {
+ *            double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
+ *            heap_ele_buf[i] = HeapEle(i, centrality);
+ *        }
+ *
+ *        timer.reset();
+ *        priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
+ *        int cand_size = 80;
+ *        vector<int> cand(cand_size);
+ *        REP(i, cand_size) {
+ *            cand[i] = q.top().vtx;
+ *            q.pop();
+ *        }
+ *
+ *
+ *        REP(i, cand_size) {
+ *            auto partial_est = estimate_s_limit_depth(cand[i], 3);
+ *            double cent = get_centrality_by_vtx_and_s(cand[i], partial_est);
+ *            heap_ele_buf[i] = HeapEle(cand[i], cent);
+ *        }
+ *        priority_queue<HeapEle> q2(heap_ele_buf.begin(), heap_ele_buf.begin() + cand_size);
+ *        vector<int> ans;
+ *        int cnt = 0;
+ *        {
+ *            double last_centrality = 1e100;
+ *            int last_vtx = -1;
+ *            while (!q2.empty()) {
+ *                auto he = q2.top(); q2.pop();
+ *                int vtx = he.vtx;
+ *                double centrality = he.centrality;
+ *                m_assert(centrality <= last_centrality);
+ *                if (centrality == last_centrality && vtx == last_vtx) {
+ *                    ans.emplace_back(vtx);
+ *                    if ((int)ans.size() == k)
+ *                        break;
+ *                } else {
+ *                    cnt ++;
+ *                    long long s = get_extact_s(vtx);
+ *                    double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
+ *                    q2.push(HeapEle(vtx, new_centrality));
+ *                }
+ *
+ *                last_centrality = centrality;
+ *                last_vtx = vtx;
+ *            }
+ *        }
+ *        if (np > 11000)
+ *            fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, timer.get_time(), np, cnt, k, (int)diameter, (int)est_dist_max);
+ *        return ans;
+ *    } else {
+ */
 #pragma omp parallel for schedule(static) num_threads(4)
 		REP(i, np)
-			estimated_s[i] = estimate_s_limit_depth(i, 2);
+			estimated_s[i] = estimate_s_limit_depth(i, 3);
+	/*
+	 *}
+	 */
+	print_debug("After work all: %lf\n", timer.get_time());
+	timer.reset();
+	UnionSetDepthEstimator estimator(friends, degree, 3);
+	REP(i, np) {
+		estimated_s[i] = estimator.estimate(i);
 	}
 
-	/*
-	 *estimate_all_s_using_delta_bfs(est_dist_max);
-	 *print_debug("After work all: %lf\n", timer.get_time());
-	 */
+//	estimate_all_s_using_delta_bfs(est_dist_max);
+	print_debug("After work all: %lf\n", timer.get_time());
+	PP(np);
 
 
 	for (int i = 0; i < (int)np; i ++) {
@@ -306,8 +312,10 @@ vector<int> Query4Calculator::work() {
 
 	auto time = timer.get_time();
 	//	print_debug("total: %f secs\n", time);
-	if (np > 11000)
-		fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
+	/*
+	 *if (np > 11000)
+	 *    fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
+	 */
 	return move(ans);
 }
 

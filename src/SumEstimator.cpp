@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Wed Mar 26 11:31:25 2014 +0800
+//Date: Wed Mar 26 19:09:45 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -7,6 +7,11 @@
 #include <queue>
 #include <limits>
 using namespace std;
+using namespace boost;
+
+
+__thread std::vector<boost::dynamic_bitset<>> *UnionSetDepthEstimator::s;
+__thread std::vector<boost::dynamic_bitset<>> *UnionSetDepthEstimator::s_prev;
 
 int SumEstimator::get_exact_s(int source) {
 	std::vector<bool> hash(np);
@@ -50,7 +55,7 @@ void SumEstimator::error() {
 
 void RandomChoiceEstimator::work() {
 	vector<int> vst_cnt(np, 0);
-	int n = samples.size();
+	auto n = samples.size();
 	vector<int> true_result(n);
 #pragma omp parallel for schedule(static) num_threads(4)
 	REP(i, n)
@@ -73,7 +78,7 @@ int RandomChoiceEstimator::bfs_all(int source, vector<int>& vst_cnt) {
 	vector<bool> vst(np);
 	q.push(source);
 	for (int depth = 0; !q.empty(); depth ++) {
-		int qsize(q.size());
+		int qsize = (int)q.size();
 		sum += depth * qsize;
 		REP(i, qsize) {
 			int top = q.front(); q.pop();
@@ -90,26 +95,29 @@ int RandomChoiceEstimator::bfs_all(int source, vector<int>& vst_cnt) {
 }
 
 void UnionSetDepthEstimator::work() {
+	GuardedTimer gg("work");
+	auto& out_s_prev = *s_prev;
+	auto& out_s = *s;
+
 	for (int k = 2; k <= depth_max; k ++) {
+// CANNOT USE OMP HERE!
 #pragma omp parallel for schedule(dynamic) num_threads(4)
 		REP(i, np) {
-			s[i].reset();
+			out_s[i].reset();
 			FOR_ITR(fr, graph[i])
-				s[i] |= s_prev[*fr];
-			s[i] &= (~s_prev[i]);
+				out_s[i] |= out_s_prev[*fr];
+			out_s[i] &= (~out_s_prev[i]);
 
-			int c = s[i].count();
+			int c = (int)out_s[i].count();
 			result[i] += c * k;
 			nr_remain[i] -= c;
 
-			s[i] |= s_prev[i];
+			out_s[i] |= out_s_prev[i];
 		}
-		s.swap(s_prev);
+		s->swap(out_s_prev);
 	}
 	//s_prev is ans
 
 	REP(i, np)
 		result[i] += nr_remain[i] * (depth_max + 1);
-
-	s.clear();s_prev.clear();
 }

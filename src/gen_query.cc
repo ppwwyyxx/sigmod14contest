@@ -1,5 +1,5 @@
 //File: gen_query.cc
-//Date: Sat Mar 22 19:24:08 2014 +0800
+//Date: Wed Mar 26 16:07:25 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -75,7 +75,7 @@ void make_q4()
 	REP(i, Data::ntag) {
 		string name = Data::tag_name[i];
 		auto p = get_tag_persons(name);
-		if (p.size() > 10000) {
+		if (p.size() > 30000) {
 			PP(p.size());
 			printf("query4(%d, %s)\n", random(1, q4_max_k), name.c_str());
 		}

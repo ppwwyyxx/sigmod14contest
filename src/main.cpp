@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Wed Mar 26 12:51:29 2014 +0800
+//Date: Wed Mar 26 18:59:45 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -98,12 +98,9 @@ int main(int argc, char* argv[]) {
 
 	read_data(dir);
 	print_debug("Read return at %lf secs\n", timer.get_time());
-	/*
-	 *if (Data::nperson > 11000) {
-	 *    int n_edge = 0;
-	 *    FOR_ITR(itr, Data::friends) n_edge += itr->size();
-	 *}
-	 */
+	if (Data::nperson > 11000) {
+		PP(edge_count(Data::friends));
+	}
 
 	/*
 	 *do_read_comments(dir);

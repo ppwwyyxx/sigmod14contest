@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Wed Mar 26 12:34:27 2014 +0800
+ * $File: query4_wyx.cc
+ * $Date: Wed Mar 26 19:09:04 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -66,12 +66,12 @@ void Query4Calculator::compute_degree() {
 	}
 }
 
-long long Query4Calculator::get_extact_s(int source) {
+int Query4Calculator::get_extact_s(int source) {
 	std::vector<bool> hash(np);
 	std::queue<int> q;
 	hash[source] = true;
 	q.push(source);
-	long long s = 0;
+	int s = 0;
 	for (int depth = 0; !q.empty(); depth ++) {
 		int qsize = (int)q.size();
 		for (int i = 0; i < qsize; i ++) {
@@ -89,12 +89,12 @@ long long Query4Calculator::get_extact_s(int source) {
 	return s;
 }
 
-long long Query4Calculator::estimate_s_limit_depth(int source, int depth_max) {
+int Query4Calculator::estimate_s_limit_depth(int source, int depth_max) {
 	std::vector<bool> hash(np);
 	std::queue<int> q;
 	hash[source] = true;
 	q.push(source);
-	long long s = 0;
+	int s = 0;
 	int nr_remain = degree[source];
 	for (int depth = 0; !q.empty(); depth ++) {
 		int qsize = (int)q.size();
@@ -240,7 +240,7 @@ vector<int> Query4Calculator::work() {
  *                        break;
  *                } else {
  *                    cnt ++;
- *                    long long s = get_extact_s(vtx);
+ *                    int s = get_extact_s(vtx);
  *                    double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
  *                    q2.push(HeapEle(vtx, new_centrality));
  *                }
@@ -254,22 +254,19 @@ vector<int> Query4Calculator::work() {
  *        return ans;
  *    } else {
  */
-#pragma omp parallel for schedule(static) num_threads(4)
-		REP(i, np)
-			estimated_s[i] = estimate_s_limit_depth(i, 3);
+/*
+ *#pragma omp parallel for schedule(static) num_threads(4)
+ *    REP(i, np)
+ *        estimated_s[i] = estimate_s_limit_depth(i, 3);
+ *    double time_1 = timer.get_time();
+ */
 	/*
 	 *}
 	 */
-	/*
-	 *UnionSetDepthEstimator estimator(friends, degree, 3);
-	 *REP(i, np) {
-	 *    estimated_s[i] = estimator.estimate(i);
-	 *}
-	 */
-
-//	estimate_all_s_using_delta_bfs(est_dist_max);
-	print_debug("After work all: %lf\n", timer.get_time());
-//	PP(np);
+	PP(edge_count(friends));
+	UnionSetDepthEstimator estimator(friends, degree, 3);
+	estimated_s = estimator.result;
+//	print_debug("Two methods: limitd: %lf, union: %lf\n", time_1, timer.get_time());
 
 
 	for (int i = 0; i < (int)np; i ++) {
@@ -299,8 +296,8 @@ vector<int> Query4Calculator::work() {
 					break;
 			} else {
 				cnt ++;
-				long long s = get_extact_s(vtx);
-				// long long es = estimated_s[vtx];
+				int s = get_extact_s(vtx);
+				// int es = estimated_s[vtx];
 				double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
 				q.push(HeapEle(vtx, new_centrality));
 			}
@@ -314,14 +311,14 @@ vector<int> Query4Calculator::work() {
 	//	print_debug("total: %f secs\n", time);
 	if (np > 11000) {
 		static int print = 0;
-		if (print < 3)
+		if (print < 100)
 			fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
 		print ++;
 	}
 	return move(ans);
 }
 
-double Query4Calculator::get_centrality_by_vtx_and_s(int v, long long s) {
+double Query4Calculator::get_centrality_by_vtx_and_s(int v, int s) {
 	if (s == 0)
 		return 0;
 	double ret = ::sqr(degree[v] - 1.0) / (double)s / ((int)np - 1);
@@ -330,16 +327,16 @@ double Query4Calculator::get_centrality_by_vtx_and_s(int v, long long s) {
 }
 
 
-long long Query4Calculator::get_s_by_dist_count(int vtx, const std::vector<int> &dist_count,
+int Query4Calculator::get_s_by_dist_count(int vtx, const std::vector<int> &dist_count,
 		int begin, int finish) {
-	long long s = 0;
+	int s = 0;
 	int nr_remain = degree[vtx];
 	for (int i = begin; i <= finish; i ++) {
 		s += (i - begin) * dist_count[i];
 		nr_remain -= dist_count[i];
 	}
 
-	s += (finish - begin + 1) * (long long)nr_remain;
+	s += (finish - begin + 1) * (int)nr_remain;
 	return s;
 }
 
@@ -386,7 +383,7 @@ void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 
 			// XXX: CHECK
 			/*
-			 *long long exact_s = estimate_s_limit_depth(cur_vtx, est_dist_max);
+			 *int exact_s = estimate_s_limit_depth(cur_vtx, est_dist_max);
 			 *m_assert(estimated_s[cur_vtx] == exact_s);
 			 */
 

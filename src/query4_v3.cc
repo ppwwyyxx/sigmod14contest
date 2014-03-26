@@ -1,6 +1,6 @@
 /*
  * $File: query4_v3.cc
- * $Date: Wed Mar 26 12:26:47 2014 +0800
+ * $Date: Wed Mar 26 16:50:05 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -86,7 +86,7 @@ void Query4Calculator::contract_graph() {
 		vtx_old2new[source] = cur_vtx;
 
 		int nr_remain = degree[source];
-		long long s_inner = 0, s_outter = 0;
+		int s_inner = 0, s_outter = 0;
 		for (int depth = 0; depth < contract_dist && qt != contract_nr_vtx; depth ++) {
 			int qsize = qt - qh;
 			s_inner += qsize * depth;
@@ -135,12 +135,12 @@ void Query4Calculator::contract_graph() {
 	}
 }
 
-long long Query4Calculator::get_extact_s(int source) {
+int Query4Calculator::get_extact_s(int source) {
 	std::vector<bool> hash(np);
 	std::queue<int> q;
 	hash[source] = true;
 	q.push(source);
-	long long s = 0;
+	int s = 0;
 	for (int depth = 0; !q.empty(); depth ++) {
 		int qsize = (int)q.size();
 		for (int i = 0; i < qsize; i ++) {
@@ -158,12 +158,12 @@ long long Query4Calculator::get_extact_s(int source) {
 	return s;
 }
 
-long long Query4Calculator::estimate_s_limit_depth(int source, int depth_max) {
+int Query4Calculator::estimate_s_limit_depth(int source, int depth_max) {
 	std::vector<bool> hash(np);
 	std::queue<int> q;
 	hash[source] = true;
 	q.push(source);
-	long long s = 0;
+	int s = 0;
 	int nr_remain = degree[source];
 	for (int depth = 0; !q.empty(); depth ++) {
 		int qsize = (int)q.size();
@@ -187,14 +187,14 @@ long long Query4Calculator::estimate_s_limit_depth(int source, int depth_max) {
 
 
 
-long long Query4Calculator::estimate_s_using_cgraph(int source) {
+int Query4Calculator::estimate_s_using_cgraph(int source) {
 //    int nr_vtx = (int)cgraph.size();
 	std::vector<bool> hash(cgraph.size());
 
 	std::queue<int> q;
 	q.push(source);
 	hash[source] = 1;
-	long long s = 0;
+	int s = 0;
 	for (int depth = 0; !q.empty(); depth ++) {
 		int qsize = (int)q.size();
 		for (int i = 0; i < qsize; i ++) {
@@ -351,8 +351,8 @@ vector<int> Query4Calculator::work() {
 					break;
 			} else {
 				cnt ++;
-				long long s = get_extact_s(vtx);
-				// long long es = estimated_s[vtx];
+				int s = get_extact_s(vtx);
+				// int es = estimated_s[vtx];
 				double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
 				//                if (np == 3453 && k == 1) {
 				//                    cerr << "failed vtx: " << vtx << endl;
@@ -387,7 +387,7 @@ vector<int> Query4Calculator::work() {
 	return move(ans);
 }
 
-double Query4Calculator::get_centrality_by_vtx_and_s(int v, long long s) {
+double Query4Calculator::get_centrality_by_vtx_and_s(int v, int s) {
 	if (s == 0)
 		return 0;
 	double ret = ::sqr(degree[v] - 1.0) / (double)s / ((int)np - 1);
@@ -396,15 +396,15 @@ double Query4Calculator::get_centrality_by_vtx_and_s(int v, long long s) {
 }
 
 
-long long Query4Calculator::get_s_by_dist_count(int vtx, const std::vector<int> &dist_count, int begin, int finish) {
-	long long s = 0;
+int Query4Calculator::get_s_by_dist_count(int vtx, const std::vector<int> &dist_count, int begin, int finish) {
+	int s = 0;
 	int nr_remain = degree[vtx];
 	for (int i = begin; i <= finish; i ++) {
 		s += (i - begin) * dist_count[i];
 		nr_remain -= dist_count[i];
 	}
 
-	s += (finish - begin + 1) * (long long)nr_remain;
+	s += (finish - begin + 1) * (int)nr_remain;
 	return s;
 }
 
@@ -426,7 +426,7 @@ std::shared_ptr<Query4Calculator::ScheduleNode> Query4Calculator::scheduler_bfs(
 	std::queue<int> q;
 	hash[source] = true;
 	q.push(source);
-//    long long s = 0;
+//    int s = 0;
 	for (int depth = 0; !q.empty(); depth ++) {
 		int qsize = (int)q.size();
 		for (int i = 0; i < qsize; i ++) {
@@ -475,7 +475,7 @@ void Query4Calculator::process_est(std::shared_ptr<ScheduleNode> &node,
 
 	bfs(friends, node->vtx, base_dist, est_dist_max, dist, dist_count, &changed_vtx);
 
-	long long s = get_s_by_dist_count(node->vtx, dist_count,
+	int s = get_s_by_dist_count(node->vtx, dist_count,
 			base_dist, base_dist + est_dist_max);
 
 	estimated_s[node->vtx] = s;
@@ -532,7 +532,7 @@ void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 			is_done[cur_vtx] = true;
 
 			// XXX: CHECK
-//            long long exact_s = estimate_s_limit_depth(cur_vtx, est_dist_max);
+//            int exact_s = estimate_s_limit_depth(cur_vtx, est_dist_max);
 //            m_assert(estimated_s[cur_vtx] == exact_s);
 
 			// next round

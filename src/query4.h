@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Tue Mar 25 15:23:02 2014 +0800
+//Date: Wed Mar 26 16:49:20 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -67,9 +67,9 @@ class Query4Calculator {
 		void contract_graph();
 
 		//! estimate s using contracted graph
-		long long estimate_s_using_cgraph(int source);
+		int estimate_s_using_cgraph(int source);
 
-		long long get_extact_s(int source);
+		int get_extact_s(int source);
 
 
 		std::vector<std::vector<int>> cgraph;
@@ -83,14 +83,14 @@ class Query4Calculator {
 
 		static int dummy;
 
-		std::vector<long long> cgraph_estimated_s_inner;
-		std::vector<long long> cgraph_estimated_s_outter;
-		std::vector<long long> cgraph_estimated_s;
+		std::vector<int> cgraph_estimated_s_inner;
+		std::vector<int> cgraph_estimated_s_outter;
+		std::vector<int> cgraph_estimated_s;
 
-		std::vector<long long> estimated_s;
-		std::vector<long long> pre_estimated_s;
-		double get_centrality_by_vtx_and_s(int v, long long s);
-	 	long long estimate_s_limit_depth(int source, int depth_max);
+		std::vector<int> estimated_s;
+		std::vector<int> pre_estimated_s;
+		double get_centrality_by_vtx_and_s(int v, int s);
+	 	int estimate_s_limit_depth(int source, int depth_max);
 		void bfs_diameter(const std::vector<std::vector<int>> &g, int source, int &farthest_vtx,
 				int &dist_max, std::vector<bool> &hash);
 
@@ -104,7 +104,7 @@ class Query4Calculator {
 				std::vector<int> &dist_count,
 				std::vector<std::pair<int, int>> *changed_vtx = NULL);
 
-		long long get_s_by_dist_count(int vtx, const std::vector<int> &dist_count, int begin, int finish);
+		int get_s_by_dist_count(int vtx, const std::vector<int> &dist_count, int begin, int finish);
 
 
 		void estimate_all_s_using_delta_bfs_and_schedule(int est_dist_max);

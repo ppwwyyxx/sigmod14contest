@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Mon Mar 24 21:14:57 2014 +0800
+//Date: Wed Mar 26 18:59:16 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -10,6 +10,7 @@
 #include <mutex>
 #include "globals.h"
 #include "lib/hash_lib.h"
+#include "lib/common.h"
 
 #include <set>
 
@@ -109,3 +110,10 @@ private:
 };
 
 std::vector<PersonInForum> get_tag_persons(const std::string& s);
+
+template <typename T>
+inline int edge_count(const std::vector<std::vector<T>>& f) {
+	int n_edge = 0;
+	FOR_ITR(itr, f) n_edge += (int)itr->size();
+	return n_edge;
+}

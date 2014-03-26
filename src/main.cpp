@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Wed Mar 26 12:09:45 2014 +0800
+//Date: Wed Mar 26 12:28:39 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -121,7 +121,6 @@ int main(int argc, char* argv[]) {
 
 	threadpool->enqueue(start_2);
 	start_3();
-	fprintf(stderr, "delete\n");
 	delete threadpool;		// will wait to join all thread
 
 	q1.print_result();

@@ -1,5 +1,5 @@
 //File: globals.cpp
-//Date: Mon Mar 17 23:55:29 2014 +0800
+//Date: Wed Mar 26 12:26:37 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "globals.h"
@@ -18,9 +18,6 @@ condition_variable comment_read_cv;
 condition_variable tag_read_cv;
 condition_variable forum_read_cv;
 
-int friends_data_reader = 0;
-std::mutex mt_friends_data_changing;
-std::condition_variable cv_friends_data_changing;
 
 ThreadPool* threadpool;
 

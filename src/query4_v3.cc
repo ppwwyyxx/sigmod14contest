@@ -1,6 +1,6 @@
 /*
  * $File: query4_v3.cc
- * $Date: Mon Mar 24 23:54:09 2014 +0800
+ * $Date: Wed Mar 26 12:26:47 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -597,10 +597,6 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 	vector<vector<int>> friends(np);
 
 	{
-		lock_guard<mutex> lg(mt_friends_data_changing);
-		friends_data_reader ++;
-	}
-	{
 		GuardedTimer timer("omp1");
 #pragma omp parallel for schedule(static) num_threads(4)
 		REP(i, np) {
@@ -618,8 +614,6 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 			//            std::copy(s.begin(), s.end(), friends[i].begin());
 		}
 	}
-	friends_data_reader --;
-	cv_friends_data_changing.notify_one();
 	// finish building graph
 
 	Query4Calculator worker(friends, k);

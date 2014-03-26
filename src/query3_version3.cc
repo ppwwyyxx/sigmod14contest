@@ -84,17 +84,11 @@ int get_common_tag(int p1, int p2)
 }
 
 void Query3Handler::add_query(int k, int h, const string& p, int index) {
-	{
-		lock_guard<mutex> lg(mt_friends_data_changing);
-		friends_data_reader ++;
-	}
 	TotalTimer timer("Q3");
-	
+
 	Query3Calculator calc;
 	calc.work(k, h, p, global_answer[index]);
-	
-	friends_data_reader --;
-	cv_friends_data_changing.notify_one();
+
 	return ;
 }
 
@@ -128,13 +122,13 @@ void Query3Calculator::init(const string &p)
 				tmp.begin(), tmp.end(), pset.begin());
 		pset.resize(std::distance(pset.begin(), pset_end));
 	}
-	
+
 	people.clear();
-	FOR_ITR(it1, pset) 
+	FOR_ITR(it1, pset)
 		people.push_back(it1->pid);
 	sort(people.begin(), people.end());
-	
-	invList.resize(people.size());	
+
+	invList.resize(people.size());
 	candidate.resize(people.size());
 	i_itr.resize(people.size());
 	map_itr.resize(people.size());
@@ -163,10 +157,10 @@ void Query3Calculator::calcInvertedList()
 		for (TagSet::iterator i = Data::tags[curPerson].begin(); i != Data::tags[curPerson].end(); i ++)
 			maxTag = max(maxTag, (*i));
 	}
-	
+
 	vector<vector<int> > invertedList;
 	invertedList.resize(maxTag + 10);
-		
+
 	for (int g = (int) people.size() - 1; g >= 0; g --)
 	{
 		TagSet curTagSet = Data::tags[people[g]];
@@ -196,20 +190,20 @@ void Query3Calculator::calcInvertedList()
 void Query3Calculator::moveOneStep(int g, int h, int f)
 {
 	vector<vector<int> > &r = invList[g];
-	int curPerson = people[g];		
-	
+	int curPerson = people[g];
+
 	for (; i_itr[g] < (int) r.size(); i_itr[g] ++)
 	{
 		sum ++;
-		int i = i_itr[g], curLen = (int) r.size() - i;		
+		int i = i_itr[g], curLen = (int) r.size() - i;
 		//prune
 		if (heapSize == qk)
 		{
 			set<Answer3>::iterator it = answerHeap.end();
 			it --;
 			if (it->com_interest > curLen) return ;
-		}	
-			
+		}
+
 		if (i > curRound[g])
 		{
 			FOR_ITR(j, r[i])
@@ -217,7 +211,7 @@ void Query3Calculator::moveOneStep(int g, int h, int f)
 			curRound[g] = i;
 			map_itr[g] = r[i].begin();
 		}
-		
+
 		//
 		while (! pool[g][curLen].empty())
 		{
@@ -225,15 +219,15 @@ void Query3Calculator::moveOneStep(int g, int h, int f)
 			pool[g][curLen].pop();
 			if (bfs3(curPerson, cur, -1, h) <= h)
 				insHeap(Answer3(curLen, curPerson, cur), g, f);
-		}	
-		
+		}
+
 //		if (i == (int) r.size() - 1) break;
 		FOR_ITR(jj, r[i])
 		{
 			int j = *jj;
 			if (! forsake[g].count(j))
 			{
-				forsake[g].insert(j);										
+				forsake[g].insert(j);
 				int tot = candidate[g][j];
 				for (int p = i + 1; p < (int) r.size(); p ++)
 				{
@@ -247,15 +241,15 @@ void Query3Calculator::moveOneStep(int g, int h, int f)
 						}
 						if (r[p][mid] < j) lo = mid + 1; else hi = mid - 1;
 					}
-					if (flag) tot ++;				
-				}	
-			
-				if (tot != (int) r.size() - i) 
+					if (flag) tot ++;
+				}
+
+				if (tot != (int) r.size() - i)
 				{
 					pool[g][tot].push(j);
 					continue;
 				}
-				if (bfs3(curPerson, j, -1, h) > h) 
+				if (bfs3(curPerson, j, -1, h) > h)
 					continue;
 				insHeap(Answer3(curLen, curPerson, j), g, f);
 				map_itr[g] ++;
@@ -298,25 +292,25 @@ void Query3Calculator::insHeap(Answer3 cur, int g, int f)
 	first[g] = cur;
 	return ;
 }
-	
-void Query3Calculator::work(int k, int h, const string &p, std::vector<Answer3> &ans) 
+
+void Query3Calculator::work(int k, int h, const string &p, std::vector<Answer3> &ans)
 {
 	qk = k;
 	init(p);
 	calcInvertedList();
 	//Arsenal is the champion!!
 	answerHeap.clear();
-	
+
 //#pragma omp parallel for schedule(dynamic)
 	for (int g = 0; g < (int) people.size(); g ++)
-	{	
+	{
 		i_itr[g] = 0;
 		zero_itr[g] = g + 1;
 		curRound[g] = -1;
-		
+
 		candidate[g].clear();
 		forsake[g].clear();
-		pool[g].resize(invList[g].size() + 2);			
+		pool[g].resize(invList[g].size() + 2);
 		forsake[g].insert(people[g]);
 /*
 		//init oneHeap
@@ -329,10 +323,10 @@ void Query3Calculator::work(int k, int h, const string &p, std::vector<Answer3> 
 //	cout << people.size() << " " << sum << " " << sumbfs << endl;
 //	return ;
 //	for (int i = 0; i < (int) people.size(); i ++)
-//		if (first[i].p1 != first[i].p2)	
+//		if (first[i].p1 != first[i].p2)
 //			answerHeap.insert(first[i]);
 //
-	set<pair<int, int> > dup; 
+	set<pair<int, int> > dup;
 	dup.clear();
 	vector<Answer3> tmp; tmp.clear();
 	for (int lp = 1; lp <= k; lp ++)
@@ -348,7 +342,7 @@ void Query3Calculator::work(int k, int h, const string &p, std::vector<Answer3> 
 	for (int i = 0; i < (int) people.size() && (int) tmp.size() < k; i ++)
 		for (int j = i + 1; j < (int) people.size() && (int) tmp.size() < k; j ++)
 			if (! dup.count(make_pair(people[i], people[j])) && bfs3(people[i], people[j], -1, h) <= h)
-				dup.insert(make_pair(people[i], people[j])), tmp.push_back(Answer3(0, people[i], people[j]));			
+				dup.insert(make_pair(people[i], people[j])), tmp.push_back(Answer3(0, people[i], people[j]));
 
 	ans = move(tmp);
 }

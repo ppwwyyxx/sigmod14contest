@@ -1,6 +1,6 @@
 /*
- * $File: query4_wyx.cc
- * $Date: Wed Mar 26 12:15:34 2014 +0800
+ * $File: query4.cpp
+ * $Date: Wed Mar 26 12:30:54 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -254,14 +254,14 @@ vector<int> Query4Calculator::work() {
  *        return ans;
  *    } else {
  */
-#pragma omp parallel for schedule(static) num_threads(4)
-		REP(i, np)
-			estimated_s[i] = estimate_s_limit_depth(i, 3);
+/*
+ *#pragma omp parallel for schedule(static) num_threads(4)
+ *        REP(i, np)
+ *            estimated_s[i] = estimate_s_limit_depth(i, 3);
+ */
 	/*
 	 *}
 	 */
-	print_debug("After work all: %lf\n", timer.get_time());
-	timer.reset();
 	UnionSetDepthEstimator estimator(friends, degree, 3);
 	REP(i, np) {
 		estimated_s[i] = estimator.estimate(i);
@@ -461,10 +461,6 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 	vector<vector<int>> friends(np);
 
 	{
-		lock_guard<mutex> lg(mt_friends_data_changing);
-		friends_data_reader ++;
-	}
-	{
 #pragma omp parallel for schedule(static) num_threads(4)
 		REP(i, np) {
 			auto& fs = Data::friends[persons[i]];
@@ -481,8 +477,6 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 			//            std::copy(s.begin(), s.end(), friends[i].begin());
 		}
 	}
-	friends_data_reader --;
-	cv_friends_data_changing.notify_one();
 	// finish building graph
 
 	Query4Calculator worker(friends, k);

@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Wed Mar 26 12:15:24 2014 +0800
+//Date: Wed Mar 26 12:32:15 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -47,15 +47,7 @@ inline int do_read_tags_forums_places(const std::string dir) {
 inline void start_1(int) {
 	PP("start1");
 	Timer timer;
-	{
-		std::unique_lock<std::mutex> lgg(mt_friends_data_changing);
-		while (friends_data_reader) {
-			cv_friends_data_changing.wait(lgg);
-		}
-
-		timer.reset();
-		q1.pre_work();		// sort Data::friends
-	}
+	q1.pre_work();		// sort Data::friends
 	add_all_query(1);
 	tot_time[1] += timer.get_time();
 }
@@ -83,8 +75,8 @@ inline void start_4(int) {
 	Timer timer;
 	size_t s = q4_set.size();
 	REP(i, s) {
-		q4.add_query(q4_set[i].k, q4_set[i].tag, i);
-//		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
+//		q4.add_query(q4_set[i].k, q4_set[i].tag, i);
+		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
 	}
 }
 

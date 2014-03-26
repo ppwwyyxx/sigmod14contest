@@ -78,17 +78,11 @@ void Query2Handler::work() {
 			myhash[i][Data::person_in_tags[i][j]] = j;
 	}
 	// sort friends by d
-	{		// read friends
-		lock_guard<mutex> lg(mt_friends_data_changing);
-		friends_data_reader ++;
-	}
 	for (int i = 0; i < Data::nperson; i++) {
 		for (int j = 0; j < (int)Data::friends[i].size(); j++)
 			myfriends[i].push_back(Data::friends[i][j].pid);
 		sort(myfriends[i].begin(), myfriends[i].end(), cmp_d);
 	}
-	friends_data_reader --;
-	cv_friends_data_changing.notify_one();
 
 	// ans heap
 	for (int i = 0; i < Data::ntag; i++) heap.insert(i, 0);

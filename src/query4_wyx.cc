@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Wed Mar 26 12:30:54 2014 +0800
+ * $Date: Wed Mar 26 12:34:27 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -254,22 +254,22 @@ vector<int> Query4Calculator::work() {
  *        return ans;
  *    } else {
  */
-/*
- *#pragma omp parallel for schedule(static) num_threads(4)
- *        REP(i, np)
- *            estimated_s[i] = estimate_s_limit_depth(i, 3);
- */
+#pragma omp parallel for schedule(static) num_threads(4)
+		REP(i, np)
+			estimated_s[i] = estimate_s_limit_depth(i, 3);
 	/*
 	 *}
 	 */
-	UnionSetDepthEstimator estimator(friends, degree, 3);
-	REP(i, np) {
-		estimated_s[i] = estimator.estimate(i);
-	}
+	/*
+	 *UnionSetDepthEstimator estimator(friends, degree, 3);
+	 *REP(i, np) {
+	 *    estimated_s[i] = estimator.estimate(i);
+	 *}
+	 */
 
 //	estimate_all_s_using_delta_bfs(est_dist_max);
 	print_debug("After work all: %lf\n", timer.get_time());
-	PP(np);
+//	PP(np);
 
 
 	for (int i = 0; i < (int)np; i ++) {
@@ -312,10 +312,12 @@ vector<int> Query4Calculator::work() {
 
 	auto time = timer.get_time();
 	//	print_debug("total: %f secs\n", time);
-	/*
-	 *if (np > 11000)
-	 *    fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
-	 */
+	if (np > 11000) {
+		static int print = 0;
+		if (print < 3)
+			fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
+		print ++;
+	}
 	return move(ans);
 }
 

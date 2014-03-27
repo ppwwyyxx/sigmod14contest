@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Wed Mar 26 12:53:56 2014 +0800
+//Date: Thu Mar 27 12:55:39 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -29,7 +29,7 @@ void add_all_query(int);
 inline int do_read_comments(const std::string dir) {
 	Timer timer;
 	read_comments(dir);
-	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
+//	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
 	return 0;
 }
 inline int do_read_tags_forums_places(const std::string dir) {
@@ -59,7 +59,6 @@ inline void start_2() {
 	tot_time[2] += timer.get_time();
 }
 
-Timer globaltimer;
 inline void start_3() {
 	Timer timer;
 	size_t s = q3_set.size();
@@ -75,8 +74,8 @@ inline void start_4(int) {
 	Timer timer;
 	size_t s = q4_set.size();
 	REP(i, s) {
-//		q4.add_query(q4_set[i].k, q4_set[i].tag, i);
-		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
+		q4.add_query(q4_set[i].k, q4_set[i].tag, i);
+//		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
 	}
 }
 

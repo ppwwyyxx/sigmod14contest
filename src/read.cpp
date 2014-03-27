@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Mar 22 19:20:10 2014 +0800
+//Date: Wed Mar 26 18:50:30 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -108,10 +108,6 @@ void read_comments(const string &dir) {
 			owner.emplace_back(pid);
 		}
 		fclose(fin);
-	}		// 0.6s
-	if (Data::nperson > 11000) {
-		fprintf(stderr, "ncomments: %lu\n", owner.size());
-		fflush(stderr);
 	}
 
 

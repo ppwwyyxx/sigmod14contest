@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Wed Mar 26 16:49:20 2014 +0000
+//Date: Thu Mar 27 16:30:01 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -8,6 +8,7 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include "lib/utils.h"
 #include "lib/hash_lib.h"
 #include "data.h"
 
@@ -88,9 +89,9 @@ class Query4Calculator {
 		std::vector<int> cgraph_estimated_s;
 
 		std::vector<int> estimated_s;
-		std::vector<int> pre_estimated_s;
 		double get_centrality_by_vtx_and_s(int v, int s);
 	 	int estimate_s_limit_depth(int source, int depth_max);
+	 	int estimate_s_limit_depth_cut_upper(int source, int depth_max, double upper);
 		void bfs_diameter(const std::vector<std::vector<int>> &g, int source, int &farthest_vtx,
 				int &dist_max, std::vector<bool> &hash);
 
@@ -131,6 +132,6 @@ class Query4Calculator {
 				std::vector<int> &dist_count, const std::vector<std::pair<int, int>> &changed_vtx);
 };
 
-/*
- * vim: syntax=cpp11.doxygen foldmethod=marker
- */
+
+inline std::string get_graph_name(int np, int cnt, int k, int est_dist)
+{ return string_format("%d-%d-%d-%d", np, cnt, k, est_dist); }

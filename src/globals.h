@@ -1,5 +1,5 @@
 //File: globals.h
-//Date: Wed Mar 26 12:25:35 2014 +0800
+//Date: Wed Mar 26 16:39:52 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -8,6 +8,7 @@
 #include <mutex>
 #include "lib/hash_lib.h"
 #include "lib/ThreadPool.hh"
+#include "lib/Timer.h"
 // global variables!!
 /*
  *extern std::mutex comment_read_mt;
@@ -15,6 +16,7 @@
  *extern bool comment_read;
  */
 
+extern Timer globaltimer;
 extern std::condition_variable tag_read_cv;
 extern std::mutex tag_read_mt;
 extern bool tag_read;

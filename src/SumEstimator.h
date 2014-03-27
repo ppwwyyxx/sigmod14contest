@@ -1,11 +1,13 @@
 //File: SumEstimator.h
-//Date: Wed Mar 26 19:07:28 2014 +0000
+//Date: Thu Mar 27 16:32:53 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
 #include <vector>
 #include <algorithm>
 #include <numeric>
+#include <boost/dynamic_bitset.hpp>
+#include "lib/Timer.h"
 #include "lib/common.h"
 #include "lib/Timer.h"
 #include "lib/debugutils.h"
@@ -52,7 +54,6 @@ class RandomChoiceEstimator: public SumEstimator {
 
 };
 
-#include <boost/dynamic_bitset.hpp>
 class UnionSetDepthEstimator: public SumEstimator {
 	// estimate a lower bound
 	public:

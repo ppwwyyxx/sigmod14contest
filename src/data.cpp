@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Mon Mar 24 21:15:13 2014 +0800
+//Date: Thu Mar 27 15:03:16 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -8,6 +8,7 @@
 #include "lib/utils.h"
 #include <stdlib.h>
 #include <algorithm>
+#include <fstream>
 #include <iterator>
 using namespace std;
 
@@ -77,3 +78,24 @@ vector<PersonInForum> get_tag_persons(const string& s) {
 	}
 	return persons;
 }
+void output_tgf_graph(string fname, const vector<vector<int>> &friends) {
+	ofstream fout(fname);
+	for (size_t i = 0; i < friends.size(); i ++)
+		fout << i + 1<< ' ' << i + 1 << endl;
+	fout << "#" << endl;
+	for (size_t i = 0; i < friends.size(); i ++) {
+		for (auto &j: friends[i])
+			fout << i + 1 << ' ' << j + 1 << endl;
+	}
+}
+
+void output_dot_graph(string fname, const vector<vector<int>> &friends) {
+	ofstream fout(fname);
+	fout << "graph {\n";
+	for (size_t i = 0; i < friends.size(); i ++) {
+		for (auto &j: friends[i])
+			fout << "    " << i << " -- " << j << ";\n";
+	}
+	fout << "}\n";
+}
+

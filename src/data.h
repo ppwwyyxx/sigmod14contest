@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Wed Mar 26 18:59:16 2014 +0000
+//Date: Thu Mar 27 16:29:40 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -117,3 +117,5 @@ inline int edge_count(const std::vector<std::vector<T>>& f) {
 	FOR_ITR(itr, f) n_edge += (int)itr->size();
 	return n_edge;
 }
+void output_tgf_graph(std::string fname, const std::vector<std::vector<int>> &friends);
+void output_dot_graph(std::string fname, const std::vector<std::vector<int>> &friends);

@@ -1,6 +1,7 @@
 /*
  * $File: query4_v3.cc
- * $Date: Wed Mar 26 16:50:05 2014 +0000
+ * $Date: Thu Mar 27 16:30:06 2014 +0800
+ * $Date: Thu Mar 27 16:30:06 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -211,33 +212,6 @@ int Query4Calculator::estimate_s_using_cgraph(int source) {
 	return s;
 }
 
-string get_graph_name(int np, int cnt, int k, int est_dist) {
-	char buf[1000];
-	sprintf(buf, "%d-%d-%d-%d", np, cnt, k, est_dist);
-	return buf;
-}
-
-void output_tgf_graph(string fname, const vector<vector<int>> &friends) {
-	ofstream fout(fname);
-	for (size_t i = 0; i < friends.size(); i ++)
-		fout << i + 1<< ' ' << i + 1 << endl;
-	fout << "#" << endl;
-	for (size_t i = 0; i < friends.size(); i ++) {
-		for (auto &j: friends[i])
-			fout << i + 1 << ' ' << j + 1 << endl;
-	}
-}
-
-void output_dot_graph(string fname, const vector<vector<int>> &friends) {
-	ofstream fout(fname);
-	fout << "graph {\n";
-	for (size_t i = 0; i < friends.size(); i ++) {
-		for (auto &j: friends[i])
-			fout << "    " << i << " -- " << j << ";\n";
-	}
-	fout << "}\n";
-}
-
 void Query4Calculator::bfs_diameter(const std::vector<vector<int>> &g, int source, int &farthest_vtx,
 		int &dist_max, vector<bool> &hash) {
 	queue<int> q;
@@ -314,10 +288,10 @@ vector<int> Query4Calculator::work() {
 	// ESTIMATE LOWER_BOUND OF S {
 //    estimate_all_s_using_delta_bfs(est_dist_max);
 
-	estimate_all_s_using_delta_bfs_and_schedule(est_dist_max);
+	//estimate_all_s_using_delta_bfs_and_schedule(est_dist_max);
 
-//#pragma omp parallel for schedule(static) num_threads(4)
-//    for (int i = 0; i < (int)np; i ++) estimated_s[i] = estimate_s_limit_depth(i, est_dist_max);
+#pragma omp parallel for schedule(static) num_threads(4)
+    for (int i = 0; i < (int)np; i ++) estimated_s[i] = estimate_s_limit_depth(i, est_dist_max);
 
 	//  }
 

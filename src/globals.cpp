@@ -1,5 +1,5 @@
 //File: globals.cpp
-//Date: Wed Mar 26 12:26:37 2014 +0800
+//Date: Wed Mar 26 16:39:57 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "globals.h"
@@ -18,6 +18,7 @@ condition_variable comment_read_cv;
 condition_variable tag_read_cv;
 condition_variable forum_read_cv;
 
+Timer globaltimer;
 
 ThreadPool* threadpool;
 

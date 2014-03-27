@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Wed Mar 26 19:09:45 2014 +0000
+//Date: Thu Mar 27 16:33:31 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -100,7 +100,7 @@ void UnionSetDepthEstimator::work() {
 	auto& out_s = *s;
 
 	for (int k = 2; k <= depth_max; k ++) {
-// CANNOT USE OMP HERE!
+		// CANNOT USE OMP HERE!
 #pragma omp parallel for schedule(dynamic) num_threads(4)
 		REP(i, np) {
 			out_s[i].reset();

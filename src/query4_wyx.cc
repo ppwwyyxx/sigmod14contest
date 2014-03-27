@@ -1,6 +1,6 @@
 /*
  * $File: query4_wyx.cc
- * $Date: Wed Mar 26 19:09:04 2014 +0000
+ * $Date: Thu Mar 27 16:31:47 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -8,7 +8,6 @@
 #include "data.h"
 #include "lib/common.h"
 #include "lib/Timer.h"
-#include "lib/utils.h"
 #include "SumEstimator.h"
 #include "lib/hash_lib.h"
 #include <omp.h>
@@ -85,7 +84,38 @@ int Query4Calculator::get_extact_s(int source) {
 			}
 		}
 	}
-//    assert(s != 0);
+	return s;
+}
+
+int Query4Calculator::estimate_s_limit_depth_cut_upper(int source, int depth_max, double cent_upper) {
+	int s_bound = ::sqr(degree[source] - 1.0) / cent_upper / (int(np) - 1);
+	std::vector<bool> hash(np);
+	std::queue<int> q;
+	hash[source] = true;
+	q.push(source);
+	int s = 0;
+	int nr_remain = degree[source];
+	for (int depth = 0; !q.empty(); depth ++) {
+		int qsize = (int)q.size();
+		s += depth * qsize;
+		nr_remain -= qsize;
+		int s_est_cur = s + nr_remain * (depth + 1);
+		//		double cent = get_centrality_by_vtx_and_s(source, s_est_cur);
+		// TODO
+//		if (s_est_cur > s_bound and depth <= depth_max) return 1e9;
+		if(depth == depth_max)
+			break;
+		for (int i = 0; i < qsize; i ++) {
+			int v0 = q.front(); q.pop();
+			for (auto &v1: friends[v0]) {
+				if (hash[v1])
+					continue;
+				hash[v1] = true;
+				q.push(v1);
+			}
+		}
+	}
+	s += nr_remain * (depth_max + 1);
 	return s;
 }
 
@@ -117,32 +147,6 @@ int Query4Calculator::estimate_s_limit_depth(int source, int depth_max) {
 }
 
 
-string get_graph_name(int np, int cnt, int k, int est_dist) {
-	char buf[1000];
-	sprintf(buf, "%d-%d-%d-%d", np, cnt, k, est_dist);
-	return buf;
-}
-
-void output_tgf_graph(string fname, const vector<vector<int>> &friends) {
-	ofstream fout(fname);
-	for (size_t i = 0; i < friends.size(); i ++)
-		fout << i + 1<< ' ' << i + 1 << endl;
-	fout << "#" << endl;
-	for (size_t i = 0; i < friends.size(); i ++) {
-		for (auto &j: friends[i])
-			fout << i + 1 << ' ' << j + 1 << endl;
-	}
-}
-
-void output_dot_graph(string fname, const vector<vector<int>> &friends) {
-	ofstream fout(fname);
-	fout << "graph {\n";
-	for (size_t i = 0; i < friends.size(); i ++) {
-		for (auto &j: friends[i])
-			fout << "    " << i << " -- " << j << ";\n";
-	}
-	fout << "}\n";
-}
 
 void Query4Calculator::bfs_diameter(const std::vector<vector<int>> &g, int source, int &farthest_vtx,
 		int &dist_max, vector<bool> &hash) {
@@ -183,96 +187,82 @@ vector<int> Query4Calculator::work() {
 		if (d > diameter)
 			diameter = d;
 	}
-//    assert(diameter != -1);
+	//    assert(diameter != -1);
 
 	est_dist_max = max(2, (int)floor(log((double)diameter) / log(2.0) + 0.5));
 
 
 	vector<HeapEle> heap_ele_buf(np);
 	estimated_s.resize(np);
-	pre_estimated_s.resize(np);
-
 
 
 	timer.reset();
-/*
- *    if (np > 1e4) {
- *        RandomChoiceEstimator estimator(friends, degree, pow(log(np), 0.333) / (4.2 * pow(np, 0.333)));
- *        print_debug("random: %lf\n", timer.get_time());
- *        double time_phase1 = timer.get_time();
- *        estimator.error();
- *        REP(i, np)
- *            estimated_s[i] = estimator.estimate(i);
- *        for (int i = 0; i < (int)np; i ++) {
- *            double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
- *            heap_ele_buf[i] = HeapEle(i, centrality);
- *        }
- *
- *        timer.reset();
- *        priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
- *        int cand_size = 80;
- *        vector<int> cand(cand_size);
- *        REP(i, cand_size) {
- *            cand[i] = q.top().vtx;
- *            q.pop();
- *        }
- *
- *
- *        REP(i, cand_size) {
- *            auto partial_est = estimate_s_limit_depth(cand[i], 3);
- *            double cent = get_centrality_by_vtx_and_s(cand[i], partial_est);
- *            heap_ele_buf[i] = HeapEle(cand[i], cent);
- *        }
- *        priority_queue<HeapEle> q2(heap_ele_buf.begin(), heap_ele_buf.begin() + cand_size);
- *        vector<int> ans;
- *        int cnt = 0;
- *        {
- *            double last_centrality = 1e100;
- *            int last_vtx = -1;
- *            while (!q2.empty()) {
- *                auto he = q2.top(); q2.pop();
- *                int vtx = he.vtx;
- *                double centrality = he.centrality;
- *                m_assert(centrality <= last_centrality);
- *                if (centrality == last_centrality && vtx == last_vtx) {
- *                    ans.emplace_back(vtx);
- *                    if ((int)ans.size() == k)
- *                        break;
- *                } else {
- *                    cnt ++;
- *                    int s = get_extact_s(vtx);
- *                    double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
- *                    q2.push(HeapEle(vtx, new_centrality));
- *                }
- *
- *                last_centrality = centrality;
- *                last_vtx = vtx;
- *            }
- *        }
- *        if (np > 11000)
- *            fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, timer.get_time(), np, cnt, k, (int)diameter, (int)est_dist_max);
- *        return ans;
- *    } else {
- */
-/*
- *#pragma omp parallel for schedule(static) num_threads(4)
- *    REP(i, np)
- *        estimated_s[i] = estimate_s_limit_depth(i, 3);
- *    double time_1 = timer.get_time();
- */
-	/*
-	 *}
-	 */
-	PP(edge_count(friends));
-	UnionSetDepthEstimator estimator(friends, degree, 3);
-	estimated_s = estimator.result;
-//	print_debug("Two methods: limitd: %lf, union: %lf\n", time_1, timer.get_time());
-
+	RandomChoiceEstimator estimator(friends, degree, pow(log(np), 0.333) / (10.2 * pow(np, 0.333)));
+	print_debug("now: %lf\n", timer.get_time());
+	//estimator.error();
+	estimated_s = move(estimator.result);
 
 	for (int i = 0; i < (int)np; i ++) {
 		double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
 		heap_ele_buf[i] = HeapEle(i, centrality);
 	}
+
+	priority_queue<HeapEle> q2(heap_ele_buf.begin(), heap_ele_buf.end());
+	int cand_size = 3 * k;
+	vector<int> cand;
+	REP(i, cand_size) {
+		cand.push_back(q2.top().vtx);
+		q2.pop();
+	}
+	print_debug("now: %lf\n", timer.get_time());
+	vector<double> reals(cand.size());
+	PP(np);
+	REP(i, cand_size) {
+		int s = get_extact_s(cand[i]);
+		PP(s);
+		reals[i] = get_centrality_by_vtx_and_s(cand[i], s);
+	}
+	sort(reals.begin(), reals.end());
+	reverse(reals.begin(), reals.end());
+	double bound = reals[k - 1];
+	print_debug("bound: %.10lf\n", bound);
+
+	est_dist_max = 3;
+	print_debug("now: %lf\n", timer.get_time());
+#pragma omp parallel for schedule(static) num_threads(4)
+	REP(i, np) {
+		estimated_s[i] = estimate_s_limit_depth_cut_upper(i, est_dist_max, bound);
+		if (i < 3000)
+			PP(estimated_s[i]);
+	}
+	exit(0);
+
+	print_debug("now: %lf\n", timer.get_time());
+	print_debug("After work all: %lf\n", timer.get_time());
+	/*
+	 *}
+	 */
+	/*
+	 *UnionSetDepthEstimator estimator(friends, degree, est_dist_max);
+	 *estimated_s = move(estimator.result);
+	 */
+
+	//	estimate_all_s_using_delta_bfs(est_dist_max);
+	//	PP(np);
+
+
+	heap_ele_buf.clear();
+	int cnt_cut = 0;
+	for (int i = 0; i < (int)np; i ++) {
+		if (estimated_s[i] == 1e9) {
+			cnt_cut ++;
+			continue;
+		}
+
+		double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
+		heap_ele_buf.emplace_back(i, centrality);
+	}
+	PP(cnt_cut);
 
 	double time_phase1 = timer.get_time();
 	timer.reset();
@@ -292,8 +282,10 @@ vector<int> Query4Calculator::work() {
 			m_assert(centrality <= last_centrality);
 			if (centrality == last_centrality && vtx == last_vtx) {
 				ans.emplace_back(vtx);
-				if ((int)ans.size() == k)
+				if ((int)ans.size() == k) {
+					print_debug("ans: %.10lf\n", centrality);
 					break;
+				}
 			} else {
 				cnt ++;
 				int s = get_extact_s(vtx);
@@ -399,9 +391,11 @@ void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 			int max_v = -1;
 			for (auto &v: friends[cur_vtx]) {
 				if (!is_done[v]) {
-					//next_vtx = v; break;
-					if (update_max(max_friends, (int)pre_estimated_s[v]))
-						max_v = v;
+					next_vtx = v; break;
+					/*
+					 *if (update_max(max_friends, (int)pre_estimated_s[v]))
+					 *    max_v = v;
+					 */
 				}
 				next_vtx = max_v;
 			}

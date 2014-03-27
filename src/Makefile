@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Thu Mar 27 20:49:33 2014 +0800
+# $Date: Thu Mar 27 21:55:34 2014 +0000
 
 OBJ_DIR = build
 TARGET = ./main
@@ -12,9 +12,12 @@ DEFINES += -DGOOGLE_HASH
 #DEFINES += -DNUM_THREADS=1		# to disable multi-threading
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
-OPTFLAGS += #-fnothrow-opt -fno-rtti -march=native -mfpmath=sse -Ofast -flto -funroll-loops
+OPTFLAGS += -fnothrow-opt -fno-rtti -march=native -mfpmath=sse -Ofast -flto -funroll-loops
 #OPTFLAGS += -g -O0
 OPTFLAGS += -O3
+
+TCMALLOC = $(addprefix third-party/, libtcmalloc.a libunwind.a liblzma.a)
+#LDFLAGS += -ltcmalloc -lc
 
 ifeq ($(BUILD), submit)
 OPTFLAGS = -O3
@@ -65,7 +68,7 @@ $(OBJ_DIR)/%.d: %.cpp  Makefile
 #$(TARGET): $(OBJS)
 $(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
 	@echo "Linking ..."
-	@$(CXX) $^ -o $@ $(LDFLAGS)
+	@$(CXX) $^ $(TCMALLOC) -o $@ $(LDFLAGS)
 	@echo "done."
 
 $(OBJ_DIR)/gen_query.o: gen_query.cc

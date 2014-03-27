@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Thu Mar 27 15:03:16 2014 +0800
+//Date: Thu Mar 27 22:19:10 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -84,8 +84,8 @@ void output_tgf_graph(string fname, const vector<vector<int>> &friends) {
 		fout << i + 1<< ' ' << i + 1 << endl;
 	fout << "#" << endl;
 	for (size_t i = 0; i < friends.size(); i ++) {
-		for (auto &j: friends[i])
-			fout << i + 1 << ' ' << j + 1 << endl;
+		FOR_ITR(j, friends[i])
+			fout << i + 1 << ' ' << *j + 1 << endl;
 	}
 }
 
@@ -93,8 +93,8 @@ void output_dot_graph(string fname, const vector<vector<int>> &friends) {
 	ofstream fout(fname);
 	fout << "graph {\n";
 	for (size_t i = 0; i < friends.size(); i ++) {
-		for (auto &j: friends[i])
-			fout << "    " << i << " -- " << j << ";\n";
+		FOR_ITR(j, friends[i])
+			fout << "    " << i << " -- " << *j << ";\n";
 	}
 	fout << "}\n";
 }

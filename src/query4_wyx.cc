@@ -1,6 +1,6 @@
 /*
  * $File: query4_wyx.cc
- * $Date: Thu Mar 27 21:50:17 2014 +0000
+ * $Date: Thu Mar 27 22:21:47 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -76,11 +76,11 @@ int Query4Calculator::get_extact_s(int source) {
 		for (int i = 0; i < qsize; i ++) {
 			int v0 = q.front(); q.pop();
 			s += depth;
-			for (auto &v1: friends[v0]) {
-				if (hash[v1])
+			FOR_ITR(v1, friends[v0]) {
+				if (hash[*v1])
 					continue;
-				hash[v1] = true;
-				q.push(v1);
+				hash[*v1] = true;
+				q.push(*v1);
 			}
 		}
 	}
@@ -107,11 +107,11 @@ int Query4Calculator::estimate_s_limit_depth_cut_upper(int source, int depth_max
 			break;
 		for (int i = 0; i < qsize; i ++) {
 			int v0 = q.front(); q.pop();
-			for (auto &v1: friends[v0]) {
-				if (hash[v1])
+			FOR_ITR(v1, friends[v0]) {
+				if (hash[*v1])
 					continue;
-				hash[v1] = true;
-				q.push(v1);
+				hash[*v1] = true;
+				q.push(*v1);
 			}
 		}
 	}
@@ -134,11 +134,11 @@ int Query4Calculator::estimate_s_limit_depth(int source, int depth_max) {
 			break;
 		for (int i = 0; i < qsize; i ++) {
 			int v0 = q.front(); q.pop();
-			for (auto &v1: friends[v0]) {
-				if (hash[v1])
+			FOR_ITR(v1, friends[v0]) {
+				if (hash[*v1])
 					continue;
-				hash[v1] = true;
-				q.push(v1);
+				hash[*v1] = true;
+				q.push(*v1);
 			}
 		}
 	}
@@ -159,13 +159,13 @@ void Query4Calculator::bfs_diameter(const std::vector<vector<int>> &g, int sourc
 		int qsize = (int)q.size();
 		for (int i = 0; i < qsize; i ++) {
 			int v0 = q.front(); q.pop();
-			for (auto &v1: g[v0]) {
-				if (hash[v1])
+			FOR_ITR(v1, g[v0]) {
+				if (hash[*v1])
 					continue;
-				hash[v1] = true;
-				farthest_vtx = v1;
+				hash[*v1] = true;
+				farthest_vtx = *v1;
 				dist_max = depth + 1;
-				q.push(v1);
+				q.push(*v1);
 			}
 		}
 	}
@@ -239,7 +239,7 @@ vector<int> Query4Calculator::work() {
  *    }
  */
 
-	UnionSetDepthEstimator estimator(friends, degree, est_dist_max);
+	SSEUnionSetEstimator estimator(friends, degree, est_dist_max);
 	estimated_s = move(estimator.result);
 	print_debug("now: %lf\n", timer.get_time());
 
@@ -301,7 +301,7 @@ vector<int> Query4Calculator::work() {
 	//	print_debug("total: %f secs\n", time);
 	if (np > 11000) {
 		static int print = 0;
-		if (print < 100)
+		if (print < 3)
 			fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
 		print ++;
 	}
@@ -387,9 +387,9 @@ void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 			int next_vtx = -1;
 			int max_friends = -1;
 			int max_v = -1;
-			for (auto &v: friends[cur_vtx]) {
-				if (!is_done[v]) {
-					next_vtx = v; break;
+			FOR_ITR(v, friends[cur_vtx]) {
+				if (!is_done[*v]) {
+					next_vtx = *v; break;
 					/*
 					 *if (update_max(max_friends, (int)pre_estimated_s[v]))
 					 *    max_v = v;
@@ -431,13 +431,13 @@ int Query4Calculator::bfs(const std::vector<std::vector<int>> &graph,
 		int d1 = base_dist + depth + 1;
 		for (int i = 0; i < qsize; i ++) {
 			int v0 = q.front(); q.pop();
-			for (auto &v1: graph[v0]) {
-				if (dist[v1] <= d1)
+			FOR_ITR(v1, graph[v0]) {
+				if (dist[*v1] <= d1)
 					continue;
-				dist_count[dist[v1]] --;
+				dist_count[dist[*v1]] --;
 				dist_count[d1] ++;
-				dist[v1] = d1;
-				q.push(v1);
+				dist[*v1] = d1;
+				q.push(*v1);
 			}
 		}
 	}

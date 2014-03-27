@@ -1,6 +1,6 @@
 /*
  * $File: query4_wyx.cc
- * $Date: Thu Mar 27 16:31:47 2014 +0800
+ * $Date: Thu Mar 27 20:54:16 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -190,62 +190,53 @@ vector<int> Query4Calculator::work() {
 	//    assert(diameter != -1);
 
 	est_dist_max = max(2, (int)floor(log((double)diameter) / log(2.0) + 0.5));
+    est_dist_max = 3;
 
 
 	vector<HeapEle> heap_ele_buf(np);
 	estimated_s.resize(np);
-
-
 	timer.reset();
-	RandomChoiceEstimator estimator(friends, degree, pow(log(np), 0.333) / (10.2 * pow(np, 0.333)));
-	print_debug("now: %lf\n", timer.get_time());
-	//estimator.error();
+
+/*
+ *    RandomChoiceEstimator estimator(friends, degree, pow(log(np), 0.333) / (10.2 * pow(np, 0.333)));
+ *    print_debug("now: %lf\n", timer.get_time());
+ *    estimated_s = move(estimator.result);
+ *
+ *    for (int i = 0; i < (int)np; i ++) {
+ *        double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
+ *        heap_ele_buf[i] = HeapEle(i, centrality);
+ *    }
+ *
+ *    priority_queue<HeapEle> q2(heap_ele_buf.begin(), heap_ele_buf.end());
+ *    int cand_size = 3 * k;
+ *    vector<int> cand;
+ *    REP(i, cand_size) {
+ *        cand.push_back(q2.top().vtx);
+ *        q2.pop();
+ *    }
+ *    print_debug("now: %lf\n", timer.get_time());
+ *    vector<double> reals(cand.size());
+ *    PP(np);
+ *    REP(i, cand_size) {
+ *        int s = get_extact_s(cand[i]);
+ *        reals[i] = get_centrality_by_vtx_and_s(cand[i], s);
+ *    }
+ *    sort(reals.begin(), reals.end());
+ *    reverse(reals.begin(), reals.end());
+ *    double bound = reals[k - 1];
+ *    print_debug("bound: %.10lf\n", bound);
+ *
+ *    print_debug("now: %lf\n", timer.get_time());
+ *#pragma omp parallel for schedule(static) num_threads(4)
+ *    REP(i, np) {
+ *        estimated_s[i] = estimate_s_limit_depth_cut_upper(i, est_dist_max, bound);
+ *    }
+ */
+
+	SSEUnionSetEstimator estimator(friends, degree, est_dist_max);
 	estimated_s = move(estimator.result);
-
-	for (int i = 0; i < (int)np; i ++) {
-		double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
-		heap_ele_buf[i] = HeapEle(i, centrality);
-	}
-
-	priority_queue<HeapEle> q2(heap_ele_buf.begin(), heap_ele_buf.end());
-	int cand_size = 3 * k;
-	vector<int> cand;
-	REP(i, cand_size) {
-		cand.push_back(q2.top().vtx);
-		q2.pop();
-	}
-	print_debug("now: %lf\n", timer.get_time());
-	vector<double> reals(cand.size());
-	PP(np);
-	REP(i, cand_size) {
-		int s = get_extact_s(cand[i]);
-		PP(s);
-		reals[i] = get_centrality_by_vtx_and_s(cand[i], s);
-	}
-	sort(reals.begin(), reals.end());
-	reverse(reals.begin(), reals.end());
-	double bound = reals[k - 1];
-	print_debug("bound: %.10lf\n", bound);
-
-	est_dist_max = 3;
-	print_debug("now: %lf\n", timer.get_time());
-#pragma omp parallel for schedule(static) num_threads(4)
-	REP(i, np) {
-		estimated_s[i] = estimate_s_limit_depth_cut_upper(i, est_dist_max, bound);
-		if (i < 3000)
-			PP(estimated_s[i]);
-	}
-	exit(0);
-
 	print_debug("now: %lf\n", timer.get_time());
 	print_debug("After work all: %lf\n", timer.get_time());
-	/*
-	 *}
-	 */
-	/*
-	 *UnionSetDepthEstimator estimator(friends, degree, est_dist_max);
-	 *estimated_s = move(estimator.result);
-	 */
 
 	//	estimate_all_s_using_delta_bfs(est_dist_max);
 	//	PP(np);
@@ -254,15 +245,17 @@ vector<int> Query4Calculator::work() {
 	heap_ele_buf.clear();
 	int cnt_cut = 0;
 	for (int i = 0; i < (int)np; i ++) {
-		if (estimated_s[i] == 1e9) {
-			cnt_cut ++;
-			continue;
-		}
+		/*
+		 *if (estimated_s[i] == 1e9) {
+		 *    cnt_cut ++;
+		 *    continue;
+		 *}
+		 */
 
 		double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
 		heap_ele_buf.emplace_back(i, centrality);
 	}
-	PP(cnt_cut);
+	//PP(cnt_cut);
 
 	double time_phase1 = timer.get_time();
 	timer.reset();

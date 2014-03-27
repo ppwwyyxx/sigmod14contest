@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Thu Mar 27 16:33:31 2014 +0800
+//Date: Thu Mar 27 20:55:23 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -94,14 +94,59 @@ int RandomChoiceEstimator::bfs_all(int source, vector<int>& vst_cnt) {
 	return sum;
 }
 
+UnionSetDepthEstimator::UnionSetDepthEstimator(
+		const std::vector<std::vector<int>>& _graph,
+		int* degree, int _depth_max)
+		: SumEstimator(_graph), depth_max(_depth_max) {
+	Timer init;
+	size_t alloc = np;
+	/*
+	 *if (!s){
+	 *    s = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
+	 *    s_prev = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
+	 *} else if ((int)s->size() < np) {
+	 *    delete s; delete s_prev;
+	 *    s = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
+	 *    s_prev = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
+	 *} else {
+	 *    REP(i, s->size()) {
+	 *        (*s)[i].reset();
+	 *        (*s_prev)[i].reset();
+	 *    }
+	 *}
+	 */
+	s = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
+	s_prev = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
+
+
+	print_debug("allocTime: %lf\n", init.get_time());
+	result.resize((size_t)np, 0);
+	nr_remain.resize(np);
+
+	auto& out_scope_ptr = *s_prev;
+
+//#pragma omp parallel for schedule(static) num_threads(4)
+	REP(i, np) {
+		out_scope_ptr[i][i] = 1;
+		FOR_ITR(fr, graph[i]) {
+			out_scope_ptr[i][*fr] = 1;
+		}
+		result[i] += (int)graph[i].size();
+		nr_remain[i] = degree[i] - 1 - (int)graph[i].size();
+	}
+	work();
+	delete s; delete s_prev;
+}
+
 void UnionSetDepthEstimator::work() {
+	TotalTimer uniont("union");
 	GuardedTimer gg("work");
 	auto& out_s_prev = *s_prev;
 	auto& out_s = *s;
 
 	for (int k = 2; k <= depth_max; k ++) {
 		// CANNOT USE OMP HERE!
-#pragma omp parallel for schedule(dynamic) num_threads(4)
+//#pragma omp parallel for schedule(dynamic) num_threads(4)
 		REP(i, np) {
 			out_s[i].reset();
 			FOR_ITR(fr, graph[i])
@@ -121,3 +166,51 @@ void UnionSetDepthEstimator::work() {
 	REP(i, np)
 		result[i] += nr_remain[i] * (depth_max + 1);
 }
+
+SSEUnionSetEstimator::SSEUnionSetEstimator(
+		const vector<vector<int>>& _graph,
+		int* degree, int _depth_max) :SumEstimator(_graph), depth_max(_depth_max) {
+	Timer init;
+	int len = get_len_from_bit(np);
+
+	s.reserve(np); s_prev.reserve(np);
+	REP(i, np) {
+		s.emplace_back(len);
+		s_prev.emplace_back(len);
+	}
+
+	print_debug("allocTime: %lf\n", init.get_time());
+	result.resize((size_t)np, 0);
+	nr_remain.resize(np);
+
+	REP(i, np) {
+		s_prev[i].set(i);
+		FOR_ITR(fr, graph[i])
+			s_prev[i].set(*fr);
+		result[i] += (int)graph[i].size();
+		nr_remain[i] = degree[i] - 1 - (int)graph[i].size();
+	}
+	work();
+}
+
+void SSEUnionSetEstimator::work() {
+	TotalTimer uniont("sse");
+	int len = get_len_from_bit(np);
+	for (int k = 2; k <= depth_max; k ++) {
+		REP(i, np) {
+			s[i].reset(len);
+			FOR_ITR(fr, graph[i])
+				s[i].or_arr(s_prev[*fr], len);
+			s[i].and_not_arr(s_prev[i], len);
+
+			int c = s[i].count(len);
+			result[i] += c * k;
+			nr_remain[i] -= c;
+			s[i].or_arr(s_prev[i], len);
+		}
+		s.swap(s_prev);
+	}
+	REP(i, np)
+		result[i] += nr_remain[i] * (depth_max + 1);
+}
+

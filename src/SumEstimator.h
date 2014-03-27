@@ -1,5 +1,5 @@
 //File: SumEstimator.h
-//Date: Thu Mar 27 16:32:53 2014 +0800
+//Date: Thu Mar 27 20:15:34 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -9,8 +9,10 @@
 #include <boost/dynamic_bitset.hpp>
 #include "lib/Timer.h"
 #include "lib/common.h"
+#include "lib/bitset.h"
 #include "lib/Timer.h"
 #include "lib/debugutils.h"
+#include "lib/bitset.h"
 
 class SumEstimator {
 	public:
@@ -65,49 +67,24 @@ class UnionSetDepthEstimator: public SumEstimator {
 		std::vector<int> result;
 		std::vector<int> nr_remain;
 
-		UnionSetDepthEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max)
-			: SumEstimator(_graph), depth_max(_depth_max)
-		{
-			Timer init;
-			size_t alloc = np;
-			if (!s){
-				s = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-				s_prev = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-			} else if ((int)s->size() < np) {
-				delete s; delete s_prev;
-				s = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-				s_prev = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-			} else {
-				REP(i, s->size()) {
-					(*s)[i].reset();
-					(*s_prev)[i].reset();
-				}
-			}
-				/*
-				 *s = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-				 *s_prev = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-				 */
+		UnionSetDepthEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max);
 
+		void work();
 
-//			print_debug("Time: %lf\n", init.get_time());
-			result.resize((size_t)np, 0);
-			nr_remain.resize(np);
+		int estimate(int i) { return result[i]; }
+};
 
-			auto& out_scope_ptr = *s_prev;
+class SSEUnionSetEstimator: public SumEstimator {
+	// estimate a lower bound
+	public:
+		int depth_max;
 
-#pragma omp parallel for schedule(static) num_threads(4)
-			REP(i, np) {
-				out_scope_ptr[i][i] = 1;
-				FOR_ITR(fr, graph[i]) {
-					out_scope_ptr[i][*fr] = 1;
-				}
-				result[i] += (int)graph[i].size();
-				nr_remain[i] = degree[i] - 1 - (int)graph[i].size();
-			}
-			work();
-//			delete s; delete s_prev;
-		}
+		std::vector<Bitset> s, s_prev;
 
+		std::vector<int> result;
+		std::vector<int> nr_remain;
+
+		SSEUnionSetEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max);
 		void work();
 
 		int estimate(int i) { return result[i]; }

@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Thu Mar 27 20:55:23 2014 +0800
+//Date: Thu Mar 27 21:07:15 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -139,8 +139,7 @@ UnionSetDepthEstimator::UnionSetDepthEstimator(
 }
 
 void UnionSetDepthEstimator::work() {
-	TotalTimer uniont("union");
-	GuardedTimer gg("work");
+	TotalTimer gg("union work");
 	auto& out_s_prev = *s_prev;
 	auto& out_s = *s;
 
@@ -183,6 +182,7 @@ SSEUnionSetEstimator::SSEUnionSetEstimator(
 	result.resize((size_t)np, 0);
 	nr_remain.resize(np);
 
+#pragma omp parallel for schedule(static) num_threads(4)
 	REP(i, np) {
 		s_prev[i].set(i);
 		FOR_ITR(fr, graph[i])
@@ -197,6 +197,7 @@ void SSEUnionSetEstimator::work() {
 	TotalTimer uniont("sse");
 	int len = get_len_from_bit(np);
 	for (int k = 2; k <= depth_max; k ++) {
+#pragma omp parallel for schedule(static) num_threads(4)
 		REP(i, np) {
 			s[i].reset(len);
 			FOR_ITR(fr, graph[i])

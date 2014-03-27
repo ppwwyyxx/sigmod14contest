@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # File: run.sh
-# Date: Wed Mar 12 15:48:31 2014 +0800
+# Date: Thu Mar 27 21:10:54 2014 +0000
 # Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #[[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/ /path/to/query/file" && exit 1)
 #make -C src
-#export LD_PRELOAD=src/third-party/libtcmalloc.so.4.1.2
+export LD_PRELOAD=src/third-party/libtcmalloc.so
 ./main "$1" "$2" #2>/dev/null

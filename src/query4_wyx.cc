@@ -1,6 +1,6 @@
 /*
  * $File: query4_wyx.cc
- * $Date: Thu Mar 27 22:21:47 2014 +0800
+ * $Date: Fri Mar 28 11:34:56 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -88,7 +88,7 @@ int Query4Calculator::get_extact_s(int source) {
 }
 
 int Query4Calculator::estimate_s_limit_depth_cut_upper(int source, int depth_max, double cent_upper) {
-	int s_bound = ::sqr(degree[source] - 1.0) / cent_upper / (int(np) - 1);
+	int s_bound = (int)(::sqr(degree[source] - 1.0) / cent_upper / (double)(np - 1));
 	std::vector<bool> hash(np);
 	std::queue<int> q;
 	hash[source] = true;
@@ -102,7 +102,7 @@ int Query4Calculator::estimate_s_limit_depth_cut_upper(int source, int depth_max
 		int s_est_cur = s + nr_remain * (depth + 1);
 		//		double cent = get_centrality_by_vtx_and_s(source, s_est_cur);
 		// TODO
-//		if (s_est_cur > s_bound and depth <= depth_max) return 1e9;
+		if (s_est_cur > s_bound and depth < depth_max) return 1e9;
 		if(depth == depth_max)
 			break;
 		for (int i = 0; i < qsize; i ++) {
@@ -385,17 +385,10 @@ void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 
 			// next round
 			int next_vtx = -1;
-			int max_friends = -1;
-			int max_v = -1;
 			FOR_ITR(v, friends[cur_vtx]) {
 				if (!is_done[*v]) {
 					next_vtx = *v; break;
-					/*
-					 *if (update_max(max_friends, (int)pre_estimated_s[v]))
-					 *    max_v = v;
-					 */
 				}
-				next_vtx = max_v;
 			}
 			/*
 			 *if (pre_estimated_s[next_vtx] < pre_estimated_s[cur_vtx])

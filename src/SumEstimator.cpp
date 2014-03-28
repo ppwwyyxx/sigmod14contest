@@ -1,11 +1,12 @@
 //File: SumEstimator.cpp
-//Date: Thu Mar 27 21:07:15 2014 +0000
+//Date: Fri Mar 28 11:33:24 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
 #include "lib/common.h"
 #include <queue>
 #include <limits>
+#include <cmath>
 using namespace std;
 using namespace boost;
 
@@ -98,7 +99,7 @@ UnionSetDepthEstimator::UnionSetDepthEstimator(
 		const std::vector<std::vector<int>>& _graph,
 		int* degree, int _depth_max)
 		: SumEstimator(_graph), depth_max(_depth_max) {
-	Timer init;
+	DEBUG_DECL(Timer, init);
 	size_t alloc = np;
 	/*
 	 *if (!s){
@@ -139,7 +140,7 @@ UnionSetDepthEstimator::UnionSetDepthEstimator(
 }
 
 void UnionSetDepthEstimator::work() {
-	TotalTimer gg("union work");
+	DEBUG_DECL(TotalTimer, gg("union work"));
 	auto& out_s_prev = *s_prev;
 	auto& out_s = *s;
 
@@ -169,6 +170,7 @@ void UnionSetDepthEstimator::work() {
 SSEUnionSetEstimator::SSEUnionSetEstimator(
 		const vector<vector<int>>& _graph,
 		int* degree, int _depth_max) :SumEstimator(_graph), depth_max(_depth_max) {
+	//DEBUG_DECL(Timer, init);
 	Timer init;
 	int len = get_len_from_bit(np);
 
@@ -178,7 +180,13 @@ SSEUnionSetEstimator::SSEUnionSetEstimator(
 		s_prev.emplace_back(len);
 	}
 
-	print_debug("allocTime: %lf\n", init.get_time());
+	static int print = 0;
+	if (print < 3) {
+		fprintf(stderr, "alloc%d,%.4lf\n", np, init.get_time());
+		print ++;
+	}
+
+//	print_debug("allocTime: %lf\n", init.get_time());
 	result.resize((size_t)np, 0);
 	nr_remain.resize(np);
 
@@ -194,7 +202,7 @@ SSEUnionSetEstimator::SSEUnionSetEstimator(
 }
 
 void SSEUnionSetEstimator::work() {
-	TotalTimer uniont("sse");
+	DEBUG_DECL(TotalTimer, uniont("sse"));
 	int len = get_len_from_bit(np);
 	for (int k = 2; k <= depth_max; k ++) {
 #pragma omp parallel for schedule(static) num_threads(4)
@@ -215,3 +223,80 @@ void SSEUnionSetEstimator::work() {
 		result[i] += nr_remain[i] * (depth_max + 1);
 }
 
+
+HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max):
+	SumEstimator(_graph), depth_max(_depth_max)
+{
+	m_assert(depth_max == 3);
+	Timer init;
+	int len = get_len_from_bit(np);
+
+	std::vector<Bitset> s_prev;
+	s_prev.reserve(np);
+	REP(i, np) {
+		s_prev.emplace_back(len);
+	}
+
+	result.resize((size_t)np, 0);
+	nr_remain.resize(np);
+	REP(i, np) nr_remain[i] = degree[i];
+
+	print_debug("Alloc: %lf\n", init.get_time());
+	init.reset();
+
+	// bfs 2 depth
+	PP(np);
+#pragma omp parallel for schedule(static) num_threads(4)
+	REP(i, np) {
+		vector<bool> hash(np, false);
+
+		// depth 0
+		hash[i] = true;
+		nr_remain[i] -= 1;
+
+		// depth 1
+		FOR_ITR(fr, graph[i]) {
+			hash[*fr] = true;
+		}
+		nr_remain[i] -= (int)graph[i].size();
+		result[i] += graph[i].size();
+
+		// depth 2
+		FOR_ITR(fr, graph[i]) {
+			int j = *fr;
+			FOR_ITR(fr2, graph[j]) {
+				if (hash[*fr2])
+					continue;
+				hash[*fr2] = true;
+				nr_remain[i] --;
+				result[i] += 2;
+			}
+		}
+
+		REP(k, np) {
+			if (hash[k]) {
+				s_prev[i].set(k);
+			}
+		}
+	}
+	print_debug("Depth2: %lf\n", init.get_time());
+	init.reset();
+
+	// union depth 3
+#pragma omp parallel for schedule(static) num_threads(4)
+	REP(i, np) {
+		Bitset s(len);
+		FOR_ITR(fr, graph[i])
+			s.or_arr(s_prev[*fr], len);
+		s.and_not_arr(s_prev[i], len);
+
+		int c = s.count(len);
+		result[i] += c * 3;
+		nr_remain[i] -= c;
+	}
+
+	print_debug("Depth3: %lf\n", init.get_time());
+
+	REP(i, np)
+		result[i] += nr_remain[i] * 4;
+}

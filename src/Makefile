@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Thu Mar 27 21:55:34 2014 +0000
+# $Date: Fri Mar 28 11:34:10 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -12,11 +12,12 @@ DEFINES += -DGOOGLE_HASH
 #DEFINES += -DNUM_THREADS=1		# to disable multi-threading
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
-OPTFLAGS += -fnothrow-opt -fno-rtti -march=native -mfpmath=sse -Ofast -flto -funroll-loops
+#OPTFLAGS += -fnothrow-opt -fno-rtti -march=native -mfpmath=sse -Ofast -flto -funroll-loops
 #OPTFLAGS += -g -O0
 OPTFLAGS += -O3
 
-TCMALLOC = $(addprefix third-party/, libtcmalloc.a libunwind.a liblzma.a)
+#MALLOC = $(addprefix third-party/, libtcmalloc.a libunwind.a liblzma.a)
+MALLOC = $(addprefix third-party/, libllalloc.a)
 #LDFLAGS += -ltcmalloc -lc
 
 ifeq ($(BUILD), submit)
@@ -26,7 +27,7 @@ LDFLAGS += -static-libstdc++
 DEFINES += -DNUM_THREADS=8
 else
 DEFINES += -DDEBUG
-LDFLAGS += -lprofiler
+#LDFLAGS += -lprofiler
 OPTFLAGS += -Wall -Wextra -Wconversion
 endif
 
@@ -68,7 +69,7 @@ $(OBJ_DIR)/%.d: %.cpp  Makefile
 #$(TARGET): $(OBJS)
 $(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
 	@echo "Linking ..."
-	@$(CXX) $^ $(TCMALLOC) -o $@ $(LDFLAGS)
+	@$(CXX) $^ $(MALLOC) -o $@ $(LDFLAGS)
 	@echo "done."
 
 $(OBJ_DIR)/gen_query.o: gen_query.cc

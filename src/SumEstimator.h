@@ -1,5 +1,5 @@
 //File: SumEstimator.h
-//Date: Thu Mar 27 20:15:34 2014 +0800
+//Date: Fri Mar 28 11:05:46 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <numeric>
 #include <boost/dynamic_bitset.hpp>
-#include "lib/Timer.h"
 #include "lib/common.h"
 #include "lib/bitset.h"
 #include "lib/Timer.h"
@@ -86,6 +85,17 @@ class SSEUnionSetEstimator: public SumEstimator {
 
 		SSEUnionSetEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max);
 		void work();
+
+		int estimate(int i) { return result[i]; }
+};
+
+class HybridEstimator: public SumEstimator {
+	public:
+		int depth_max;
+		std::vector<int> result;
+		std::vector<int> nr_remain;
+
+		HybridEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max);
 
 		int estimate(int i) { return result[i]; }
 };

@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Wed Mar 26 18:50:30 2014 +0800
+//Date: Thu Mar 27 22:34:14 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -397,7 +397,7 @@ void read_places(const string& dir) {
 }
 
 void read_data(const string& dir) {		// may need to be implemented synchronously
-	Timer timer;
+	DEBUG_DECL(Timer, timer);
 	read_person_file(dir);
 	read_person_knows_person(dir);
 	print_debug("Read person spent %lf secs\n", timer.get_time());

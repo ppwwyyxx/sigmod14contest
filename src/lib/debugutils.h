@@ -30,6 +30,8 @@ void error_exit(const char *msg) __attribute__((noreturn));
 #define m_assert(expr) \
 	__m_assert_check__((expr), # expr, __FILE__, __PRETTY_FUNCTION__, __LINE__)
 
+#define DEBUG_DECL(T, t) T t
+
 
 void __print_debug__(const char *file, const char *func, int line, const char *fmt, ...)
 	__attribute__((format(printf, 4, 5)));
@@ -56,6 +58,8 @@ void __print_debug__(const char *file, const char *func, int line, const char *f
 #define print_debug(fmt, ...)
 
 #define m_assert(expr)
+
+#define DEBUG_DECL(T, t)
 
 #define P(a)
 #define PP(a)

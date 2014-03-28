@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Fri Mar 28 11:33:24 2014 +0800
+//Date: Fri Mar 28 11:40:45 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -252,11 +252,13 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 
 		// depth 0
 		hash[i] = true;
+		s_prev[i].set(i);
 		nr_remain[i] -= 1;
 
 		// depth 1
 		FOR_ITR(fr, graph[i]) {
 			hash[*fr] = true;
+			s_prev[i].set(*fr);
 		}
 		nr_remain[i] -= (int)graph[i].size();
 		result[i] += graph[i].size();
@@ -268,16 +270,16 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 				if (hash[*fr2])
 					continue;
 				hash[*fr2] = true;
+				s_prev[i].set(*fr2);
 				nr_remain[i] --;
 				result[i] += 2;
 			}
 		}
-
-		REP(k, np) {
-			if (hash[k]) {
-				s_prev[i].set(k);
-			}
-		}
+		/*
+		 *int c = s_prev[i].count(len);
+		 *if (c > 10000)
+		 *    print_debug("np: %d count d2: %d\n", np, c);
+		 */
 	}
 	print_debug("Depth2: %lf\n", init.get_time());
 	init.reset();

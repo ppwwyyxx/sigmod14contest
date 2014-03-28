@@ -1,6 +1,6 @@
 /*
- * $File: query4_wyx.cc
- * $Date: Fri Mar 28 11:34:56 2014 +0800
+ * $File: query4.cpp
+ * $Date: Fri Mar 28 11:41:34 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -239,7 +239,7 @@ vector<int> Query4Calculator::work() {
  *    }
  */
 
-	SSEUnionSetEstimator estimator(friends, degree, est_dist_max);
+	HybridEstimator estimator(friends, degree, est_dist_max);
 	estimated_s = move(estimator.result);
 	print_debug("now: %lf\n", timer.get_time());
 

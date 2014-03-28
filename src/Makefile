@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Fri Mar 28 11:34:10 2014 +0800
+# $Date: Fri Mar 28 11:41:52 2014 +0000
 
 OBJ_DIR = build
 TARGET = ./main
@@ -12,12 +12,12 @@ DEFINES += -DGOOGLE_HASH
 #DEFINES += -DNUM_THREADS=1		# to disable multi-threading
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
-#OPTFLAGS += -fnothrow-opt -fno-rtti -march=native -mfpmath=sse -Ofast -flto -funroll-loops
+OPTFLAGS += -fnothrow-opt -fno-rtti -march=native -mfpmath=sse -Ofast -flto -funroll-loops
 #OPTFLAGS += -g -O0
 OPTFLAGS += -O3
 
-#MALLOC = $(addprefix third-party/, libtcmalloc.a libunwind.a liblzma.a)
-MALLOC = $(addprefix third-party/, libllalloc.a)
+MALLOC = $(addprefix third-party/, libtcmalloc.a libunwind.a liblzma.a)
+#MALLOC = $(addprefix third-party/, libllalloc.a)
 #LDFLAGS += -ltcmalloc -lc
 
 ifeq ($(BUILD), submit)

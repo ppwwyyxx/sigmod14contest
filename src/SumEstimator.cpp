@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Fri Mar 28 11:40:45 2014 +0000
+//Date: Fri Mar 28 22:26:19 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -241,12 +241,11 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	nr_remain.resize(np);
 	REP(i, np) nr_remain[i] = degree[i];
 
-	print_debug("Alloc: %lf\n", init.get_time());
+//	print_debug("Alloc: %lf\n", init.get_time());
 	init.reset();
 
 	// bfs 2 depth
-	PP(np);
-#pragma omp parallel for schedule(static) num_threads(4)
+//#pragma omp parallel for schedule(static) num_threads(4)
 	REP(i, np) {
 		vector<bool> hash(np, false);
 
@@ -281,11 +280,11 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 		 *    print_debug("np: %d count d2: %d\n", np, c);
 		 */
 	}
-	print_debug("Depth2: %lf\n", init.get_time());
+//	print_debug("Depth2: %lf\n", init.get_time());
 	init.reset();
 
 	// union depth 3
-#pragma omp parallel for schedule(static) num_threads(4)
+//#pragma omp parallel for schedule(static) num_threads(4)
 	REP(i, np) {
 		Bitset s(len);
 		FOR_ITR(fr, graph[i])
@@ -297,7 +296,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 		nr_remain[i] -= c;
 	}
 
-	print_debug("Depth3: %lf\n", init.get_time());
+//	print_debug("Depth3: %lf\n", init.get_time());
 
 	REP(i, np)
 		result[i] += nr_remain[i] * 4;

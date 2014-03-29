@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Thu Mar 27 22:34:14 2014 +0800
+//Date: Sat Mar 29 16:08:03 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -10,6 +10,9 @@
 #include <list>
 #include <thread>
 #include <stdio.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+#include <fcntl.h>
 
 #include "lib/debugutils.h"
 #include "lib/utils.h"
@@ -96,6 +99,34 @@ void read_comments(const string &dir) {
 		safe_open(dir + "/comment_hasCreator_person.csv");
 		ptr = buffer, buf_end = ptr + 1;
 
+
+		// new read
+/*
+ *        size_t ncomment = 0;
+ *        while (true) {
+ *            buf_end = buffer + fread(buffer, 1, BUFFER_LEN, fin);
+ *            if (buf_end == buffer) break;
+ *            ptr = buffer;
+ *            while (ptr != buf_end) {
+ *                if (*ptr == '\n') ncomment ++;
+ *                ptr ++;
+ *            }
+ *        }
+ *        PP(ncomment);
+ *        PP(timer.get_time());
+ *        owner.resize(ncomment);
+ *        PP(timer.get_time());
+ *
+ *        if (Data::nperson > 11000)
+ *            fprintf(stderr, "s:%.4lf\n", timer.get_time());
+ *
+ *        rewind(fin);
+ *        ptr = buffer, buf_end = ptr + 1;
+ */
+		// end of new read
+
+
+
 		READ_TILL_EOL();
 		unsigned cid, pid;
 		if (Data::nperson > 9000) owner.reserve(20100000);
@@ -104,37 +135,82 @@ void read_comments(const string &dir) {
 			if (buffer == buf_end) break;
 			READ_INT(pid);
 			m_assert(cid % 10 == 0);
-			m_assert(cid / 10 == owner.size());
-			owner.emplace_back(pid);
+//			m_assert(cid / 10 == owner.size());
+		//	owner[cid / 10] = pid;		// new read
+			owner.push_back(pid);		// old read
 		}
 		fclose(fin);
 	}
+	if (Data::nperson > 11000)
+		fprintf(stderr, "1:%.4lf\n", timer.get_time());
 
 
-	int max_diff = 0;
+//	int max_diff = 0;
 	// read comment->comment
 	vector<unordered_map<int, int>> comment_map(Data::nperson);
+#ifdef GOOGLE_HASH
 	FOR_ITR(itr, comment_map) itr->set_empty_key(-1);
+#endif
 	{
 		GuardedTimer guarded_timer("read comment_replyOf_comment.csv");
-		safe_open(dir + "/comment_replyOf_comment.csv");
-		ptr = buffer, buf_end = ptr + 1;
 
-		READ_TILL_EOL();
-		int cid1, cid2;
-		while (true) {
-			READ_INT(cid1);
-			if (buffer == buf_end) break;
-			READ_INT(cid2);		// max difference cid1 - cdi2 is 180
-			update_max(max_diff, cid1 - cid2);
+		// using mmap
+		int fd = open((dir + "/comment_replyOf_comment.csv").c_str(), O_RDONLY);
+		struct stat s; fstat(fd, &s);
+		size_t size = s.st_size;
+		PP(size);
+		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE|MAP_POPULATE, fd, 0);
+		madvise(mapped, size, MADV_WILLNEED);
+
+		ptr = (char*)mapped;
+		buf_end = (char*)mapped + size;
+
+		do { ptr++; } while (*ptr != '\n');
+		ptr ++;
+		do {
+			int cid1 = 0;
+			do {
+				cid1 = cid1 * 10 + *ptr - '0';
+				ptr ++;
+			} while (*ptr != '|');
+			ptr ++;
+			int cid2 = 0;
+			do {
+				cid2 = cid2 * 10 + *ptr - '0';
+				ptr ++;
+			} while (*ptr != '\n');
 
 			int p1 = owner[cid1 / 10], p2 = owner[cid2 / 10];
-			comment_map[p1][p2] += 1;		// p1 reply to p2
-		}
-		fclose(fin);
-	}
-	PP(max_diff);
+			if (p1 != p2) {
+				comment_map[p1][p2] += 1;		// p1 reply to p2
+			}
 
+			ptr ++;
+		} while (ptr != buf_end);
+		munmap(mapped, size);
+		// end of using mmap
+		/*
+		 *                safe_open(dir + "/comment_replyOf_comment.csv");
+		 *                ptr = buffer, buf_end = ptr + 1;
+		 *
+		 *                READ_TILL_EOL();
+		 *                int cid1, cid2;
+		 *                while (true) {
+		 *                    READ_INT(cid1);
+		 *                    if (buffer == buf_end) break;
+		 *                    READ_INT(cid2);		// max difference cid1 - cdi2 is 180
+		 *                    int p1 = owner[cid1 / 10], p2 = owner[cid2 / 10];
+		 *                    comment_map[p1][p2] += 1;		// p1 reply to p2
+		 *                }
+		 *                fclose(fin);
+		 */
+	}
+	//	PP(max_diff);
+	if (Data::nperson > 11000)
+		fprintf(stderr, "2:%.4lf\n", timer.get_time());
+
+	// omp likely to crash?
+	//#pragma omp parallel for schedule(static) num_threads(4)
 	REP(i, Data::nperson) {
 		auto& fs = Data::friends[i];
 		auto& m = comment_map[i];
@@ -142,6 +218,8 @@ void read_comments(const string &dir) {
 			itr->ncmts = min(m[itr->pid], comment_map[itr->pid][i]);
 		}
 	}
+	if (Data::nperson > 11000)
+		fprintf(stderr, "e:%.4lf\n", timer.get_time());
 	print_debug("Read comment spent %lf secs\n", timer.get_time());
 }
 
@@ -162,7 +240,9 @@ void read_comments_2file(const string& dir) {
 	int cid, pid, cid1, cid2;
 
 	vector<unordered_map<int, int>> comment_map(Data::nperson);
+#ifdef GOOGLE_HASH
 	FOR_ITR(itr, comment_map) itr->set_empty_key(-1);
+#endif
 	//vector<vector<int>> comment_map(Data::nperson, vector<int>(Data::nperson));
 
 	while (true) {

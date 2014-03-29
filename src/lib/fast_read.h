@@ -1,12 +1,12 @@
 //File: fast_read.h
-//Date: Sat Mar 15 00:29:27 2014 +0800
+//Date: Fri Mar 28 22:41:35 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
 
 
 namespace {
-	const int BUFFER_LEN = 1024 * 1024 * 5;
+	const int BUFFER_LEN = 1024 * 1024 * 4;
 }
 
 #define safe_open(fname) \

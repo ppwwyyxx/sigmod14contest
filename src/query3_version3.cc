@@ -138,10 +138,12 @@ void Query3Calculator::init(const string &p)
 	first.resize(people.size());
 //	oneHeap.resize(people.size());
 	forsake.resize(people.size());
+#ifdef GOOGLE_HASH
 	for (int i = 0; i < (int) candidate.size(); i ++)
 		candidate[i].set_empty_key(-1);
 	for (int i = 0; i < (int) forsake.size(); i ++)
 		forsake[i].set_empty_key(-1);
+#endif
 }
 
 void Query3Calculator::calcInvertedList()

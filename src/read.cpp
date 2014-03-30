@@ -403,3 +403,165 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 	print_debug("Read person spent %lf secs\n", timer.get_time());
 }
 
+typedef std::pair<int, int> Type;
+
+void quick_sort(std::vector<Type>& arr) {
+	auto pivot = arr[rand() % arr.size()];
+	auto mid = std::partition(arr.begin(), arr.end(), [&](const Type &t){return t < pivot;});
+
+	auto pleft = arr[rand() % (mid - arr.begin())];
+	auto pright = arr[rand() % (arr.end() - mid)];
+	std::vector<Type>::iterator left, right;
+
+	thread t_left([&](){
+			left = std::partition(arr.begin(), mid, [&](const Type &t){return t < pleft;});
+			});
+	thread t_right([&](){
+			right = std::partition(mid, arr.end(), [&](const Type &t){return t < pright;});
+			});;
+
+	t_left.join();
+	t_right.join();
+
+	vector<thread> threads;
+	std::vector<Type>::iterator begin = arr.begin();
+	for (auto &end: {left , mid, right, arr.end()}) {
+		threads.emplace_back(std::bind(
+			[](std::vector<Type>::iterator begin,
+				std::vector<Type>::iterator end){
+			std::sort(begin, end);},
+			begin, end));
+		begin = end;
+	}
+
+	for (auto &t: threads)
+		t.join();
+
+	return;
+}
+
+
+int find_count(const std::vector<std::pair<std::pair<int, int>, int>> &count, const std::pair<int, int> &pivot) {
+	// lower bound
+	int left = 0, right = count.size();
+	while (left + 1 < right) {
+		int mid = (left + right) >> 1;
+		if (count[mid].first <= pivot) {
+			left = mid;
+		} else {
+			right = mid;
+		}
+	}
+
+	if (count[left].first == pivot)
+		return count[left].second;
+	return 0;
+}
+
+void read_comments_tim(const std::string &dir) {
+	static char buffer[BUFFER_LEN];
+	char *ptr, *buf_end;
+
+	vector<int> owner;
+	Timer timer;
+	{
+		GuardedTimer guarded_timer("read comment_hasCreator_person.csv");
+		safe_open(dir + "/comment_hasCreator_person.csv");
+		ptr = buffer, buf_end = ptr + 1;
+
+		READ_TILL_EOL();
+		unsigned cid, pid;
+		if (Data::nperson > 9000) owner.reserve(20100000);
+		while (true) {
+			READ_INT(cid);
+			if (buffer == buf_end) break;
+			READ_INT(pid);
+			m_assert(cid % 10 == 0);
+			m_assert(cid / 10 == owner.size());
+			owner.emplace_back(pid);
+		}
+		fclose(fin);
+	}
+
+	std::vector<unordered_set<int>> friends_hash(Data::nperson);
+	for (auto &h: friends_hash)
+		h.set_empty_key(-1);
+	{
+		GuardedTimer guarded_timer("init friends hash");
+
+		REP(i, Data::nperson) {
+			auto& fs = Data::friends[i];
+			auto &h = friends_hash[i];
+			FOR_ITR(itr, fs) {
+				int j = itr->pid;
+				h.insert(j);
+			}
+		}
+	}
+
+	vector<vector<int>> comments_2d(Data::nperson);
+	vector<std::pair<int, int>> comments;
+	{
+		GuardedTimer guarded_timer("read comment_replyOf_comment.csv");
+		safe_open(dir + "/comment_replyOf_comment.csv");
+		ptr = buffer, buf_end = ptr + 1;
+
+		READ_TILL_EOL();
+		int cid1, cid2;
+		while (true) {
+			READ_INT(cid1);
+			if (buffer == buf_end) break;
+			READ_INT(cid2);		// max difference cid1 - cdi2 is 180
+
+			int p1 = owner[cid1 / 10], p2 = owner[cid2 / 10];
+			auto &h = friends_hash[p1];
+			if (h.find(p2) == h.end())
+				continue;
+			comments.emplace_back(p1, p2);
+		}
+		fclose(fin);
+	}
+
+	{
+		GuardedTimer guarded_timer("sort");
+		print_debug("nr_comments: %lu\n", comments.size());
+		quick_sort(comments);
+	}
+
+	std::vector<std::pair<std::pair<int, int>, int>> count;
+	{
+		GuardedTimer guarded_timer("aggregate");
+		count.emplace_back(comments[0], 1);
+		for (size_t i = 1, d = comments.size(); i < d; i ++) {
+			auto &cur = comments[i];
+			if (cur != comments[i - 1]) {
+				count.emplace_back(cur, 1);
+			} else {
+				count.back().second ++;
+			}
+		}
+	}
+
+	{
+		GuardedTimer timer("build graph");
+#pragma omp parallel for schedule(static) num_threads(4)
+		REP(i, Data::nperson) {
+			auto& fs = Data::friends[i];
+			FOR_ITR(itr, fs) {
+				int j = itr->pid;
+
+				int c = std::min(find_count(count, make_pair(i, j)), find_count(count, make_pair(j, i)));
+//                if (itr->ncmts != c) {
+//                    fprintf(stderr, "%d %d\n", itr->ncmts, c);
+//                }
+//                m_assert(itr->ncmts == c);
+				itr->ncmts = c;
+//                itr->ncmts = min(m[itr->pid], comment_map[itr->pid][i]);
+			}
+		}
+	}
+
+
+	print_debug("Read comment spent %lf secs\n", timer.get_time());
+}
+

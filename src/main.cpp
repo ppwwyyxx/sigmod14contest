@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Wed Mar 26 18:59:45 2014 +0000
+//Date: Sat Mar 29 01:47:11 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -109,6 +109,12 @@ int main(int argc, char* argv[]) {
 	 *start_2();
 	 *start_3();
 	 *start_4(1);
+	 */
+
+	/*
+	 *threadpool->enqueue(bind(do_read_comments, dir));
+	 *delete threadpool;
+	 *return 0;
 	 */
 
 	threadpool->enqueue(bind(do_read_tags_forums_places, dir), start_4);

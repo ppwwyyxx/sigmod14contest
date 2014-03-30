@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Fri Mar 28 11:41:34 2014 +0000
+ * $Date: Sat Mar 29 01:05:45 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -241,7 +241,7 @@ vector<int> Query4Calculator::work() {
 
 	HybridEstimator estimator(friends, degree, est_dist_max);
 	estimated_s = move(estimator.result);
-	print_debug("now: %lf\n", timer.get_time());
+//	print_debug("now: %lf\n", timer.get_time());
 
 	//	estimate_all_s_using_delta_bfs(est_dist_max);
 	//	PP(np);
@@ -281,7 +281,6 @@ vector<int> Query4Calculator::work() {
 			if (centrality == last_centrality && vtx == last_vtx) {
 				ans.emplace_back(vtx);
 				if ((int)ans.size() == k) {
-					print_debug("ans: %.10lf\n", centrality);
 					break;
 				}
 			} else {
@@ -301,7 +300,7 @@ vector<int> Query4Calculator::work() {
 	//	print_debug("total: %f secs\n", time);
 	if (np > 11000) {
 		static int print = 0;
-		if (print < 3)
+		if (print < 2)
 			fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
 		print ++;
 	}

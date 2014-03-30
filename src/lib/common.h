@@ -1,5 +1,5 @@
 //File: common.h
-//Date: Thu Mar 27 21:00:17 2014 +0000
+//Date: Sat Mar 29 01:36:05 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -10,5 +10,5 @@
 #define FOR_ITR(x, y) for (auto x = (y).begin(); x != (y).end(); x ++)
 
 #ifndef NUM_THREADS
-#define NUM_THREADS 8
+#define NUM_THREADS 4
 #endif

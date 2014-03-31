@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Sat Mar 29 01:05:45 2014 +0800
+ * $Date: Mon Mar 31 14:32:48 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -468,6 +468,7 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 		*itr = persons[*itr];
 	}
 	ans[index] = move(now_ans);
+	continuation->cont();
 }
 
 

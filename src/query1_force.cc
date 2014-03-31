@@ -64,6 +64,7 @@ void Query1Handler::add_query(const Query1& q, int ind) {
 		std::unique_lock<mutex> lock(ans_mt);
 		this->ans.emplace_back(ind, ans);
 	}
+	continuation->cont();
 }
 
 void Query1Handler::pre_work() {

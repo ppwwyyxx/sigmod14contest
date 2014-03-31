@@ -10,6 +10,7 @@
 #include <string>
 #include "lib/utils.h"
 #include "lib/hash_lib.h"
+#include "lib/finish_time_continuation.h"
 #include "data.h"
 
 std::vector<PersonInForum> get_tag_persons(const std::string& s);
@@ -30,6 +31,8 @@ class Query4Handler {
 		void print_result();		// TODO
 
 		std::vector<std::vector<int>> ans;	// must be resized correctly
+
+		std::shared_ptr<FinishTimeContinuation> continuation;
 };
 
 

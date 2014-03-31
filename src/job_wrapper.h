@@ -8,6 +8,7 @@
 #include "read.h"
 #include "lib/Timer.h"
 #include "lib/common.h"
+#include "lib/finish_time_continuation.h"
 #include "globals.h"
 #include "query1.h"
 #include "query2.h"
@@ -26,6 +27,7 @@ extern std::vector<Query4> q4_set;
 
 void add_all_query(int);
 
+
 inline int do_read_comments(const std::string dir) {
 	Timer timer;
 	read_comments(dir);
@@ -38,6 +40,7 @@ inline int do_read_tags_forums_places(const std::string dir) {
 //	if (Data::nperson > 11000) fprintf(stderr, "npl:%lu, forut:%.4lf\n", Data::placeid.size(), timer.get_time());
 	return 0;
 }
+
 
 #define WAIT_FOR(s) \
 	unique_lock<mutex> lk(s ## _mt); \
@@ -73,6 +76,7 @@ inline void start_4(int) {
 	PP("start4");
 	Timer timer;
 	size_t s = q4_set.size();
+	q4.continuation = std::make_shared<FinishTimeContinuation>(s, "q4 finish time");
 	REP(i, s) {
 //		q4.add_query(q4_set[i].k, q4_set[i].tag, i);
 		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
@@ -80,23 +84,4 @@ inline void start_4(int) {
 }
 
 
-void add_all_query(int type) {
-	Timer timer;
-	switch (type) {
-		case 1:
-			for (size_t i = 0; i < q1_set.size(); i ++)
-				q1.add_query(q1_set[i], i);
-			break;
-		case 2:
-			FOR_ITR(itr, q2_set) {
-				q2.add_query(*itr);
-			}
-			break;
-		case 3:
-			m_assert(false);
-			break;
-		case 4:
-			m_assert(false);
-			break;
-	}
-}
+void add_all_query(int type);

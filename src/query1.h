@@ -5,6 +5,7 @@
 #include <vector>
 #include <mutex>
 #include "lib/hash_lib.h"
+#include "lib/finish_time_continuation.h"
 #include <map>
 
 struct Query1 {
@@ -22,6 +23,8 @@ class Query1Handler {
 		void work();
 
 		void print_result();		// TODO
+
+		std::shared_ptr<FinishTimeContinuation> continuation;
 
 	protected:
 		std::vector<std::pair<int, int>> ans;

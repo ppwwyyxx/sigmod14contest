@@ -10,6 +10,7 @@
 #include <unordered_set>
 #include <queue>
 #include "data.h"
+#include "lib/finish_time_continuation.h"
 
 struct Query3 {
 	int k, hop;
@@ -86,5 +87,7 @@ class Query3Handler {
 		void bfs(int, int);				// for force
 
 		std::vector<std::vector<Answer3> > global_answer;
+
+		std::shared_ptr<FinishTimeContinuation> continuation;
 
 };

@@ -131,6 +131,8 @@ void Query2Handler::work() {
 	for (int i = 0; i < (int)queries.size(); i++)
 		final_ans[queries[i].qid] = ans[i];
 	ans = final_ans;
+
+	continuation->cont();
 }
 
 void Query2Handler::print_result() {

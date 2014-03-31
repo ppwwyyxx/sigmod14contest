@@ -89,6 +89,7 @@ void Query3Handler::add_query(int k, int h, const string& p, int index) {
 	Query3Calculator calc;
 	calc.work(k, h, p, global_answer[index]);
 
+	continuation->cont();
 	return ;
 }
 

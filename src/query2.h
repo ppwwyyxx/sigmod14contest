@@ -4,6 +4,8 @@
 #include <mutex>
 #include <vector>
 
+#include "lib/finish_time_continuation.h"
+
 struct Query2 {
 	int k, d, qid;
 	Query2(int _k, int _d, int _qid):
@@ -21,6 +23,8 @@ class Query2Handler {
 		void work();
 
 		void print_result();
+
+		std::shared_ptr<FinishTimeContinuation> continuation;
 
 	protected:
         std::vector< std::vector<int> > ans;

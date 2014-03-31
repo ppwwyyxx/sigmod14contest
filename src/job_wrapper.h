@@ -58,6 +58,7 @@ inline void start_1(int) {
 inline void start_2() {
 	Timer timer;
 	timer.reset();
+	q2.continuation = std::make_shared<FinishTimeContinuation>(1, "q2 finish time");
 	q2.work();
 	tot_time[2] += timer.get_time();
 }
@@ -65,6 +66,7 @@ inline void start_2() {
 inline void start_3() {
 	Timer timer;
 	size_t s = q3_set.size();
+	q3.continuation = std::make_shared<FinishTimeContinuation>(s, "q3 finish time");
 	REP(i, s) {
 		//q3.add_query(q3_set[i].k, q3_set[i].hop, q3_set[i].place, i);
 		//print_debug("finish q3 %lu at %lf\n", i, timer.get_time());

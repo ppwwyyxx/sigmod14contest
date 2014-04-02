@@ -285,6 +285,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 	forum_to_tags.set_empty_key(-1);
 #endif
 	{
+		GuardedTimer timer("read forum_hasTag_tag");
 		safe_open(dir + "/forum_hasTag_tag.csv");
 		ptr = buffer, buf_end = ptr + 1;
 		READ_TILL_EOL();
@@ -302,6 +303,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 	}
 
 	{
+		GuardedTimer timer("read forum_hasMember_person");
 		safe_open(dir + "/forum_hasMember_person.csv");
 		ptr = buffer, buf_end = ptr + 1;
 		READ_TILL_EOL();
@@ -605,6 +607,7 @@ void read_comments_tim(const std::string &dir) {
 	{
 		GuardedTimer guarded_timer("sort");
 		print_debug("nr_comments: %lu\n", comments.size());
+//        std::sort(comments.begin(), comments.end());
 		quick_sort(comments);
 	}
 

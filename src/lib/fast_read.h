@@ -1,5 +1,5 @@
 //File: fast_read.h
-//Date: Fri Mar 28 22:41:35 2014 +0800
+//Date: Wed Apr 02 18:14:26 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -29,6 +29,19 @@ namespace {
 	while (*ptr < '0' || *ptr > '9') \
 		PTR_NEXT(); \
 	int _n_ = 0; \
+	while (*ptr >= '0' && *ptr <= '9') \
+	{ \
+		_n_ = _n_ * 10 + *ptr - '0'; \
+		PTR_NEXT(); \
+	} \
+	(_x_) = (_n_); \
+}
+
+#define READ_ULL(_x_) \
+{ \
+	while (*ptr < '0' || *ptr > '9') \
+		PTR_NEXT(); \
+	unsigned long long _n_ = 0; \
 	while (*ptr >= '0' && *ptr <= '9') \
 	{ \
 		_n_ = _n_ * 10 + *ptr - '0'; \

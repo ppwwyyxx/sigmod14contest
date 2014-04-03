@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Thu Apr 03 21:02:24 2014 +0000
+//Date: Thu Apr 03 21:34:33 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -120,7 +120,6 @@ UnionSetDepthEstimator::UnionSetDepthEstimator(
 	s_prev = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
 
 
-	print_debug("allocTime: %lf\n", init.get_time());
 	result.resize((size_t)np, 0);
 	nr_remain.resize(np);
 
@@ -236,9 +235,8 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	{
 	//	TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
 		s_prev.reserve(np);
-		REP(i, np) {
+		REP(i, np)
 			s_prev.emplace_back(len);
-		}
 
 		result.resize((size_t)np, 0);
 		nr_remain.resize(np);
@@ -246,23 +244,23 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	}
 
 	//	print_debug("Alloc: %lf\n", init.get_time());
-	init.reset();
 
 	// bfs 2 depth
 	{
-		TotalTimer ttt("depth 2");
+		DEBUG_DECL(TotalTimer, ttt("depth 2"));
+		vector<int> hash(np, 0);
+		int tag = 0;
 		REP(i, np) {
-			// TODO try use tag here
-			vector<bool> hash(np, false);
+			tag ++;
 
 			// depth 0
-			hash[i] = true;
+			hash[i] = tag;
 			s_prev[i].set(i);
 			nr_remain[i] -= 1;
 
 			// depth 1
 			FOR_ITR(fr, graph[i]) {
-				hash[*fr] = true;
+				hash[*fr] = tag;
 				s_prev[i].set(*fr);
 			}
 			nr_remain[i] -= (int)graph[i].size();
@@ -272,9 +270,9 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			FOR_ITR(fr, graph[i]) {
 				int j = *fr;
 				FOR_ITR(fr2, graph[j]) {
-					if (hash[*fr2])
+					if (hash[*fr2] == tag)
 						continue;
-					hash[*fr2] = true;
+					hash[*fr2] = tag;
 					s_prev[i].set(*fr2);
 					nr_remain[i] --;
 					result[i] += 2;
@@ -288,11 +286,10 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 		}
 
 	}
-	init.reset();
 
 	// union depth 3
 	{
-		TotalTimer ttt("depth 3");
+		DEBUG_DECL(TotalTimer, ttt("depth 3"));
 		REP(i, np) {
 			if (noneed[i]) continue;
 			Bitset s(len);
@@ -341,5 +338,10 @@ int LimitDepthEstimator::estimate(int source) {
 		}
 	}
 	s += nr_remain * (depth_max + 1);
+
+	/*
+	 *int real_s = get_exact_s(source);
+	 *print_debug("Err: %d-%d-%.4lf\n", real_s, s, (double)fabs(real_s - s) / real_s);
+	 */
 	return s;
 }

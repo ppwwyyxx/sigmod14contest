@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Thu Apr 03 20:44:34 2014 +0000
+//Date: Thu Apr 03 21:36:05 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -63,7 +63,7 @@ PersonInPlace::PersonInPlace(int _pid):
 	pid(_pid), ntags(int(Data::tags[_pid].size())) {}
 
 vector<PersonInForum> get_tag_persons(const string& s) {
-	TotalTimer tt("get_tag_persons");
+	DEBUG_DECL(TotalTimer, tt("get_tag_persons"));
 	int tagid = Data::tagid[s];
 	auto& forums = Data::tag_forums[tagid];
 	vector<PersonInForum> persons;

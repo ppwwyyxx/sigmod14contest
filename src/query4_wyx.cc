@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Thu Apr 03 21:10:13 2014 +0000
+ * $Date: Thu Apr 03 21:35:38 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -112,6 +112,17 @@ vector<int> Query4Calculator::work() {
 
 	HybridEstimator estimator(friends, degree, est_dist_max, noneed);
 	estimated_s = move(estimator.result);
+
+/*
+ *    LimitDepthEstimator estimator(friends, degree, est_dist_max);
+ *#pragma omp parallel for schedule(static) num_threads(4)
+ *    REP(i, np) {
+ *        if (noneed[i])
+ *            estimated_s[i] = 1e9;
+ *        else
+ *            estimated_s[i] = estimator.estimate(i);
+ *    }
+ */
 
 
 	vector<HeapEle> heap_ele_buf;

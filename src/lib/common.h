@@ -1,5 +1,5 @@
 //File: common.h
-//Date: Sat Mar 29 01:36:05 2014 +0800
+//Date: Thu Apr 03 16:02:09 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -11,4 +11,7 @@
 
 #ifndef NUM_THREADS
 #define NUM_THREADS 4
+
+#include <utility>
+typedef std::pair<int, int> PII;
 #endif

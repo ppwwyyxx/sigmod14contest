@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Wed Apr 02 18:16:01 2014 +0800
+//Date: Thu Apr 03 16:27:23 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -85,6 +85,8 @@ void read_person_knows_person(const string& dir) {
 		Data::friends[p1].emplace_back(p2, 0);
 		//Data::friends[p2].emplace_back(p1, 0);
 	}
+	REP(i, Data::nperson)
+		sort(Data::friends[i].begin(), Data::friends[i].end());		// sort by id!
 	fclose(fin);
 }
 
@@ -516,10 +518,7 @@ void quick_sort(std::vector<Type>& arr) {
 		begin = end;
 	}
 
-	for (auto &t: threads)
-		t.join();
-
-	return;
+	for (auto &t: threads) t.join();
 }
 
 
@@ -552,10 +551,11 @@ void read_comments_tim(const std::string &dir) {
 		ptr = buffer, buf_end = ptr + 1;
 
 		READ_TILL_EOL();
-		unsigned cid, pid;
+		unsigned long long cid;
+		int pid;
 		if (Data::nperson > 9000) owner.reserve(20100000);
 		while (true) {
-			READ_INT(cid);
+			READ_ULL(cid);
 			if (buffer == buf_end) break;
 			READ_INT(pid);
 			m_assert(cid % 10 == 0);
@@ -566,18 +566,17 @@ void read_comments_tim(const std::string &dir) {
 	}
 
 	std::vector<unordered_set<int>> friends_hash(Data::nperson);
-	for (auto &h: friends_hash)
-		h.set_empty_key(-1);
+#ifdef GOOGLE_HASH
+	for (auto &h: friends_hash) h.set_empty_key(-1);
+#endif
 	{
 		GuardedTimer guarded_timer("init friends hash");
 
 		REP(i, Data::nperson) {
 			auto& fs = Data::friends[i];
 			auto &h = friends_hash[i];
-			FOR_ITR(itr, fs) {
-				int j = itr->pid;
-				h.insert(j);
-			}
+			FOR_ITR(itr, fs)
+				h.insert(itr->pid);
 		}
 	}
 
@@ -589,9 +588,10 @@ void read_comments_tim(const std::string &dir) {
 		ptr = buffer, buf_end = ptr + 1;
 
 		READ_TILL_EOL();
-		int cid1, cid2;
+		unsigned long long cid1;
+		int cid2;
 		while (true) {
-			READ_INT(cid1);
+			READ_ULL(cid1);
 			if (buffer == buf_end) break;
 			READ_INT(cid2);		// max difference cid1 - cdi2 is 180
 
@@ -604,47 +604,41 @@ void read_comments_tim(const std::string &dir) {
 		fclose(fin);
 	}
 
+	print_debug("number of valid comment pair: %lu\n", comments.size());
 	{
-		GuardedTimer guarded_timer("sort");
-		print_debug("nr_comments: %lu\n", comments.size());
-//        std::sort(comments.begin(), comments.end());
+		GuardedTimer guarded_timer("sort");		// very fast
+//      std::sort(comments.begin(), comments.end());
 		quick_sort(comments);
 	}
 
-	std::vector<std::pair<std::pair<int, int>, int>> count;
-	{
-		GuardedTimer guarded_timer("aggregate");
-		count.emplace_back(comments[0], 1);
-		for (size_t i = 1, d = comments.size(); i < d; i ++) {
-			auto &cur = comments[i];
-			if (cur != comments[i - 1]) {
-				count.emplace_back(cur, 1);
-			} else {
-				count.back().second ++;
-			}
+	// aggregate, very fast
+	std::vector<pair<PII, int>> count;
+	count.emplace_back(comments[0], 1);
+	for (size_t i = 1, d = comments.size(); i < d; i ++) {
+		auto &cur = comments[i];
+		if (cur != comments[i - 1]) {
+			count.emplace_back(cur, 1);
+		} else {
+			count.back().second ++;
 		}
 	}
 
 	{
+		int index = 0;
 		GuardedTimer timer("build graph");
-#pragma omp parallel for schedule(static) num_threads(4)
 		REP(i, Data::nperson) {
 			auto& fs = Data::friends[i];
 			FOR_ITR(itr, fs) {
 				int j = itr->pid;
-
-				int c = std::min(find_count(count, make_pair(i, j)), find_count(count, make_pair(j, i)));
-//                if (itr->ncmts != c) {
-//                    fprintf(stderr, "%d %d\n", itr->ncmts, c);
-//                }
-//                m_assert(itr->ncmts == c);
-				itr->ncmts = c;
-//                itr->ncmts = min(m[itr->pid], comment_map[itr->pid][i]);
+				PII now_pair{i, j};
+				while (count[index].first < now_pair) index ++;
+				if (count[index].first == now_pair)
+					itr->ncmts = min(count[index].second, find_count(count, make_pair(j, i)));
+				else
+					itr->ncmts = 0;
 			}
 		}
 	}
-
-
 	print_debug("Read comment spent %lf secs\n", timer.get_time());
 }
 

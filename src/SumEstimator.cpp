@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Fri Mar 28 22:26:19 2014 +0800
+//Date: Thu Apr 03 15:30:47 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -260,7 +260,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			s_prev[i].set(*fr);
 		}
 		nr_remain[i] -= (int)graph[i].size();
-		result[i] += graph[i].size();
+		result[i] += (int)graph[i].size();
 
 		// depth 2
 		FOR_ITR(fr, graph[i]) {

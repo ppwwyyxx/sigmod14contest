@@ -1,5 +1,5 @@
 //File: hash_lib.h
-//Date: Fri Mar 28 23:30:39 2014 +0800
+//Date: Thu Apr 03 16:07:51 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -59,3 +59,12 @@ typedef MurmurHasher<std::string> StringHashFunc;
  *    { return (s1 == s2) || (s1 && s2 && strcmp(s1, s2) == 0); }
  *};
  */
+namespace std {
+	template <>
+	struct hash<std::pair<int, int>> {
+		public:
+			size_t operator()(const std::pair<int, int> &p) const {
+				return hash<int>()(p.first) ^ hash<int>()(p.second);
+			}
+	};
+}

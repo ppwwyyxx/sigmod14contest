@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Thu Apr 03 15:24:33 2014 +0800
+//Date: Thu Apr 03 15:43:20 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -29,7 +29,7 @@ extern std::vector<Query4> q4_set;
 
 inline int do_read_comments(const std::string dir) {
 	Timer timer;
-	read_comments(dir);
+	read_comments_tim(dir);
 //	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
 	return 0;
 }
@@ -52,7 +52,7 @@ inline void start_1(int) {
 //	q1.pre_work();		// sort Data::frien
 	q1.continuation = std::make_shared<FinishTimeContinuation>(q1_set.size(), "q1 finish time");
 	REP(i, q1_set.size())
-		q1.add_query(q1_set[i], i);
+		q1.add_query(q1_set[i], (int)i);
 	tot_time[1] += timer.get_time();
 }
 

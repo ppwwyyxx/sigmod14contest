@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Mon Mar 31 14:32:48 2014 +0000
+ * $Date: Thu Apr 03 15:32:47 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -248,7 +248,7 @@ vector<int> Query4Calculator::work() {
 
 
 	heap_ele_buf.clear();
-	int cnt_cut = 0;
+	//int cnt_cut = 0;
 	for (int i = 0; i < (int)np; i ++) {
 		/*
 		 *if (estimated_s[i] == 1e9) {
@@ -352,7 +352,7 @@ void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 		dist_count[np + est_dist_max] = (int)np;
 
 		int cur_vtx = root;
-		int last_vtx = -1;
+		//int last_vtx = -1;
 		for (; ;) {
 			int now_searched = bfs(friends, cur_vtx, base_dist, est_dist_max, dist,
 					dist_count);
@@ -395,7 +395,7 @@ void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 			 */
 			if (next_vtx == -1)
 				break;
-			last_vtx = cur_vtx;
+			//last_vtx = cur_vtx;
 			cur_vtx = next_vtx;
 			base_dist --;
 		}

@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Thu Mar 27 16:29:40 2014 +0800
+//Date: Thu Apr 03 16:19:05 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -24,7 +24,7 @@ struct ConnectedPerson {
 		pid(_pid), ncmts(_ncmts){}
 
 	bool operator < (const ConnectedPerson& r) const
-	{ return ncmts > r.ncmts; }
+	{ return pid > r.pid; }
 
 	friend std::ostream& operator << (std::ostream& os, const ConnectedPerson& cp)
 	{ os << cp.pid << " " << cp.ncmts; return os; }
@@ -79,7 +79,7 @@ public:
 	static int nperson, ntag;
 
 	static std::vector<std::vector<ConnectedPerson> > friends;
-	// friends[i] is a vector(sorted by 'ncomment') of friends of the person with id=i
+	// friends[i] is a vector(sorted by 'id') of friends of the person with id=i
 
 	static int *birthday;	// birthday[i] for the person with id=i
 

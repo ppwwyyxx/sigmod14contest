@@ -1,4 +1,4 @@
-//File: query3.cpp
+//File: query3_version3.cc
 //Author: Wenbo Tao.
 //Method:	Inverted List.
 
@@ -127,7 +127,7 @@ void Query3Calculator::init(const string &p)
 	people.clear();
 	FOR_ITR(it1, pset)
 		people.push_back(it1->pid);
-	sort(people.begin(), people.end());
+	sort(people.begin(), people.end());		// TODO simplify this if pset is not needed
 
 	invList.resize(people.size());
 	candidate.resize(people.size());

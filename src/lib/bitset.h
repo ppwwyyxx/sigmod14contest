@@ -1,9 +1,8 @@
 //File: bitset.h
-//Date: Thu Mar 27 20:59:36 2014 +0800
+//Date: Thu Apr 03 15:29:39 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
-
 #include <emmintrin.h>
 #include <cstdint>
 #include <string.h>
@@ -162,10 +161,12 @@ class Bitset {
 			data[idx] = _mm_or_si128(data[idx],	_mm_load_si128(lut + pos));
 		}
 
+		// data &= ~(r.data)
 		inline void and_not_arr(const Bitset& r, int len) {
 			sse2_sub_arr(data, r.data, r.data + len);
 		}
 
+		// data |= r.data
 		inline void or_arr(const Bitset& r, int len) {
 			sse2_or_arr(data, r.data, r.data + len);
 		}

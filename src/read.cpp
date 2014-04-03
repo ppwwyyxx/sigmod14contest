@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Thu Apr 03 16:27:23 2014 +0800
+//Date: Thu Apr 03 16:37:09 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -581,33 +581,51 @@ void read_comments_tim(const std::string &dir) {
 	}
 
 	vector<vector<int>> comments_2d(Data::nperson);
-	vector<std::pair<int, int>> comments;
+	vector<PII> comments;
 	{
 		GuardedTimer guarded_timer("read comment_replyOf_comment.csv");
-		safe_open(dir + "/comment_replyOf_comment.csv");
-		ptr = buffer, buf_end = ptr + 1;
 
-		READ_TILL_EOL();
-		unsigned long long cid1;
-		int cid2;
-		while (true) {
-			READ_ULL(cid1);
-			if (buffer == buf_end) break;
-			READ_INT(cid2);		// max difference cid1 - cdi2 is 180
+		// using mmap
+		int fd = open((dir + "/comment_replyOf_comment.csv").c_str(), O_RDONLY);
+		struct stat s; fstat(fd, &s);
+		size_t size = s.st_size;
+		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE|MAP_POPULATE, fd, 0);
+		madvise(mapped, size, MADV_WILLNEED);
+
+		ptr = (char*)mapped;
+		buf_end = (char*)mapped + size;
+
+		do { ptr++; } while (*ptr != '\n');
+		ptr ++;
+		do {
+			unsigned long long cid1 = 0;
+			do {
+				cid1 = cid1 * 10 + *ptr - '0';
+				ptr ++;
+			} while (*ptr != '|');
+			ptr ++;
+			unsigned long long cid2 = 0;
+			do {
+				cid2 = cid2 * 10 + *ptr - '0';
+				ptr ++;
+			} while (*ptr != '\n');
 
 			int p1 = owner[cid1 / 10], p2 = owner[cid2 / 10];
-			auto &h = friends_hash[p1];
-			if (h.find(p2) == h.end())
-				continue;
-			comments.emplace_back(p1, p2);
-		}
-		fclose(fin);
+			if (p1 != p2) {
+				auto &h = friends_hash[p1];
+				if (h.find(p2) != h.end())
+					comments.emplace_back(p1, p2);
+			}
+
+			ptr ++;
+		} while (ptr != buf_end);
+		munmap(mapped, size);
 	}
 
 	print_debug("number of valid comment pair: %lu\n", comments.size());
 	{
 		GuardedTimer guarded_timer("sort");		// very fast
-//      std::sort(comments.begin(), comments.end());
+	//	std::sort(comments.begin(), comments.end());
 		quick_sort(comments);
 	}
 

@@ -1,5 +1,5 @@
-//File: query1_force.cc
-//Date: Wed Mar 26 12:53:17 2014 +0800
+//File: query1.cpp
+//Date: Thu Apr 03 15:15:27 2014 +0800
 
 #include "query1.h"
 #include "lib/common.h"
@@ -61,7 +61,7 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 void Query1Handler::add_query(const Query1& q, int ind) {
 	int ans = bfs2(q.p1, q.p2, q.x);
 	{
-		std::unique_lock<mutex> lock(ans_mt);
+		std::lock_guard<mutex> lock(ans_mt);
 		this->ans.emplace_back(ind, ans);
 	}
 	continuation->cont();

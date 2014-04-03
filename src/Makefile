@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Mon Mar 31 16:46:10 2014 +0000
+# $Date: Thu Apr 03 15:25:18 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -29,7 +29,7 @@ LDFLAGS += -static-libstdc++
 DEFINES += -DNUM_THREADS=8
 else
 DEFINES += -DDEBUG
-LDFLAGS += -lprofiler
+#LDFLAGS += -lprofiler
 OPTFLAGS += -Wall -Wextra -Wconversion
 endif
 

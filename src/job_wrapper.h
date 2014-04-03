@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Sat Mar 29 01:04:19 2014 +0800
+//Date: Thu Apr 03 15:24:33 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -25,7 +25,6 @@ extern std::vector<Query2> q2_set;
 extern std::vector<Query3> q3_set;
 extern std::vector<Query4> q4_set;
 
-void add_all_query(int);
 
 
 inline int do_read_comments(const std::string dir) {
@@ -50,8 +49,10 @@ inline int do_read_tags_forums_places(const std::string dir) {
 inline void start_1(int) {
 	PP("start1");
 	Timer timer;
-//	q1.pre_work();		// sort Data::friends
-	add_all_query(1);
+//	q1.pre_work();		// sort Data::frien
+	q1.continuation = std::make_shared<FinishTimeContinuation>(q1_set.size(), "q1 finish time");
+	REP(i, q1_set.size())
+		q1.add_query(q1_set[i], i);
 	tot_time[1] += timer.get_time();
 }
 
@@ -85,5 +86,3 @@ inline void start_4(int) {
 	}
 }
 
-
-void add_all_query(int type);

@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Thu Mar 27 22:19:10 2014 +0800
+//Date: Thu Apr 03 20:44:34 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -63,6 +63,7 @@ PersonInPlace::PersonInPlace(int _pid):
 	pid(_pid), ntags(int(Data::tags[_pid].size())) {}
 
 vector<PersonInForum> get_tag_persons(const string& s) {
+	TotalTimer tt("get_tag_persons");
 	int tagid = Data::tagid[s];
 	auto& forums = Data::tag_forums[tagid];
 	vector<PersonInForum> persons;
@@ -78,6 +79,7 @@ vector<PersonInForum> get_tag_persons(const string& s) {
 	}
 	return persons;
 }
+
 void output_tgf_graph(string fname, const vector<vector<int>> &friends) {
 	ofstream fout(fname);
 	for (size_t i = 0; i < friends.size(); i ++)

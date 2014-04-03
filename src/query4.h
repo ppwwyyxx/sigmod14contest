@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Thu Apr 03 20:20:11 2014 +0000
+//Date: Thu Apr 03 20:50:26 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -9,11 +9,10 @@
 #include <mutex>
 #include <string>
 #include "lib/utils.h"
+#include "lib/Timer.h"
 #include "lib/hash_lib.h"
 #include "lib/finish_time_continuation.h"
 #include "data.h"
-
-std::vector<PersonInForum> get_tag_persons(const std::string& s);
 
 struct Query4 {
 	int k;
@@ -52,6 +51,7 @@ class Query4Calculator {
 			que = new size_t[np];
 			compute_degree();
 
+			// XXX
 			contract_dist = (int)np;
 			contract_nr_vtx = 3;
 		}

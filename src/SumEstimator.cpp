@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Thu Apr 03 20:08:56 2014 +0000
+//Date: Thu Apr 03 21:02:24 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -233,16 +233,19 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	int len = get_len_from_bit(np);
 
 	std::vector<Bitset> s_prev;
-	s_prev.reserve(np);
-	REP(i, np) {
-		s_prev.emplace_back(len);
+	{
+	//	TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
+		s_prev.reserve(np);
+		REP(i, np) {
+			s_prev.emplace_back(len);
+		}
+
+		result.resize((size_t)np, 0);
+		nr_remain.resize(np);
+		REP(i, np) nr_remain[i] = degree[i];
 	}
 
-	result.resize((size_t)np, 0);
-	nr_remain.resize(np);
-	REP(i, np) nr_remain[i] = degree[i];
-
-//	print_debug("Alloc: %lf\n", init.get_time());
+	//	print_debug("Alloc: %lf\n", init.get_time());
 	init.reset();
 
 	// bfs 2 depth
@@ -285,7 +288,6 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 		}
 
 	}
-	print_debug("Depth2: %lf\n", init.get_time());
 	init.reset();
 
 	// union depth 3
@@ -305,8 +307,6 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 
 	}
 
-	print_debug("Depth3: %lf\n", init.get_time());
-
 	REP(i, np) {
 		if (noneed[i]) result[i] = 1e9;
 		result[i] += nr_remain[i] * 4;
@@ -314,7 +314,8 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 }
 
 LimitDepthEstimator::LimitDepthEstimator(const std::vector<std::vector<int>>& _graph, int* _degree, int _depth_max):
-	SumEstimator(_graph), degree(_degree), depth_max(_depth_max) { }
+	SumEstimator(_graph), degree(_degree), depth_max(_depth_max)
+{ }
 
 int LimitDepthEstimator::estimate(int source) {
 	std::vector<bool> hash(np);

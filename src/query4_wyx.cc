@@ -1,13 +1,12 @@
 /*
- * $File: query4_wyx.cc
- * $Date: Thu Apr 03 20:17:17 2014 +0000
+ * $File: query4.cpp
+ * $Date: Thu Apr 03 21:10:13 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
 #include "query4.h"
 #include "data.h"
 #include "lib/common.h"
-#include "lib/Timer.h"
 #include "SumEstimator.h"
 #include "lib/hash_lib.h"
 #include <omp.h>
@@ -79,16 +78,12 @@ vector<int> Query4Calculator::work() {
 			diameter = d;
 	}
 
-//	print_debug("Now time: %.4lf\n", timer.get_time());
-
 	est_dist_max = max(2, (int)floor(log((double)diameter) / log(2.0) + 0.5));
 	if (np > 10000)
 		est_dist_max = 3;
 
 
-	vector<HeapEle> heap_ele_buf(np);
 	estimated_s.resize(np);
-	timer.reset();
 
 /*
  *    LimitDepthEstimator l_estimator(friends, degree, est_dist_max);
@@ -99,40 +94,39 @@ vector<int> Query4Calculator::work() {
  */
 
 	vector<bool> noneed(np, false);// TODO try adding this to bfs_limit_depth
-	if (np > 10000) {
-		RandomChoiceEstimator estimator1(friends, degree, pow(log(np), 0.333) / (20.2 * pow(np, 0.333)));
-		auto wrong_result = move(estimator1.result);
-		vector<PII> wrong_result_with_person;
-		REP(i, np)
-			wrong_result_with_person.emplace_back(wrong_result[i], i);
-		sort(wrong_result_with_person.begin(), wrong_result_with_person.end());
-		REPL(i, np * 0.6, np)
-			noneed[wrong_result_with_person[i].second] = true;
-		print_debug("estimate: %lf\n", timer.get_time());
+	{
+		TotalTimer tttt("estimate random");
+		if (np > 10000) {
+//			RandomChoiceEstimator estimator1(friends, degree, pow(log(np), 0.333) / (20.2 * pow(np, 0.333)));
+			RandomChoiceEstimator estimator1(friends, degree, 0.003);
+
+			auto wrong_result = move(estimator1.result);
+			vector<PII> wrong_result_with_person;
+			REP(i, np)
+				wrong_result_with_person.emplace_back(wrong_result[i], i);
+			sort(wrong_result_with_person.begin(), wrong_result_with_person.end());
+			REPL(i, (size_t)((double)np * 0.5), np)
+				noneed[wrong_result_with_person[i].second] = true;
+		}
 	}
 
 	HybridEstimator estimator(friends, degree, est_dist_max, noneed);
 	estimated_s = move(estimator.result);
 
-	//	estimate_all_s_using_delta_bfs(est_dist_max);
-	//	PP(np);
 
-
-	heap_ele_buf.clear();
+	vector<HeapEle> heap_ele_buf;
 	for (int i = 0; i < (int)np; i ++) {
 		double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
 		heap_ele_buf.emplace_back(i, centrality);
 	}
 
-	double time_phase1 = timer.get_time();
-	timer.reset();
 	priority_queue<HeapEle> q(heap_ele_buf.begin(), heap_ele_buf.end());
 
 	// iterate
 	vector<int> ans;
-
 	int cnt = 0;
 	{
+//		TotalTimer ttt("iterate q4 heap");		// about 3% of total q4 time
 		double last_centrality = 1e100;
 		int last_vtx = -1;
 		while (!q.empty()) {
@@ -142,15 +136,14 @@ vector<int> Query4Calculator::work() {
 			m_assert(centrality <= last_centrality);
 			if (centrality == last_centrality && vtx == last_vtx) {
 				ans.emplace_back(vtx);
-				if ((int)ans.size() == k) {
+				if ((int)ans.size() == k)
 					break;
-				}
 			} else {
 				cnt ++;
 				int s = get_exact_s(vtx);
 				// int es = estimated_s[vtx];
 				double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
-				q.push(HeapEle(vtx, new_centrality));
+				q.emplace(vtx, new_centrality);
 			}
 
 			last_centrality = centrality;
@@ -158,12 +151,10 @@ vector<int> Query4Calculator::work() {
 		}
 	}
 
-	auto time = timer.get_time();
-	//	print_debug("total: %f secs\n", time);
 	if (np > 11000) {
 		static int print = 0;
-		if (print < 2)
-			fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
+		if (print < 1e9)
+			fprintf(stderr, "cnt: %lu/%d/%d/%d/%d\n", np, cnt, k, (int)diameter, (int)est_dist_max);
 		print ++;
 	}
 	return move(ans);
@@ -178,6 +169,7 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 	vector<vector<int>> friends(np);
 
 	{
+		TotalTimer tt("build  graph q4");
 #pragma omp parallel for schedule(static) num_threads(4)
 		REP(i, np) {
 			auto& fs = Data::friends[persons[i]];
@@ -198,9 +190,8 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 
 	Query4Calculator worker(friends, k);
 	auto now_ans = worker.work();
-	FOR_ITR(itr, now_ans) {
+	FOR_ITR(itr, now_ans)
 		*itr = persons[*itr];
-	}
 	ans[index] = move(now_ans);
 	continuation->cont();
 }

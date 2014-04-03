@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Thu Apr 03 15:30:47 2014 +0800
+//Date: Thu Apr 03 18:24:15 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -224,7 +224,8 @@ void SSEUnionSetEstimator::work() {
 }
 
 
-HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max):
+HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max,
+		const vector<bool>& noneed):
 	SumEstimator(_graph), depth_max(_depth_max)
 {
 	m_assert(depth_max == 3);
@@ -245,59 +246,69 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	init.reset();
 
 	// bfs 2 depth
-//#pragma omp parallel for schedule(static) num_threads(4)
-	REP(i, np) {
-		vector<bool> hash(np, false);
+	{
+		TotalTimer ttt("depth 2");
+		REP(i, np) {
+			// TODO try use tag here
+			vector<bool> hash(np, false);
 
-		// depth 0
-		hash[i] = true;
-		s_prev[i].set(i);
-		nr_remain[i] -= 1;
+			// depth 0
+			hash[i] = true;
+			s_prev[i].set(i);
+			nr_remain[i] -= 1;
 
-		// depth 1
-		FOR_ITR(fr, graph[i]) {
-			hash[*fr] = true;
-			s_prev[i].set(*fr);
-		}
-		nr_remain[i] -= (int)graph[i].size();
-		result[i] += (int)graph[i].size();
-
-		// depth 2
-		FOR_ITR(fr, graph[i]) {
-			int j = *fr;
-			FOR_ITR(fr2, graph[j]) {
-				if (hash[*fr2])
-					continue;
-				hash[*fr2] = true;
-				s_prev[i].set(*fr2);
-				nr_remain[i] --;
-				result[i] += 2;
+			// depth 1
+			FOR_ITR(fr, graph[i]) {
+				hash[*fr] = true;
+				s_prev[i].set(*fr);
 			}
+			nr_remain[i] -= (int)graph[i].size();
+			result[i] += (int)graph[i].size();
+
+			// depth 2
+			FOR_ITR(fr, graph[i]) {
+				int j = *fr;
+				FOR_ITR(fr2, graph[j]) {
+					if (hash[*fr2])
+						continue;
+					hash[*fr2] = true;
+					s_prev[i].set(*fr2);
+					nr_remain[i] --;
+					result[i] += 2;
+				}
+			}
+			/*
+			 *int c = s_prev[i].count(len);
+			 *if (c > 10000)
+			 *    print_debug("np: %d count d2: %d\n", np, c);
+			 */
 		}
-		/*
-		 *int c = s_prev[i].count(len);
-		 *if (c > 10000)
-		 *    print_debug("np: %d count d2: %d\n", np, c);
-		 */
+
 	}
-//	print_debug("Depth2: %lf\n", init.get_time());
+	print_debug("Depth2: %lf\n", init.get_time());
 	init.reset();
 
 	// union depth 3
-//#pragma omp parallel for schedule(static) num_threads(4)
-	REP(i, np) {
-		Bitset s(len);
-		FOR_ITR(fr, graph[i])
-			s.or_arr(s_prev[*fr], len);
-		s.and_not_arr(s_prev[i], len);
+	{
+		TotalTimer ttt("depth 3");
+		REP(i, np) {
+			if (noneed[i]) continue;
+			Bitset s(len);
+			FOR_ITR(fr, graph[i])
+				s.or_arr(s_prev[*fr], len);
+			s.and_not_arr(s_prev[i], len);
 
-		int c = s.count(len);
-		result[i] += c * 3;
-		nr_remain[i] -= c;
+			int c = s.count(len);
+			result[i] += c * 3;
+			nr_remain[i] -= c;
+		}
+
 	}
 
-//	print_debug("Depth3: %lf\n", init.get_time());
+	print_debug("Depth3: %lf\n", init.get_time());
 
-	REP(i, np)
+	REP(i, np) {
+		if (noneed[i]) result[i] = 1e9;
 		result[i] += nr_remain[i] * 4;
+	}
 }

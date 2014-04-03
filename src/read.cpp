@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Thu Apr 03 16:37:09 2014 +0800
+//Date: Thu Apr 03 18:11:38 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -649,7 +649,8 @@ void read_comments_tim(const std::string &dir) {
 			FOR_ITR(itr, fs) {
 				int j = itr->pid;
 				PII now_pair{i, j};
-				while (count[index].first < now_pair) index ++;
+				while (count[index].first < now_pair)
+					index ++;
 				if (count[index].first == now_pair)
 					itr->ncmts = min(count[index].second, find_count(count, make_pair(j, i)));
 				else

@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Thu Apr 03 15:32:47 2014 +0800
+ * $File: query4_wyx.cc
+ * $Date: Thu Apr 03 18:26:59 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -239,9 +239,22 @@ vector<int> Query4Calculator::work() {
  *    }
  */
 
-	HybridEstimator estimator(friends, degree, est_dist_max);
+	vector<bool> noneed(np, false);// TODO try adding this to bfs_limit_depth
+	if (np > 10000) {
+		RandomChoiceEstimator estimator1(friends, degree, pow(log(np), 0.333) / (20.2 * pow(np, 0.333)));
+		auto wrong_result = move(estimator1.result);
+		vector<PII> wrong_result_with_person;
+		REP(i, np)
+			wrong_result_with_person.emplace_back(wrong_result[i], i);
+		sort(wrong_result_with_person.begin(), wrong_result_with_person.end());
+		REPL(i, np * 0.6, np)
+			noneed[wrong_result_with_person[i].second] = true;
+		print_debug("estimate: %lf\n", timer.get_time());
+	}
+
+	HybridEstimator estimator(friends, degree, est_dist_max, noneed);
 	estimated_s = move(estimator.result);
-//	print_debug("now: %lf\n", timer.get_time());
+	//	print_debug("now: %lf\n", timer.get_time());
 
 	//	estimate_all_s_using_delta_bfs(est_dist_max);
 	//	PP(np);

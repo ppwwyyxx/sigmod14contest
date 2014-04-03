@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Thu Apr 03 16:19:05 2014 +0800
+//Date: Thu Apr 03 18:10:10 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -24,7 +24,7 @@ struct ConnectedPerson {
 		pid(_pid), ncmts(_ncmts){}
 
 	bool operator < (const ConnectedPerson& r) const
-	{ return pid > r.pid; }
+	{ return pid < r.pid; }
 
 	friend std::ostream& operator << (std::ostream& os, const ConnectedPerson& cp)
 	{ os << cp.pid << " " << cp.ncmts; return os; }

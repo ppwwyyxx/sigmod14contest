@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Thu Apr 03 18:11:38 2014 +0800
+//Date: Thu Apr 03 19:59:50 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -130,14 +130,14 @@ void read_comments(const string &dir) {
 
 
 		READ_TILL_EOL();
-		unsigned cid, pid;
+		unsigned long long cid;
+		int pid;
 		if (Data::nperson > 9000) owner.reserve(20100000);
 		while (true) {
 			READ_INT(cid);
 			if (buffer == buf_end) break;
 			READ_INT(pid);
 			m_assert(cid % 10 == 0);
-//			m_assert(cid / 10 == owner.size());
 		//	owner[cid / 10] = pid;		// new read
 			owner.push_back(pid);		// old read
 		}
@@ -170,13 +170,13 @@ void read_comments(const string &dir) {
 		do { ptr++; } while (*ptr != '\n');
 		ptr ++;
 		do {
-			int cid1 = 0;
+			unsigned long long cid1 = 0;
 			do {
 				cid1 = cid1 * 10 + *ptr - '0';
 				ptr ++;
 			} while (*ptr != '|');
 			ptr ++;
-			int cid2 = 0;
+			unsigned long long cid2 = 0;
 			do {
 				cid2 = cid2 * 10 + *ptr - '0';
 				ptr ++;
@@ -553,7 +553,8 @@ void read_comments_tim(const std::string &dir) {
 		READ_TILL_EOL();
 		unsigned long long cid;
 		int pid;
-		if (Data::nperson > 9000) owner.reserve(20100000);
+		if (Data::nperson > 9000)
+			owner.reserve(20100000);
 		while (true) {
 			READ_ULL(cid);
 			if (buffer == buf_end) break;
@@ -567,7 +568,7 @@ void read_comments_tim(const std::string &dir) {
 
 	std::vector<unordered_set<int>> friends_hash(Data::nperson);
 #ifdef GOOGLE_HASH
-	for (auto &h: friends_hash) h.set_empty_key(-1);
+	FOR_ITR(itr, friends_hash) itr->set_empty_key(-1);
 #endif
 	{
 		GuardedTimer guarded_timer("init friends hash");
@@ -634,16 +635,15 @@ void read_comments_tim(const std::string &dir) {
 	count.emplace_back(comments[0], 1);
 	for (size_t i = 1, d = comments.size(); i < d; i ++) {
 		auto &cur = comments[i];
-		if (cur != comments[i - 1]) {
+		if (cur != comments[i - 1])
 			count.emplace_back(cur, 1);
-		} else {
+		else
 			count.back().second ++;
-		}
 	}
 
 	{
-		int index = 0;
 		GuardedTimer timer("build graph");
+		int index = 0;
 		REP(i, Data::nperson) {
 			auto& fs = Data::friends[i];
 			FOR_ITR(itr, fs) {

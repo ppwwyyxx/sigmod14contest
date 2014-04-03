@@ -1,7 +1,7 @@
 /*
  * $File: query4_v3.cc
- * $Date: Thu Mar 27 16:30:06 2014 +0800
- * $Date: Thu Mar 27 16:30:06 2014 +0800
+ * $Date: Thu Apr 03 20:21:28 2014 +0000
+ * $Date: Thu Apr 03 20:21:28 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -10,6 +10,7 @@
 #include "lib/common.h"
 #include "lib/Timer.h"
 #include "lib/utils.h"
+#include "SumEstimator.h"
 #include "lib/hash_lib.h"
 #include <omp.h>
 #include <queue>
@@ -38,32 +39,6 @@ namespace {
 			return centrality < r.centrality;
 		}
 	};
-}
-
-void Query4Calculator::compute_degree() {
-	for (size_t i = 0; i < np; i ++)
-		degree[i] = -1;
-
-	for (size_t i = 0; i < np; i ++) {
-		if (degree[i] != -1)
-			continue;
-		degree[i] = 1;
-		int qh = 0, qt = 1;
-		que[qh] = i;
-		while (qh != qt) {
-			size_t v0 = que[qh ++];
-			FOR_ITR(itr, friends[v0]) {
-				auto& v1 = *itr;
-				if (degree[v1] != -1)
-					continue;
-
-				degree[v1] = 1;
-				que[qt ++] = v1;
-			}
-		}
-		for (int j = 0; j < qt; j ++)
-			degree[que[j]] = qt;
-	}
 }
 
 void Query4Calculator::contract_graph() {
@@ -136,55 +111,6 @@ void Query4Calculator::contract_graph() {
 	}
 }
 
-int Query4Calculator::get_extact_s(int source) {
-	std::vector<bool> hash(np);
-	std::queue<int> q;
-	hash[source] = true;
-	q.push(source);
-	int s = 0;
-	for (int depth = 0; !q.empty(); depth ++) {
-		int qsize = (int)q.size();
-		for (int i = 0; i < qsize; i ++) {
-			int v0 = q.front(); q.pop();
-			s += depth;
-			for (auto &v1: friends[v0]) {
-				if (hash[v1])
-					continue;
-				hash[v1] = true;
-				q.push(v1);
-			}
-		}
-	}
-//    assert(s != 0);
-	return s;
-}
-
-int Query4Calculator::estimate_s_limit_depth(int source, int depth_max) {
-	std::vector<bool> hash(np);
-	std::queue<int> q;
-	hash[source] = true;
-	q.push(source);
-	int s = 0;
-	int nr_remain = degree[source];
-	for (int depth = 0; !q.empty(); depth ++) {
-		int qsize = (int)q.size();
-		s += depth * qsize;
-		nr_remain -= qsize;
-		if (depth == depth_max)
-			break;
-		for (int i = 0; i < qsize; i ++) {
-			int v0 = q.front(); q.pop();
-			for (auto &v1: friends[v0]) {
-				if (hash[v1])
-					continue;
-				hash[v1] = true;
-				q.push(v1);
-			}
-		}
-	}
-	s += nr_remain * (depth_max + 1);
-	return s;
-}
 
 
 
@@ -290,8 +216,9 @@ vector<int> Query4Calculator::work() {
 
 	//estimate_all_s_using_delta_bfs_and_schedule(est_dist_max);
 
+	LimitDepthEstimator estimator(friends, degree, est_dist_max);
 #pragma omp parallel for schedule(static) num_threads(4)
-    for (int i = 0; i < (int)np; i ++) estimated_s[i] = estimate_s_limit_depth(i, est_dist_max);
+    for (int i = 0; i < (int)np; i ++) estimated_s[i] = estimator.estimate(i);
 
 	//  }
 
@@ -325,7 +252,7 @@ vector<int> Query4Calculator::work() {
 					break;
 			} else {
 				cnt ++;
-				int s = get_extact_s(vtx);
+				int s = get_exact_s(vtx);
 				// int es = estimated_s[vtx];
 				double new_centrality = get_centrality_by_vtx_and_s(vtx, s);
 				//                if (np == 3453 && k == 1) {
@@ -359,14 +286,6 @@ vector<int> Query4Calculator::work() {
 	if (time > 0.1)
 		fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
 	return move(ans);
-}
-
-double Query4Calculator::get_centrality_by_vtx_and_s(int v, int s) {
-	if (s == 0)
-		return 0;
-	double ret = ::sqr(degree[v] - 1.0) / (double)s / ((int)np - 1);
-	//    assert(!isnan((long double)ret));
-	return ret;
 }
 
 

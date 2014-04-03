@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Thu Mar 27 16:30:01 2014 +0800
+//Date: Thu Apr 03 20:20:11 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -67,39 +67,92 @@ class Query4Calculator {
 
 
 	protected:
-		void compute_degree();
-		void contract_graph();
+		void compute_degree() {
+			REP(i, np)
+				degree[i] = -1;
 
-		//! estimate s using contracted graph
-		int estimate_s_using_cgraph(int source);
+			for (size_t i = 0; i < np; i ++) {
+				if (degree[i] != -1)
+					continue;
+				degree[i] = 1;
+				int qh = 0, qt = 1;
+				que[qh] = i;
+				while (qh != qt) {
+					size_t v0 = que[qh ++];
+					FOR_ITR(itr, friends[v0]) {
+						auto& v1 = *itr;
+						if (degree[v1] != -1)
+							continue;
 
-		int get_extact_s(int source);
+						degree[v1] = 1;
+						que[qt ++] = v1;
+					}
+				}
+				REP(j, qt)
+					degree[que[j]] = qt;
+			}
+		}
 
+		int get_exact_s(int source) {
+			std::vector<bool> hash(np);
+			std::queue<int> q;
+			hash[source] = true;
+			q.push(source);
+			int s = 0;
+			for (int depth = 0; !q.empty(); depth ++) {
+				int qsize = (int)q.size();
+				for (int i = 0; i < qsize; i ++) {
+					int v0 = q.front(); q.pop();
+					s += depth;
+					FOR_ITR(v1, friends[v0]) {
+						if (hash[*v1])
+							continue;
+						hash[*v1] = true;
+						q.push(*v1);
+					}
+				}
+			}
+			return s;
+		}
 
-		std::vector<std::vector<int>> cgraph;
-		std::vector<int> cgraph_vtx_weight;
-
-		std::vector<int> vtx_old2new;
-		std::vector<std::vector<int>> vtx_new2old;
+		double get_centrality_by_vtx_and_s(int v, int s) {
+			if (s == 0)
+				return 0;
+			double ret = ::sqr(degree[v] - 1.0) / (double)s / ((int)np - 1);
+			return ret;
+		}
 
 		int* degree;
-		size_t* que;
-
-		static int dummy;
-
-		std::vector<int> cgraph_estimated_s_inner;
-		std::vector<int> cgraph_estimated_s_outter;
-		std::vector<int> cgraph_estimated_s;
-
 		std::vector<int> estimated_s;
-		double get_centrality_by_vtx_and_s(int v, int s);
-	 	int estimate_s_limit_depth(int source, int depth_max);
-	 	int estimate_s_limit_depth_cut_upper(int source, int depth_max, double upper);
+
+		int estimate_s_limit_depth(int source, int depth_max);
+		int estimate_s_limit_depth_cut_upper(int source, int depth_max, double upper);
 		void bfs_diameter(const std::vector<std::vector<int>> &g, int source, int &farthest_vtx,
 				int &dist_max, std::vector<bool> &hash);
 
 
 		void estimate_all_s_using_delta_bfs(int est_dist_max);
+
+
+
+
+
+		// i don't know
+		size_t* que;
+		static int dummy;
+
+		// cgraph
+		std::vector<std::vector<int>> cgraph;
+		std::vector<int> cgraph_vtx_weight;
+		std::vector<int> vtx_old2new;
+		std::vector<std::vector<int>> vtx_new2old;
+		std::vector<int> cgraph_estimated_s_inner;
+		std::vector<int> cgraph_estimated_s_outter;
+		std::vector<int> cgraph_estimated_s;
+
+		int estimate_s_using_cgraph(int source);
+		void contract_graph();
+		// end
 
 		//! change_vtx is a vector of pair (vtx, dist)
 		//! return number of vertex traversed

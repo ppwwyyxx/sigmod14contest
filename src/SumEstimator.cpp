@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Thu Apr 03 18:24:15 2014 +0800
+//Date: Thu Apr 03 20:08:56 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -311,4 +311,34 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 		if (noneed[i]) result[i] = 1e9;
 		result[i] += nr_remain[i] * 4;
 	}
+}
+
+LimitDepthEstimator::LimitDepthEstimator(const std::vector<std::vector<int>>& _graph, int* _degree, int _depth_max):
+	SumEstimator(_graph), degree(_degree), depth_max(_depth_max) { }
+
+int LimitDepthEstimator::estimate(int source) {
+	std::vector<bool> hash(np);
+	std::queue<int> q;
+	hash[source] = true;
+	q.push(source);
+	int s = 0;
+	int nr_remain = degree[source];
+	for (int depth = 0; !q.empty(); depth ++) {
+		int qsize = (int)q.size();
+		s += depth * qsize;
+		nr_remain -= qsize;
+		if (depth == depth_max)
+			break;
+		for (int i = 0; i < qsize; i ++) {
+			int v0 = q.front(); q.pop();
+			FOR_ITR(v1, graph[v0]) {
+				if (hash[*v1])
+					continue;
+				hash[*v1] = true;
+				q.push(*v1);
+			}
+		}
+	}
+	s += nr_remain * (depth_max + 1);
+	return s;
 }

@@ -1,5 +1,5 @@
 //File: SumEstimator.h
-//Date: Thu Apr 03 17:52:39 2014 +0800
+//Date: Thu Apr 03 20:07:28 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -98,4 +98,14 @@ class HybridEstimator: public SumEstimator {
 		HybridEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max, const std::vector<bool>& noneed);
 
 		int estimate(int i) { return result[i]; }
+};
+
+class LimitDepthEstimator: public SumEstimator {
+	public:
+		int* degree;
+		int depth_max;
+
+		LimitDepthEstimator(const std::vector<std::vector<int>>& _graph, int* _degree, int depth_max);
+
+		int estimate(int i);
 };

@@ -1,18 +1,19 @@
 //File: data.h
-//Date: Thu Apr 03 18:10:10 2014 +0800
+//Date: Thu Apr 03 19:52:08 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
-#include "lib/debugutils.h"
 #include <vector>
 #include <iostream>
 #include <string>
 #include <mutex>
+#include <set>
+
+#include "lib/debugutils.h"
 #include "globals.h"
 #include "lib/hash_lib.h"
 #include "lib/common.h"
 
-#include <set>
 
 struct ConnectedPerson {
 // Data structure to store a connected person for a specific person

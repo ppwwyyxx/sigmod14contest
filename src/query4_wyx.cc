@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Thu Apr 03 21:35:38 2014 +0000
+ * $Date: Fri Apr 04 00:26:46 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -79,8 +79,7 @@ vector<int> Query4Calculator::work() {
 	}
 
 	est_dist_max = max(2, (int)floor(log((double)diameter) / log(2.0) + 0.5));
-	if (np > 10000)
-		est_dist_max = 3;
+	est_dist_max = 3;
 
 
 	estimated_s.resize(np);

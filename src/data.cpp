@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Thu Apr 03 21:36:05 2014 +0000
+//Date: Fri Apr 04 00:23:28 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -68,15 +68,15 @@ vector<PersonInForum> get_tag_persons(const string& s) {
 	auto& forums = Data::tag_forums[tagid];
 	vector<PersonInForum> persons;
 
+	vector<bool> hash(Data::nperson, false);
 	FOR_ITR(itr, forums) {
 		set<PersonInForum>& persons_in_forum = (*itr)->persons;
-		vector<PersonInForum> tmp; tmp.swap(persons);
-		persons.resize(tmp.size() + persons_in_forum.size());
-		vector<PersonInForum>::iterator ret_end = set_union(
-				persons_in_forum.begin(), persons_in_forum.end(),
-				tmp.begin(), tmp.end(), persons.begin());
-		persons.resize(std::distance(persons.begin(), ret_end));
+		FOR_ITR(p, persons_in_forum)
+			hash[*p] = true;
 	}
+	REP(i, Data::nperson)
+		if (hash[i])
+			persons.emplace_back(i);
 	return persons;
 }
 

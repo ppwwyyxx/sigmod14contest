@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Thu Apr 03 21:34:33 2014 +0000
+//Date: Fri Apr 04 01:03:07 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -247,7 +247,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 
 	// bfs 2 depth
 	{
-		DEBUG_DECL(TotalTimer, ttt("depth 2"));
+		TotalTimer ttt("depth 2");
 		vector<int> hash(np, 0);
 		int tag = 0;
 		REP(i, np) {
@@ -289,7 +289,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 
 	// union depth 3
 	{
-		DEBUG_DECL(TotalTimer, ttt("depth 3"));
+		TotalTimer ttt("depth 3");
 		REP(i, np) {
 			if (noneed[i]) continue;
 			Bitset s(len);

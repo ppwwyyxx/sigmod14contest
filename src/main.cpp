@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Thu Apr 03 15:06:26 2014 +0800
+//Date: Fri Apr 04 00:53:40 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -134,9 +134,15 @@ int main(int argc, char* argv[]) {
 	//fprintf(stderr, "%lu\t%lu\t%lu\t%lu\n", q1_set.size(), q2_set.size(), q3_set.size(), q4_set.size());
 	tot_time[3] += TotalTimer::rst["Q3"];
 	tot_time[4] += TotalTimer::rst["Q4"];
-	if (Data::nperson > 99999)
+	if (Data::nperson > 10000) {
 		for (int i = 1; i <= 4; i ++)
 			fprintf(stderr, "q%d:%.4fs\t", i, tot_time[i]);
+		fprintf(stderr, "%.4lf ", TotalTimer::rst["get_tag_persons"]);
+		fprintf(stderr, "%.4lf ", TotalTimer::rst["depth 2"]);
+		fprintf(stderr, "%.4lf ", TotalTimer::rst["depth 3"]);
+		fprintf(stderr, "%.4lf ", TotalTimer::rst["estimate random"]);
+		fprintf(stderr, "%.4lf ", TotalTimer::rst["build graph q4"]);
+	}
 	//fprintf(stderr, "\nTime: %.4fs\n", timer.get_time());
 	Data::free();
 	TotalTimer::print();

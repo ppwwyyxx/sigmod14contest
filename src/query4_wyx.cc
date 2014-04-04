@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Fri Apr 04 00:26:46 2014 +0000
+ * $Date: Fri Apr 04 00:54:07 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -163,7 +163,7 @@ vector<int> Query4Calculator::work() {
 
 	if (np > 11000) {
 		static int print = 0;
-		if (print < 1e9)
+		if (print < 3)
 			fprintf(stderr, "cnt: %lu/%d/%d/%d/%d\n", np, cnt, k, (int)diameter, (int)est_dist_max);
 		print ++;
 	}
@@ -179,7 +179,7 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 	vector<vector<int>> friends(np);
 
 	{
-		TotalTimer tt("build  graph q4");
+		TotalTimer tt("build graph q4");
 #pragma omp parallel for schedule(static) num_threads(4)
 		REP(i, np) {
 			auto& fs = Data::friends[persons[i]];
@@ -203,7 +203,8 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 	FOR_ITR(itr, now_ans)
 		*itr = persons[*itr];
 	ans[index] = move(now_ans);
-	continuation->cont();
+	if (Data::nperson > 10000)
+		continuation->cont();
 }
 
 

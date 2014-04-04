@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Thu Apr 03 19:59:50 2014 +0000
+//Date: Fri Apr 04 01:05:00 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -311,7 +311,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		READ_TILL_EOL();
 		list<int> person_in_now_forum;
 		int old_fid = -1;
-		while (true) {
+		while (true) {	// assuming that same fid appears together
 			READ_INT(fid);
 			if (buffer == buf_end) break;
 
@@ -489,37 +489,39 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 
 typedef std::pair<int, int> Type;
 
-void quick_sort(std::vector<Type>& arr) {
-	auto pivot = arr[rand() % arr.size()];
-	auto mid = std::partition(arr.begin(), arr.end(), [&](const Type &t){return t < pivot;});
-
-	auto pleft = arr[rand() % (mid - arr.begin())];
-	auto pright = arr[rand() % (arr.end() - mid)];
-	std::vector<Type>::iterator left, right;
-
-	thread t_left([&](){
-			left = std::partition(arr.begin(), mid, [&](const Type &t){return t < pleft;});
-			});
-	thread t_right([&](){
-			right = std::partition(mid, arr.end(), [&](const Type &t){return t < pright;});
-			});;
-
-	t_left.join();
-	t_right.join();
-
-	vector<thread> threads;
-	std::vector<Type>::iterator begin = arr.begin();
-	for (auto &end: {left , mid, right, arr.end()}) {
-		threads.emplace_back(std::bind(
-			[](std::vector<Type>::iterator begin,
-				std::vector<Type>::iterator end){
-			std::sort(begin, end);},
-			begin, end));
-		begin = end;
-	}
-
-	for (auto &t: threads) t.join();
-}
+/*
+ *void quick_sort(std::vector<Type>& arr) {
+ *    auto pivot = arr[rand() % arr.size()];
+ *    auto mid = std::partition(arr.begin(), arr.end(), [&](const Type &t){return t < pivot;});
+ *
+ *    auto pleft = arr[rand() % (mid - arr.begin())];
+ *    auto pright = arr[rand() % (arr.end() - mid)];
+ *    std::vector<Type>::iterator left, right;
+ *
+ *    thread t_left([&](){
+ *            left = std::partition(arr.begin(), mid, [&](const Type &t){return t < pleft;});
+ *            });
+ *    thread t_right([&](){
+ *            right = std::partition(mid, arr.end(), [&](const Type &t){return t < pright;});
+ *            });;
+ *
+ *    t_left.join();
+ *    t_right.join();
+ *
+ *    vector<thread> threads;
+ *    std::vector<Type>::iterator begin = arr.begin();
+ *    for (auto &end: {left , mid, right, arr.end()}) {
+ *        threads.emplace_back(std::bind(
+ *            [](std::vector<Type>::iterator begin,
+ *                std::vector<Type>::iterator end){
+ *            std::sort(begin, end);},
+ *            begin, end));
+ *        begin = end;
+ *    }
+ *
+ *    for (auto &t: threads) t.join();
+ *}
+ */
 
 
 int find_count(const std::vector<std::pair<std::pair<int, int>, int>> &count, const std::pair<int, int> &pivot) {
@@ -626,8 +628,8 @@ void read_comments_tim(const std::string &dir) {
 	print_debug("number of valid comment pair: %lu\n", comments.size());
 	{
 		GuardedTimer guarded_timer("sort");		// very fast
-	//	std::sort(comments.begin(), comments.end());
-		quick_sort(comments);
+		std::sort(comments.begin(), comments.end());
+	//	quick_sort(comments);		// lambda cannot compile!
 	}
 
 	// aggregate, very fast

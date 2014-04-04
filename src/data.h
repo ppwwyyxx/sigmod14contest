@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Thu Apr 03 19:52:08 2014 +0000
+//Date: Fri Apr 04 00:14:59 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -91,7 +91,7 @@ public:
 
 	static std::vector<std::string> tag_name;		// name of each tags, indexed by continuous id
 	static unordered_map<std::string, int, StringHashFunc> tagid;			// tag name -> tag id
-	static std::vector<std::vector<Forum*> > tag_forums;			// related forums for each tag
+	static std::vector<std::vector<Forum*>> tag_forums;			// related forums for each tag
 
 	static unordered_map<std::string, std::vector<int>, StringHashFunc> placeid;
 	// id of each place. note that for a specific name, there might be several places

@@ -1,5 +1,5 @@
 //File: query1.cpp
-//Date: Thu Apr 03 16:23:09 2014 +0800
+//Date: Fri Apr 04 00:48:37 2014 +0800
 
 #include "query1.h"
 #include "lib/common.h"
@@ -65,7 +65,8 @@ void Query1Handler::add_query(const Query1& q, int ind) {
 		std::lock_guard<mutex> lock(ans_mt);
 		this->ans.emplace_back(ind, ans);
 	}
-	continuation->cont();
+	if (Data::nperson > 10000)
+		continuation->cont();
 }
 
 void Query1Handler::pre_work() {

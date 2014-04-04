@@ -1,4 +1,4 @@
-//File: query3_version3.cc
+//File: query3.cpp
 //Author: Wenbo Tao.
 //Method:	Inverted List.
 
@@ -89,7 +89,8 @@ void Query3Handler::add_query(int k, int h, const string& p, int index) {
 	Query3Calculator calc;
 	calc.work(k, h, p, global_answer[index]);
 
-	continuation->cont();
+	if (Data::nperson > 10000)
+		continuation->cont();
 	return ;
 }
 

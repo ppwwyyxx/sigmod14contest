@@ -132,7 +132,8 @@ void Query2Handler::work() {
 		final_ans[queries[i].qid] = ans[i];
 	ans = final_ans;
 
-	continuation->cont();
+	if (Data::nperson > 10000)
+		continuation->cont();
 }
 
 void Query2Handler::print_result() {

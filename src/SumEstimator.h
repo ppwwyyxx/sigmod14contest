@@ -1,5 +1,5 @@
 //File: SumEstimator.h
-//Date: Thu Apr 03 21:07:59 2014 +0000
+//Date: Fri Apr 04 16:44:52 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -95,7 +95,8 @@ class HybridEstimator: public SumEstimator {
 		std::vector<int> result;
 		std::vector<int> nr_remain;
 
-		HybridEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max, const std::vector<bool>& noneed);
+		HybridEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max,
+				std::vector<bool>& noneed, int sum_bound);
 
 		int estimate(int i) { return result[i]; }
 };

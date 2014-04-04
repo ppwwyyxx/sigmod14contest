@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Fri Apr 04 16:29:27 2014 +0000
+ * $File: query4_wyx.cc
+ * $Date: Fri Apr 04 16:39:16 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -126,27 +126,17 @@ vector<int> Query4Calculator::work() {
 					some_real_cent.end());
 
 			cent_kth_upper = some_real_cent[nr_sample - k].first;
-			sum_bound = exact_s[some_real_cent[nr_sample - k]].second;
+			sum_bound = exact_s[some_real_cent[nr_sample - k].second];
 		}
 	}
 
+	print_debug("Sum bound: %d\n", sum_bound);
 
-	HybridEstimator estimator(friends, degree, est_dist_max, noneed);
+	HybridEstimator estimator(friends, degree, est_dist_max, noneed, sum_bound);
 	estimated_s = move(estimator.result);
 	if (np > 10000 && k < 20)
 		REPL(i, thres, np)
 			estimated_s[wrong_result_with_person[i].second] = 1e9;
-
-/*
- *    LimitDepthEstimator estimator(friends, degree, est_dist_max);
- *#pragma omp parallel for schedule(static) num_threads(4)
- *    REP(i, np) {
- *        if (noneed[i])
- *            estimated_s[i] = 1e9;
- *        else
- *            estimated_s[i] = estimator.estimate(i);
- *    }
- */
 
 
 	vector<HeapEle> heap_ele_buf; heap_ele_buf.reserve(np);

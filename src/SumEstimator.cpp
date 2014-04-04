@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Fri Apr 04 12:38:50 2014 +0000
+//Date: Fri Apr 04 16:45:14 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -224,7 +224,7 @@ void SSEUnionSetEstimator::work() {
 
 
 HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max,
-		const vector<bool>& noneed):
+		vector<bool>& noneed, int sum_bound):
 	SumEstimator(_graph), depth_max(_depth_max)
 {
 	m_assert(depth_max == 3);
@@ -244,7 +244,6 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			nr_remain[i] = degree[i];
 	}
 
-//	vector<int> num3_upper(np);
 	// bfs 2 depth
 	{
 		TotalTimer ttt("depth 2");
@@ -258,31 +257,36 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			s_prev[i].set(i);
 			nr_remain[i] -= 1;
 
-//			int sum_dv1 = 0;
+			int sum_dv1 = 0;
 			// depth 1
 			FOR_ITR(fr, graph[i]) {
-//				sum_dv1 += graph[*fr].size();
+				sum_dv1 += graph[*fr].size();
 				hash[*fr] = tag;
 				s_prev[i].set(*fr);
 			}
 			nr_remain[i] -= (int)graph[i].size();
 			result[i] += (int)graph[i].size();
 
-//			int sum_dv2 = 0;
+			int sum_dv2 = 0;
 			// depth 2
 			FOR_ITR(fr, graph[i]) {
 				int j = *fr;
 				FOR_ITR(fr2, graph[j]) {
 					if (hash[*fr2] == tag)
 						continue;
-//					sum_dv2 += graph[*fr2].size();
+					sum_dv2 += graph[*fr2].size();
 					hash[*fr2] = tag;
 					s_prev[i].set(*fr2);
 					nr_remain[i] --;
 					result[i] += 2;
 				}
 			}
-//			num3_upper[i] = max(sum_dv2 - sum_dv1, 0);
+			int n3_upper = max(sum_dv2 - sum_dv1, 0);
+			int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
+			if (est_s_lowerbound > sum_bound) {
+				noneed[i] = true;
+				result[i] = 1e9;
+			}
 		}
 	}
 

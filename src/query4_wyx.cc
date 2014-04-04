@@ -1,6 +1,6 @@
 /*
- * $File: query4_wyx.cc
- * $Date: Fri Apr 04 16:39:16 2014 +0800
+ * $File: query4.cpp
+ * $Date: Fri Apr 04 20:01:28 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -83,9 +83,8 @@ vector<int> Query4Calculator::work() {
 	est_dist_max = 3;
 
 	vector<bool> noneed(np, false);
-	size_t thres = (double)np * 0.5;
+	size_t thres = (size_t)((double)np * 0.5);
 	vector<PII> wrong_result_with_person; wrong_result_with_person.reserve(np);
-	double cent_kth_upper = 0;
 	int sum_bound = 1e9;
 	{
 		TotalTimer tttt("estimate random");
@@ -96,10 +95,8 @@ vector<int> Query4Calculator::work() {
 
 			auto wrong_result = move(estimator1.result);
 
-			/*
-			 *FOR_ITR(index, estimator1.samples)
-			 *    exact_s[*index] = wrong_result[*index];			// they are not wrong result
-			 */
+			FOR_ITR(index, estimator1.samples)
+				exact_s[*index] = wrong_result[*index];			// they are not wrong result
 
 			REP(i, np)
 				wrong_result_with_person.emplace_back(wrong_result[i], i);
@@ -117,7 +114,7 @@ vector<int> Query4Calculator::work() {
 				if (s < 10)
 					continue;
 				some_real_cent.emplace_back(get_centrality_by_vtx_and_s(pid, s), pid);
-				if (some_real_cent.size() == nr_sample) break;
+				if ((int)some_real_cent.size() == nr_sample) break;
 			}
 
 			// find kth largest
@@ -125,19 +122,26 @@ vector<int> Query4Calculator::work() {
 					some_real_cent.begin() + nr_sample - k,
 					some_real_cent.end());
 
-			cent_kth_upper = some_real_cent[nr_sample - k].first;
 			sum_bound = exact_s[some_real_cent[nr_sample - k].second];
 		}
 	}
 
-	print_debug("Sum bound: %d\n", sum_bound);
-
 	HybridEstimator estimator(friends, degree, est_dist_max, noneed, sum_bound);
 	estimated_s = move(estimator.result);
+
 	if (np > 10000 && k < 20)
 		REPL(i, thres, np)
 			estimated_s[wrong_result_with_person[i].second] = 1e9;
 
+	/*
+	 *auto print = estimated_s;
+	 *string fname = string_format("%lf", timer.get_time());
+	 *ofstream fout("/tmp/" + fname + ".txt");
+	 *sort(print.begin(), print.end());
+	 *FOR_ITR(itr, print)
+	 *    fout << *itr << endl;
+	 *fout.close();
+	 */
 
 	vector<HeapEle> heap_ele_buf; heap_ele_buf.reserve(np);
 	for (int i = 0; i < (int)np; i ++) {
@@ -162,7 +166,6 @@ vector<int> Query4Calculator::work() {
 			if (centrality == last_centrality && vtx == last_vtx) {
 				ans.emplace_back(vtx);
 				if ((int)ans.size() == k) {
-					print_debug("Real kth: %.10lf, upper: %.10lf\n", centrality, cent_kth_upper);
 					break;
 				}
 			} else {
@@ -202,7 +205,7 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 		vector<int> new_pid(Data::nperson);
 		REP(i, Data::nperson) {
 			if (persons[i]) {
-				new_pid[i] = np;
+				new_pid[i] = (int)np;
 				old_pid.push_back(i);
 				np ++;
 			}

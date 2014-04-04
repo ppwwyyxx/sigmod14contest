@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Fri Apr 04 16:45:14 2014 +0800
+//Date: Fri Apr 04 20:01:30 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -257,7 +257,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			s_prev[i].set(i);
 			nr_remain[i] -= 1;
 
-			int sum_dv1 = 0;
+			size_t sum_dv1 = 0;
 			// depth 1
 			FOR_ITR(fr, graph[i]) {
 				sum_dv1 += graph[*fr].size();
@@ -267,7 +267,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			nr_remain[i] -= (int)graph[i].size();
 			result[i] += (int)graph[i].size();
 
-			int sum_dv2 = 0;
+			size_t sum_dv2 = 0;
 			// depth 2
 			FOR_ITR(fr, graph[i]) {
 				int j = *fr;
@@ -281,11 +281,15 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 					result[i] += 2;
 				}
 			}
-			int n3_upper = max(sum_dv2 - sum_dv1, 0);
-			int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
-			if (est_s_lowerbound > sum_bound) {
-				noneed[i] = true;
-				result[i] = 1e9;
+
+			if (not noneed[i]) {
+				int n3_upper = (int)sum_dv2 - (int)sum_dv1 + (int)graph[i].size() + 1;
+				m_assert(n3_upper >= 0);
+				int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
+				if (est_s_lowerbound > sum_bound) {		// cut
+					noneed[i] = true;
+					result[i] = 1e9;
+				}
 			}
 		}
 	}
@@ -295,8 +299,10 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 		TotalTimer ttt("depth 3");
 		Bitset s(len);
 		REP(i, np) {
-			s.reset(len);
 			if (noneed[i]) continue;
+			if (result[i] == 0) continue;
+			if (nr_remain[i] == 0) continue;
+			s.reset(len);
 			FOR_ITR(fr, graph[i])
 				s.or_arr(s_prev[*fr], len);
 			s.and_not_arr(s_prev[i], len);
@@ -304,15 +310,9 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			int c = s.count(len);
 			result[i] += c * 3;
 			nr_remain[i] -= c;
-		    result[i] += nr_remain[i] * 4;
+			result[i] += nr_remain[i] * 4;
 		}
 	}
-	/*
-	 *REP(i, np) {
-	 *    if (noneed[i]) result[i] = 1e9;
-	 *    result[i] += nr_remain[i] * 4;
-	 *}
-	 */
 }
 
 LimitDepthEstimator::LimitDepthEstimator(const std::vector<std::vector<int>>& _graph, int* _degree, int _depth_max):

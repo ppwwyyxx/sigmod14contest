@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Fri Apr 04 13:03:14 2014 +0000
+//Date: Fri Apr 04 19:49:36 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -73,7 +73,7 @@ class Query4Calculator {
 		std::vector<int> exact_s;
 
 		void compute_degree() {
-			std::vector<int> que(np);
+			std::vector<size_t> que(np);
 			REP(i, np)
 				degree[i] = -1;
 

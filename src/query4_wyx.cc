@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Fri Apr 04 00:54:07 2014 +0800
+ * $File: query4_wyx.cc
+ * $Date: Fri Apr 04 11:05:59 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -63,6 +63,7 @@ void Query4Calculator::bfs_diameter(const std::vector<vector<int>> &g, int sourc
 }
 
 vector<int> Query4Calculator::work() {
+	TotalTimer ttt("q4calculator");
 	Timer timer;
 
 	int est_dist_max = 2;  // TODO: this parameter needs tune
@@ -92,7 +93,7 @@ vector<int> Query4Calculator::work() {
  *    }
  */
 
-	vector<bool> noneed(np, false);// TODO try adding this to bfs_limit_depth
+	vector<bool> noneed(np, false);
 	{
 		TotalTimer tttt("estimate random");
 		if (np > 10000) {
@@ -136,7 +137,7 @@ vector<int> Query4Calculator::work() {
 	vector<int> ans;
 	int cnt = 0;
 	{
-//		TotalTimer ttt("iterate q4 heap");		// about 3% of total q4 time
+		TotalTimer ttt("iterate q4 heap");		// about 6% of total q4 time
 		double last_centrality = 1e100;
 		int last_vtx = -1;
 		while (!q.empty()) {
@@ -174,34 +175,57 @@ vector<int> Query4Calculator::work() {
 void Query4Handler::add_query(int k, const string& s, int index) {
 	TotalTimer timer("Q4");
 	// build graph
-	vector<PersonInForum> persons = get_tag_persons(s);
-	size_t np = persons.size();
-	vector<vector<int>> friends(np);
+	vector<bool> persons = get_tag_persons_hash(s);
+
+	size_t np = 0;
+	vector<vector<int>> friends;
+	vector<int> old_pid;
 
 	{
 		TotalTimer tt("build graph q4");
-#pragma omp parallel for schedule(static) num_threads(4)
-		REP(i, np) {
-			auto& fs = Data::friends[persons[i]];
-			FOR_ITR(itr, fs) {
-				auto lb_itr = lower_bound(persons.begin(), persons.end(), itr->pid);
-				if (lb_itr != persons.end() and *lb_itr == itr->pid) {
-					int v = (int)distance(persons.begin(), lb_itr);
-					friends[i].push_back(v);
-				}
+		vector<int> new_pid(Data::nperson);
+		REP(i, Data::nperson) {
+			if (persons[i]) {
+				new_pid[i] = np;
+				old_pid.push_back(i);
+				np ++;
 			}
-
-			//            set<int> s(friends[i].begin(), friends[i].end());
-			//            friends[i].resize(s.size());
-			//            std::copy(s.begin(), s.end(), friends[i].begin());
+		}
+		friends.resize(np);
+#pragma omp parallel for schedule(dynamic) num_threads(4)
+		REP(i, Data::nperson) {
+			if (not persons[i]) continue;
+			auto &fs = Data::friends[i];
+			FOR_ITR(itr, fs) {
+				int pid = itr->pid;
+				if (persons[pid])
+					friends[new_pid[i]].push_back(new_pid[pid]);
+			}
 		}
 	}
+	/*
+	 *    {
+	 *        TotalTimer tt("build graph q4");
+	 *#pragma omp parallel for schedule(static) num_threads(4)
+	 *        REP(i, np) {
+	 *            auto& fh = Data::friends[persons[i]];		// sorted by id
+	 *            FOR_ITR(itr, fh) {
+	 *                auto lb_itr = lower_bound(persons.begin(), persons.end(), itr->pid);
+	 *                if (lb_itr != persons.end() and *lb_itr == itr->pid) {
+	 *                    int v = (int)distance(persons.begin(), lb_itr);
+	 *                    friends[i].push_back(v);
+	 *                }
+	 *            }
+	 *
+	 *        }
+	 *    }
+	 */
 	// finish building graph
 
 	Query4Calculator worker(friends, k);
 	auto now_ans = worker.work();
 	FOR_ITR(itr, now_ans)
-		*itr = persons[*itr];
+		*itr = old_pid[*itr];
 	ans[index] = move(now_ans);
 	if (Data::nperson > 10000)
 		continuation->cont();

@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Thu Apr 03 18:10:42 2014 +0800
+//Date: Fri Apr 04 10:32:53 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -40,11 +40,6 @@ inline int do_read_tags_forums_places(const std::string dir) {
 	return 0;
 }
 
-
-#define WAIT_FOR(s) \
-	unique_lock<mutex> lk(s ## _mt); \
-	while (!s) (s ## _cv).wait(lk); \
-	lk.unlock();
 
 inline void start_1(int) {
 	PP("start1");

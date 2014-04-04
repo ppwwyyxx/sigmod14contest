@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Fri Apr 04 01:05:00 2014 +0800
+//Date: Fri Apr 04 10:34:05 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -66,6 +66,17 @@ void read_person_file(const string& dir) {
 	fclose(fin);
 }
 
+void build_friends_hash() {
+	REP(i, Data::nperson) {
+		auto &f = Data::friends[i];
+		FOR_ITR(ff, f)
+			Data::friends_hash[i].insert(ff->pid);
+	}
+	friends_hash_built = true;
+	friends_hash_built_cv.notify_all();
+	print_debug("Friends hash built\n");
+}
+
 void read_person_knows_person(const string& dir) {
 	static char buffer[BUFFER_LEN];
 	char *ptr, *buf_end;
@@ -80,13 +91,12 @@ void read_person_knows_person(const string& dir) {
 		if (buffer == buf_end) break;
 		READ_INT(p2);
 		PTR_NEXT();
-		//Data::pp_map[p1][p2] = Data::pp_map[p2][p1] = true;
-
 		Data::friends[p1].emplace_back(p2, 0);
-		//Data::friends[p2].emplace_back(p1, 0);
 	}
 	REP(i, Data::nperson)
 		sort(Data::friends[i].begin(), Data::friends[i].end());		// sort by id!
+	thread t(build_friends_hash);
+	t.detach();
 	fclose(fin);
 }
 
@@ -568,20 +578,23 @@ void read_comments_tim(const std::string &dir) {
 		fclose(fin);
 	}
 
-	std::vector<unordered_set<int>> friends_hash(Data::nperson);
-#ifdef GOOGLE_HASH
-	FOR_ITR(itr, friends_hash) itr->set_empty_key(-1);
-#endif
-	{
-		GuardedTimer guarded_timer("init friends hash");
-
-		REP(i, Data::nperson) {
-			auto& fs = Data::friends[i];
-			auto &h = friends_hash[i];
-			FOR_ITR(itr, fs)
-				h.insert(itr->pid);
-		}
-	}
+/*
+ *    std::vector<unordered_set<int>> friends_hash(Data::nperson);
+ *#ifdef GOOGLE_HASH
+ *    FOR_ITR(itr, friends_hash) itr->set_empty_key(-1);
+ *#endif
+ *    {
+ *        GuardedTimer guarded_timer("init friends hash");
+ *
+ *        REP(i, Data::nperson) {
+ *            auto& fs = Data::friends[i];
+ *            auto &h = friends_hash[i];
+ *            FOR_ITR(itr, fs)
+ *                h.insert(itr->pid);
+ *        }
+ *    }
+ */
+	WAIT_FOR(friends_hash_built);
 
 	vector<vector<int>> comments_2d(Data::nperson);
 	vector<PII> comments;
@@ -615,7 +628,7 @@ void read_comments_tim(const std::string &dir) {
 
 			int p1 = owner[cid1 / 10], p2 = owner[cid2 / 10];
 			if (p1 != p2) {
-				auto &h = friends_hash[p1];
+				auto &h = Data::friends_hash[p1];
 				if (h.find(p2) != h.end())
 					comments.emplace_back(p1, p2);
 			}

@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Fri Apr 04 00:14:59 2014 +0800
+//Date: Fri Apr 04 10:49:15 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -81,6 +81,7 @@ public:
 
 	static std::vector<std::vector<ConnectedPerson> > friends;
 	// friends[i] is a vector(sorted by 'id') of friends of the person with id=i
+	static std::vector<unordered_set<int>> friends_hash;
 
 	static int *birthday;	// birthday[i] for the person with id=i
 
@@ -111,6 +112,7 @@ private:
 };
 
 std::vector<PersonInForum> get_tag_persons(const std::string& s);
+std::vector<bool> get_tag_persons_hash(const std::string& s);
 
 template <typename T>
 inline int edge_count(const std::vector<std::vector<T>>& f) {

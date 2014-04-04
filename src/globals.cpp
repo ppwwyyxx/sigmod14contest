@@ -1,5 +1,5 @@
 //File: globals.cpp
-//Date: Wed Mar 26 16:39:57 2014 +0800
+//Date: Fri Apr 04 10:31:07 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "globals.h"
@@ -8,15 +8,13 @@
 using namespace std;
 
 // global variables
-mutex comment_read_mt;
 mutex tag_read_mt;
-mutex forum_read_mt;
-bool comment_read = false;
 bool tag_read = false;
-bool forum_read = false;
-condition_variable comment_read_cv;
 condition_variable tag_read_cv;
-condition_variable forum_read_cv;
+
+mutex friends_hash_built_mt;
+bool friends_hash_built = false;
+condition_variable friends_hash_built_cv;
 
 Timer globaltimer;
 

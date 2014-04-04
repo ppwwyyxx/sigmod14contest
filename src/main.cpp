@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Fri Apr 04 00:53:40 2014 +0800
+//Date: Fri Apr 04 11:05:49 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -137,7 +137,7 @@ int main(int argc, char* argv[]) {
 	if (Data::nperson > 10000) {
 		for (int i = 1; i <= 4; i ++)
 			fprintf(stderr, "q%d:%.4fs\t", i, tot_time[i]);
-		fprintf(stderr, "%.4lf ", TotalTimer::rst["get_tag_persons"]);
+		fprintf(stderr, "%.4lf ", TotalTimer::rst["get_tag_persons_hash"]);
 		fprintf(stderr, "%.4lf ", TotalTimer::rst["depth 2"]);
 		fprintf(stderr, "%.4lf ", TotalTimer::rst["depth 3"]);
 		fprintf(stderr, "%.4lf ", TotalTimer::rst["estimate random"]);

@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Fri Apr 04 01:02:15 2014 +0800
+//Date: Fri Apr 04 10:49:53 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -23,13 +23,16 @@ unordered_map<std::string, int, StringHashFunc> Data::tagid;
 vector<vector<Forum*> > Data::tag_forums;
 unordered_map<string, vector<int>, StringHashFunc> Data::placeid;
 vector<PlaceNode> Data::places;
+vector<unordered_set<int>> Data::friends_hash;
 
 #ifdef DEBUG
 vector<int> Data::real_tag_id;
 #endif
 
 void Data::allocate() {
+	friends_hash.resize(nperson);
 #ifdef GOOGLE_HASH
+	FOR_ITR(itr, friends_hash) itr->set_empty_key(-1);
 	tagid.set_empty_key("");
 	placeid.set_empty_key("");
 #endif
@@ -62,22 +65,29 @@ PersonSet PlaceNode::get_all_persons() {
 PersonInPlace::PersonInPlace(int _pid):
 	pid(_pid), ntags(int(Data::tags[_pid].size())) {}
 
-vector<PersonInForum> get_tag_persons(const string& s) {
-	TotalTimer tt("get_tag_persons");
+vector<bool> get_tag_persons_hash(const string& s) {
+	TotalTimer tt("get_tag_persons_hash");
 	int tagid = Data::tagid[s];
 	auto& forums = Data::tag_forums[tagid];
-	vector<PersonInForum> persons;
+	vector<int> persons;
 
 	vector<bool> hash(Data::nperson, false);
 	FOR_ITR(itr, forums) {
-		set<PersonInForum>& persons_in_forum = (*itr)->persons;
+		set<int>& persons_in_forum = (*itr)->persons;
 		FOR_ITR(p, persons_in_forum)
 			hash[*p] = true;
 	}
+	return hash;
+}
+
+vector<int> get_tag_persons(const string& s) {
+	TotalTimer tt("get_tag_persons");
+	vector<int> ret;
+	auto hash = get_tag_persons_hash(s);
 	REP(i, Data::nperson)
 		if (hash[i])
-			persons.emplace_back(i);
-	return persons;
+			ret.emplace_back(i);
+	return ret;
 }
 
 void output_tgf_graph(string fname, const vector<vector<int>> &friends) {

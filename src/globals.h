@@ -1,5 +1,5 @@
 //File: globals.h
-//Date: Wed Mar 26 16:39:52 2014 +0800
+//Date: Fri Apr 04 10:32:43 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -10,16 +10,20 @@
 #include "lib/ThreadPool.hh"
 #include "lib/Timer.h"
 // global variables!!
-/*
- *extern std::mutex comment_read_mt;
- *extern std::condition_variable comment_read_cv;
- *extern bool comment_read;
- */
+
+#define WAIT_FOR(s) \
+	unique_lock<mutex> lk(s ## _mt); \
+	while (!s) (s ## _cv).wait(lk); \
+	lk.unlock();
 
 extern Timer globaltimer;
 extern std::condition_variable tag_read_cv;
 extern std::mutex tag_read_mt;
 extern bool tag_read;
+
+extern bool friends_hash_built;
+extern std::mutex friends_hash_built_mt;
+extern std::condition_variable friends_hash_built_cv;
 
 extern ThreadPool* threadpool;
 

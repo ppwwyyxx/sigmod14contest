@@ -1,11 +1,12 @@
 //File: bitset.h
-//Date: Thu Apr 03 15:29:39 2014 +0800
+//Date: Fri Apr 04 12:16:15 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
 #include <emmintrin.h>
 #include <cstdint>
 #include <string.h>
+#include "Timer.h"
 #include "debugutils.h"
 
 extern __m128i lut[] __attribute__((aligned(16)));

@@ -1,6 +1,6 @@
 /*
  * $File: query4_wyx.cc
- * $Date: Fri Apr 04 11:11:25 2014 +0000
+ * $Date: Fri Apr 04 12:05:10 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -94,6 +94,8 @@ vector<int> Query4Calculator::work() {
  */
 
 	vector<bool> noneed(np, false);
+	size_t thres = (double)np * 0.5;
+	vector<PII> wrong_result_with_person; wrong_result_with_person.reserve(np);
 	{
 		TotalTimer tttt("estimate random");
 		if (np > 10000 && k < 20) {
@@ -102,17 +104,18 @@ vector<int> Query4Calculator::work() {
 //			estimator1.error();
 
 			auto wrong_result = move(estimator1.result);
-			vector<PII> wrong_result_with_person;
 			REP(i, np)
 				wrong_result_with_person.emplace_back(wrong_result[i], i);
 			sort(wrong_result_with_person.begin(), wrong_result_with_person.end());
-			REPL(i, (size_t)((double)np * 0.5), np)
+			REPL(i, thres, np)
 				noneed[wrong_result_with_person[i].second] = true;
 		}
 	}
 
 	HybridEstimator estimator(friends, degree, est_dist_max, noneed);
 	estimated_s = move(estimator.result);
+	REPL(i, thres, np)
+		estimated_s[wrong_result_with_person[i].second] = 1e9;
 
 /*
  *    LimitDepthEstimator estimator(friends, degree, est_dist_max);
@@ -126,7 +129,7 @@ vector<int> Query4Calculator::work() {
  */
 
 
-	vector<HeapEle> heap_ele_buf;
+	vector<HeapEle> heap_ele_buf; heap_ele_buf.reserve(np);
 	for (int i = 0; i < (int)np; i ++) {
 		double centrality = get_centrality_by_vtx_and_s(i, estimated_s[i]);
 		heap_ele_buf.emplace_back(i, centrality);

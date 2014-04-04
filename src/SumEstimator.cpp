@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Fri Apr 04 11:08:30 2014 +0000
+//Date: Fri Apr 04 12:18:02 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -233,17 +233,16 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 
 	std::vector<Bitset> s_prev;
 	{
-	//	TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
+		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
 		s_prev.reserve(np);
 		REP(i, np)
 			s_prev.emplace_back(len);
 
 		result.resize((size_t)np, 0);
 		nr_remain.resize(np);
-		REP(i, np) nr_remain[i] = degree[i];
+		REP(i, np)
+			nr_remain[i] = degree[i];
 	}
-
-	//	print_debug("Alloc: %lf\n", init.get_time());
 
 	// bfs 2 depth
 	{
@@ -278,21 +277,16 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 					result[i] += 2;
 				}
 			}
-			/*
-			 *int c = s_prev[i].count(len);
-			 *if (c > 10000)
-			 *    print_debug("np: %d count d2: %d\n", np, c);
-			 */
 		}
-
 	}
 
 	// union depth 3
 	{
 		TotalTimer ttt("depth 3");
+		Bitset s(len);
 		REP(i, np) {
+			s.reset(len);
 			if (noneed[i]) continue;
-			Bitset s(len);
 			FOR_ITR(fr, graph[i])
 				s.or_arr(s_prev[*fr], len);
 			s.and_not_arr(s_prev[i], len);
@@ -300,14 +294,15 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			int c = s.count(len);
 			result[i] += c * 3;
 			nr_remain[i] -= c;
+		    result[i] += nr_remain[i] * 4;
 		}
-
 	}
-
-	REP(i, np) {
-		if (noneed[i]) result[i] = 1e9;
-		result[i] += nr_remain[i] * 4;
-	}
+	/*
+	 *REP(i, np) {
+	 *    if (noneed[i]) result[i] = 1e9;
+	 *    result[i] += nr_remain[i] * 4;
+	 *}
+	 */
 }
 
 LimitDepthEstimator::LimitDepthEstimator(const std::vector<std::vector<int>>& _graph, int* _degree, int _depth_max):

@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Fri Apr 04 12:18:02 2014 +0000
+//Date: Fri Apr 04 12:38:50 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -244,6 +244,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			nr_remain[i] = degree[i];
 	}
 
+//	vector<int> num3_upper(np);
 	// bfs 2 depth
 	{
 		TotalTimer ttt("depth 2");
@@ -257,26 +258,31 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			s_prev[i].set(i);
 			nr_remain[i] -= 1;
 
+//			int sum_dv1 = 0;
 			// depth 1
 			FOR_ITR(fr, graph[i]) {
+//				sum_dv1 += graph[*fr].size();
 				hash[*fr] = tag;
 				s_prev[i].set(*fr);
 			}
 			nr_remain[i] -= (int)graph[i].size();
 			result[i] += (int)graph[i].size();
 
+//			int sum_dv2 = 0;
 			// depth 2
 			FOR_ITR(fr, graph[i]) {
 				int j = *fr;
 				FOR_ITR(fr2, graph[j]) {
 					if (hash[*fr2] == tag)
 						continue;
+//					sum_dv2 += graph[*fr2].size();
 					hash[*fr2] = tag;
 					s_prev[i].set(*fr2);
 					nr_remain[i] --;
 					result[i] += 2;
 				}
 			}
+//			num3_upper[i] = max(sum_dv2 - sum_dv1, 0);
 		}
 	}
 

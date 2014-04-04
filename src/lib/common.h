@@ -1,5 +1,5 @@
 //File: common.h
-//Date: Thu Apr 03 18:00:54 2014 +0800
+//Date: Fri Apr 04 16:27:39 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -15,3 +15,4 @@
 
 #include <utility>
 typedef std::pair<int, int> PII;
+typedef std::pair<double, int> PDI;

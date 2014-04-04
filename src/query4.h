@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Thu Apr 03 20:50:26 2014 +0000
+//Date: Fri Apr 04 13:03:14 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -47,14 +47,16 @@ class Query4Calculator {
 		Query4Calculator(const std::vector<std::vector<int>>& _friends, int _k):
 			np(_friends.size()), friends(_friends), k(_k) {
 
-			degree = new int[np];
-			que = new size_t[np];
-			compute_degree();
+				degree = new int[np];
+				estimated_s.resize(np);
+				exact_s.resize(np, -1);
 
-			// XXX
-			contract_dist = (int)np;
-			contract_nr_vtx = 3;
-		}
+				compute_degree();
+
+				// XXX
+				contract_dist = (int)np;
+				contract_nr_vtx = 3;
+			}
 
 		std::vector<int> work();
 
@@ -62,12 +64,16 @@ class Query4Calculator {
 
 		~Query4Calculator() {
 			delete[] degree;
-			delete[] que;
 		}
 
 
 	protected:
+		int* degree;
+		std::vector<int> estimated_s;
+		std::vector<int> exact_s;
+
 		void compute_degree() {
+			std::vector<int> que(np);
 			REP(i, np)
 				degree[i] = -1;
 
@@ -94,6 +100,9 @@ class Query4Calculator {
 		}
 
 		int get_exact_s(int source) {
+			if (exact_s[source] != -1)
+				return exact_s[source];
+
 			std::vector<bool> hash(np);
 			std::queue<int> q;
 			hash[source] = true;
@@ -112,6 +121,7 @@ class Query4Calculator {
 					}
 				}
 			}
+			exact_s[source] = s;
 			return s;
 		}
 
@@ -121,9 +131,6 @@ class Query4Calculator {
 			double ret = ::sqr(degree[v] - 1.0) / (double)s / ((int)np - 1);
 			return ret;
 		}
-
-		int* degree;
-		std::vector<int> estimated_s;
 
 		int estimate_s_limit_depth(int source, int depth_max);
 		int estimate_s_limit_depth_cut_upper(int source, int depth_max, double upper);
@@ -138,7 +145,6 @@ class Query4Calculator {
 
 
 		// i don't know
-		size_t* que;
 		static int dummy;
 
 		// cgraph

@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Fri Apr 04 01:03:07 2014 +0800
+//Date: Fri Apr 04 11:08:30 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -45,7 +45,7 @@ void SumEstimator::error() {
 			double err = (double)(truth - est) / truth;
 			if (err > 0)
 				pos_cnt ++;
-			if (fabs(err) > 0.03) {
+			if (fabs(err) > 0.05) {
 				print_debug("Error: %lf, truth: %d, est: %d\n", err, truth, est);
 			}
 			ret += fabs(err);

@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Fri Apr 04 10:49:15 2014 +0000
+//Date: Fri Apr 04 11:13:38 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -82,6 +82,7 @@ public:
 	static std::vector<std::vector<ConnectedPerson> > friends;
 	// friends[i] is a vector(sorted by 'id') of friends of the person with id=i
 	static std::vector<unordered_set<int>> friends_hash;
+	// will be destroyed after read_comments
 
 	static int *birthday;	// birthday[i] for the person with id=i
 

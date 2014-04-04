@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Fri Apr 04 10:34:05 2014 +0000
+//Date: Fri Apr 04 11:13:24 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -578,22 +578,6 @@ void read_comments_tim(const std::string &dir) {
 		fclose(fin);
 	}
 
-/*
- *    std::vector<unordered_set<int>> friends_hash(Data::nperson);
- *#ifdef GOOGLE_HASH
- *    FOR_ITR(itr, friends_hash) itr->set_empty_key(-1);
- *#endif
- *    {
- *        GuardedTimer guarded_timer("init friends hash");
- *
- *        REP(i, Data::nperson) {
- *            auto& fs = Data::friends[i];
- *            auto &h = friends_hash[i];
- *            FOR_ITR(itr, fs)
- *                h.insert(itr->pid);
- *        }
- *    }
- */
 	WAIT_FOR(friends_hash_built);
 
 	vector<vector<int>> comments_2d(Data::nperson);
@@ -637,6 +621,7 @@ void read_comments_tim(const std::string &dir) {
 		} while (ptr != buf_end);
 		munmap(mapped, size);
 	}
+	Data::friends_hash.clear();
 
 	print_debug("number of valid comment pair: %lu\n", comments.size());
 	{

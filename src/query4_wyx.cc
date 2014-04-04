@@ -1,6 +1,6 @@
 /*
  * $File: query4_wyx.cc
- * $Date: Fri Apr 04 11:05:59 2014 +0000
+ * $Date: Fri Apr 04 11:11:25 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -96,9 +96,10 @@ vector<int> Query4Calculator::work() {
 	vector<bool> noneed(np, false);
 	{
 		TotalTimer tttt("estimate random");
-		if (np > 10000) {
+		if (np > 10000 && k < 20) {
 //			RandomChoiceEstimator estimator1(friends, degree, pow(log(np), 0.333) / (20.2 * pow(np, 0.333)));
-			RandomChoiceEstimator estimator1(friends, degree, 0.003);
+			RandomChoiceEstimator estimator1(friends, degree, 0.002);
+//			estimator1.error();
 
 			auto wrong_result = move(estimator1.result);
 			vector<PII> wrong_result_with_person;

@@ -1,5 +1,5 @@
 //File: ThreadPool.cpp
-//Date: Wed Mar 26 12:14:28 2014 +0800
+//Date: Fri Apr 04 20:49:40 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "ThreadPool.hh"
@@ -27,12 +27,14 @@ namespace __ThreadPoolImpl
 
 			lock.unlock();
 
-			{
-			//	std::lock_guard<std::mutex> lock_queue(tp->queue_mutex);
-				std::lock_guard<std::mutex> lock(tp->nr_active_thread_mutex);
-				tp->nr_active_thread ++;
-			//	fprintf(stderr, "++: %d, q:%d\n", tp->nr_active_thread, (int)tp->tasks.size());
-			}
+			/*		// old one
+			 *{
+			 *    std::lock_guard<std::mutex> lock(tp->nr_active_thread_mutex);
+			 *    tp->nr_active_thread ++;
+			 *    //	fprintf(stderr, "++: %d, q:%d\n", tp->nr_active_thread, (int)tp->tasks.size());
+			 *}
+			 */
+			__sync_fetch_and_add(&(tp->nr_active_thread), 1);
 			task();
 			{
 			//	std::lock_guard<std::mutex> lock_queue(tp->queue_mutex);

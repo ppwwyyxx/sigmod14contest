@@ -1,5 +1,5 @@
 //File: SumEstimator.h
-//Date: Fri Apr 04 16:44:52 2014 +0800
+//Date: Fri Apr 04 22:23:49 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -39,10 +39,13 @@ class RandomChoiceEstimator: public SumEstimator {
 		// p: percent of point to randomly choose. 0 < p < 1
 		RandomChoiceEstimator(const std::vector<std::vector<int>>& _graph, int* _degree, double p)
 			: SumEstimator(_graph),
-			result(np, 0), samples(np), degree(_degree)
+			result(np, 0), degree(_degree)
 		{
 				m_assert(0 < p && p < 1);
-				std::iota(samples.begin(), samples.end(), 0);
+				REP(i, np)
+					if (degree[i] > 100)
+						samples.push_back(i);
+//				std::iota(samples.begin(), samples.end(), 0);
 				std::random_shuffle(samples.begin(), samples.end());
 				samples.resize((size_t)((double)np * p));		// TODO can be better than this
 				work();

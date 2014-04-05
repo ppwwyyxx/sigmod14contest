@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Fri Apr 04 20:01:28 2014 +0000
+ * $Date: Sat Apr 05 00:04:07 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -183,8 +183,11 @@ vector<int> Query4Calculator::work() {
 
 	if (np > 11000) {
 		static int print = 0;
-		if (print < 3)
-			fprintf(stderr, "cnt: %lu/%d/%d/%d/%d\n", np, cnt, k, (int)diameter, (int)est_dist_max);
+#ifndef DEBUG
+		if (print < 4)
+#endif
+			fprintf(stderr, "cnt: %lu/%d/%d/%d~%d~%d\n", np, cnt, k,
+					exact_s[ans.front()], exact_s[ans.back()], sum_bound);
 		print ++;
 	}
 	return move(ans);

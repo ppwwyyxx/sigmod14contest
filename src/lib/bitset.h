@@ -1,5 +1,5 @@
 //File: bitset.h
-//Date: Fri Apr 04 12:16:15 2014 +0000
+//Date: Fri Apr 04 21:48:35 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -124,7 +124,7 @@ inline void sse2_or_arr(__m128i* dst,
 		const __m128i* src_end) {
 	__m128i xmm1, xmm2;
 	do {
-		_mm_prefetch((const char*)(src)+512,  _MM_HINT_NTA);
+		_mm_prefetch((const char*)(src) + 512,  _MM_HINT_NTA);
 
 		xmm1 = _mm_load_si128(src++);
 		xmm2 = _mm_load_si128(dst);
@@ -180,3 +180,12 @@ class Bitset {
 			memset(data, 0, len * sizeof(__m128i));
 		}
 };
+
+inline void prefetch_range(char *addr, size_t len) {
+    char *cp;
+    char *end = addr + len;
+
+    for (cp = addr; cp < end; cp += 512)
+		_mm_prefetch(cp, _MM_HINT_T0);
+   //     __builtin_prefetch(cp, 1, 3);
+}

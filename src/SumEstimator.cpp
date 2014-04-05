@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Fri Apr 04 20:01:30 2014 +0000
+//Date: Sat Apr 05 00:06:34 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "SumEstimator.h"
@@ -87,7 +87,10 @@ int RandomChoiceEstimator::bfs_all(int source, vector<int>& vst_cnt) {
 				if (vst[*f]) continue;
 				vst[*f] = true;
 				result[*f] += depth + 1;
-				vst_cnt[*f] ++;
+
+				__sync_fetch_and_add(vst_cnt.data() + (*f), 1);		// TODO
+//				vst_cnt[*f] ++;
+
 				q.push(*f);
 			}
 		}
@@ -245,6 +248,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	}
 
 	// bfs 2 depth
+	int cutcnt = 0;
 	{
 		TotalTimer ttt("depth 2");
 		vector<int> hash(np, 0);
@@ -288,10 +292,18 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 				int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
 				if (est_s_lowerbound > sum_bound) {		// cut
 					noneed[i] = true;
+					cutcnt ++;
 					result[i] = 1e9;
 				}
 			}
 		}
+		/*
+		 *static int printcnt = 0;
+		 *printcnt ++;
+		 *if (printcnt < 5 && np > 10000)  {
+		 *    fprintf("%d/%d\n", np, cutcnt);
+		 *}
+		 */
 	}
 
 	// union depth 3

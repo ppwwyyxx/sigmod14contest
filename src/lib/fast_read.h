@@ -1,5 +1,5 @@
 //File: fast_read.h
-//Date: Wed Apr 02 18:14:26 2014 +0800
+//Date: Sat Apr 05 15:22:47 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -89,3 +89,10 @@ namespace {
 
 #define READ_TILL_EOL_s(s) \
 	while (*(ptr ## s) != '\n') PTR_NEXT_s(s);
+
+
+#define MMAP_READ_TILL_EOL() \
+	{ \
+		do { ptr++; } while (*ptr != '\n'); \
+		ptr ++; \
+	}

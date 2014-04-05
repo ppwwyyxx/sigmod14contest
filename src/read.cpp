@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Apr 05 14:36:22 2014 +0800
+//Date: Sat Apr 05 15:22:42 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -329,41 +329,98 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 
 	{
 		GuardedTimer timer("read forum_hasMember_person");
-		safe_open(dir + "/forum_hasMember_person.csv");
-		ptr = buffer, buf_end = ptr + 1;
-		READ_TILL_EOL();
-		vector<int> person_in_now_forum;
+
+		// using mmap
+		int fd = open((dir + "/forum_hasMember_person.csv").c_str(), O_RDONLY);
+		struct stat s; fstat(fd, &s);
+		size_t size = s.st_size;
+		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE|MAP_POPULATE, fd, 0);
+		madvise(mapped, size, MADV_WILLNEED);
+
+		ptr = (char*)mapped;
+		buf_end = (char*)mapped + size;
+
+		MMAP_READ_TILL_EOL();
+
 		int last_fid = -1;
 		bool last_skip = false; Forum* now_forum;
-		while (true) {	// assuming that same fid appears together
-			READ_INT(fid);
+		do {
+			fid = 0;
+			do {
+				fid = fid * 10 + *ptr - '0';
+				ptr ++;
+			} while (*ptr != '|');
+			ptr ++;
+			// read fid done
 
-			if (buffer == buf_end) break;
 			if (fid != last_fid) {
 				last_fid = fid;
 				auto itr = forum_to_tags.find(fid);
 				if (itr == forum_to_tags.end()) {
 					last_skip = true;
-					READ_TILL_EOL();
+					MMAP_READ_TILL_EOL();
 					continue;
 				}
 				last_skip = false;
-
 				now_forum = new Forum();
-
 				FOR_ITR(titr, itr->second)
 					Data::tag_forums[*titr].emplace_back(now_forum);
 			} else {
 				if (last_skip) {
-					READ_TILL_EOL();
+					MMAP_READ_TILL_EOL();
 					continue;
 				}
 			}
-			READ_INT(pid);
+
+			pid = 0;
+			do {
+				pid = pid * 10 + *ptr - '0';
+				ptr ++;
+			} while (*ptr != '|');
+
 			now_forum->persons.push_back(pid);
-			READ_TILL_EOL();
-		}
-		fclose(fin);
+
+			MMAP_READ_TILL_EOL();
+		} while (ptr != buf_end);
+		munmap(mapped, size);
+		close(fd);
+
+		/*
+		 *   safe_open(dir + "/forum_hasMember_person.csv");
+		 *   ptr = buffer, buf_end = ptr + 1;
+		 *   READ_TILL_EOL();
+		 *   int last_fid = -1;
+		 *   bool last_skip = false; Forum* now_forum;
+		 *   while (true) {	// assuming that same fid appears together
+		 *       READ_INT(fid);
+		 *
+		 *       if (buffer == buf_end) break;
+		 *       if (fid != last_fid) {
+		 *           last_fid = fid;
+		 *           auto itr = forum_to_tags.find(fid);
+		 *           if (itr == forum_to_tags.end()) {
+		 *               last_skip = true;
+		 *               READ_TILL_EOL();
+		 *               continue;
+		 *           }
+		 *           last_skip = false;
+		 *
+		 *           now_forum = new Forum();
+		 *
+		 *           FOR_ITR(titr, itr->second)
+		 *               Data::tag_forums[*titr].emplace_back(now_forum);
+		 *       } else {
+		 *           if (last_skip) {
+		 *               READ_TILL_EOL();
+		 *               continue;
+		 *           }
+		 *       }
+		 *       READ_INT(pid);
+		 *       now_forum->persons.push_back(pid);
+		 *       READ_TILL_EOL();
+		 *   }
+		 *   fclose(fin);
+		 */
 	}
 
 	print_debug("Read forum spent %lf secs\n", timer.get_time());
@@ -608,7 +665,7 @@ void read_comments_tim(const std::string &dir) {
 		fclose(fin);
 	}
 
-//	exit(0);
+	//	exit(0);
 	WAIT_FOR(friends_hash_built);
 
 	vector<vector<int>> comments_2d(Data::nperson);
@@ -626,8 +683,7 @@ void read_comments_tim(const std::string &dir) {
 		ptr = (char*)mapped;
 		buf_end = (char*)mapped + size;
 
-		do { ptr++; } while (*ptr != '\n');
-		ptr ++;
+		MMAP_READ_TILL_EOL();
 		do {
 			unsigned long long cid1 = 0;
 			do {
@@ -651,6 +707,7 @@ void read_comments_tim(const std::string &dir) {
 			ptr ++;
 		} while (ptr != buf_end);
 		munmap(mapped, size);
+		close(fd);
 	}
 	Data::friends_hash.clear();
 

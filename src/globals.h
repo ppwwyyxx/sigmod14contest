@@ -1,5 +1,5 @@
 //File: globals.h
-//Date: Fri Apr 04 10:32:43 2014 +0000
+//Date: Sat Apr 05 16:05:16 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once

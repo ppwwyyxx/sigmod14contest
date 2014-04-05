@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Apr 05 15:22:42 2014 +0800
+//Date: Sat Apr 05 16:05:13 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -41,7 +41,6 @@ void read_person_file(const string& dir) {
 	}
 	Data::nperson = maxid + 1;
 	Data::allocate();
-	CachedNeighbor::init(Data::nperson);
 
 	// read birthday
 	rewind(fin);
@@ -584,33 +583,31 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 	print_debug("Read person spent %lf secs\n", timer.get_time());
 }
 
-typedef std::pair<int, int> Type;
-
 /*		// cannot compile
- *void quick_sort(std::vector<Type>& arr) {
+ *void quick_sort(std::vector<PII>& arr) {
  *    auto pivot = arr[rand() % arr.size()];
- *    auto mid = std::partition(arr.begin(), arr.end(), [&](const Type &t){return t < pivot;});
+ *    auto mid = std::partition(arr.begin(), arr.end(), [&](const PII &t){return t < pivot;});
  *
  *    auto pleft = arr[rand() % (mid - arr.begin())];
  *    auto pright = arr[rand() % (arr.end() - mid)];
- *    std::vector<Type>::iterator left, right;
+ *    std::vector<PII>::iterator left, right;
  *
  *    thread t_left([&](){
- *            left = std::partition(arr.begin(), mid, [&](const Type &t){return t < pleft;});
+ *            left = std::partition(arr.begin(), mid, [&](const PII &t){return t < pleft;});
  *            });
  *    thread t_right([&](){
- *            right = std::partition(mid, arr.end(), [&](const Type &t){return t < pright;});
+ *            right = std::partition(mid, arr.end(), [&](const PII &t){return t < pright;});
  *            });;
  *
  *    t_left.join();
  *    t_right.join();
  *
  *    vector<thread> threads;
- *    std::vector<Type>::iterator begin = arr.begin();
+ *    std::vector<PII>::iterator begin = arr.begin();
  *    for (auto &end: {left , mid, right, arr.end()}) {
  *        threads.emplace_back(std::bind(
- *            [](std::vector<Type>::iterator begin,
- *                std::vector<Type>::iterator end){
+ *            [](std::vector<PII>::iterator begin,
+ *                std::vector<PII>::iterator end){
  *            std::sort(begin, end);},
  *            begin, end));
  *        begin = end;
@@ -665,7 +662,6 @@ void read_comments_tim(const std::string &dir) {
 		fclose(fin);
 	}
 
-	//	exit(0);
 	WAIT_FOR(friends_hash_built);
 
 	vector<vector<int>> comments_2d(Data::nperson);

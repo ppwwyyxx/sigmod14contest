@@ -1,5 +1,5 @@
 //File: globals.cpp
-//Date: Fri Apr 04 10:31:07 2014 +0000
+//Date: Sat Apr 05 16:05:20 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "globals.h"

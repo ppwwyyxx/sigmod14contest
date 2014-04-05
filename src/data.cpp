@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Sat Apr 05 14:14:21 2014 +0800
+//Date: Sat Apr 05 15:54:16 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -30,13 +30,11 @@ vector<int> Data::real_tag_id;
 #endif
 
 void Data::allocate() {
+	m_assert(nperson != 0);
 	friends_hash.resize(nperson);
 #ifdef GOOGLE_HASH
 	FOR_ITR(itr, friends_hash) itr->set_empty_key(-1);
-	tagid.set_empty_key("");
-	placeid.set_empty_key("");
 #endif
-	m_assert(nperson != 0);
 
 	birthday = new int[nperson];
 	friends.resize(nperson);

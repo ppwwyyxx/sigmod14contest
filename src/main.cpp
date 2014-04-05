@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Sat Apr 05 00:58:37 2014 +0000
+//Date: Sat Apr 05 16:05:09 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -88,6 +88,8 @@ int main(int argc, char* argv[]) {
 	// initialize global variables...
 #ifdef GOOGLE_HASH
 	q4_tag_set.set_empty_key("");
+	Data::tagid.set_empty_key("");
+	Data::placeid.set_empty_key("");
 #endif
 	// end
 	string dir(argv[1]);
@@ -97,30 +99,17 @@ int main(int argc, char* argv[]) {
 	q4.ans.resize(q4_set.size());
 	q3.global_answer.resize(q3_set.size());
 
+	threadpool->enqueue(bind(do_read_comments, dir), start_1, 20);
 	read_data(dir);
 	print_debug("Read return at %lf secs\n", timer.get_time());
-	if (Data::nperson > 11000) {
-		PP(edge_count(Data::friends));
-	}
-
 	/*
-	 *do_read_comments(dir);
-	 *do_read_tags_forums_places(dir);
-	 *start_1(1);
-	 *start_2();
-	 *start_3();
-	 *start_4(1);
-	 */
-
-	/*
-	 *threadpool->enqueue(bind(do_read_comments, dir));
-	 *delete threadpool;
-	 *return 0;
+	 *if (Data::nperson > 11000) {
+	 *    PP(edge_count(Data::friends));
+	 *}
 	 */
 
 	threadpool->enqueue(bind(do_read_tags_forums_places, dir), start_4);
 	WAIT_FOR(tag_read);
-	threadpool->enqueue(bind(do_read_comments, dir), start_1, 20);
 	//fprintf(stderr, "nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);		// print this earlier, in case of crash
 
 	threadpool->enqueue(start_2);

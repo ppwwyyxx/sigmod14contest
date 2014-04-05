@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Fri Apr 04 11:05:49 2014 +0000
+//Date: Sat Apr 05 00:58:37 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -21,6 +21,15 @@
 #include "query4.h"
 using namespace std;
 
+
+Query1Handler q1;
+Query2Handler q2;
+Query3Handler q3;
+Query4Handler q4;
+vector<Query1> q1_set;
+vector<Query2> q2_set;
+vector<Query3> q3_set;
+vector<Query4> q4_set;
 
 
 void read_query(const string& fname) {

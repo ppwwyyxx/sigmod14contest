@@ -1,5 +1,5 @@
 //File: SumEstimator.h
-//Date: Fri Apr 04 22:23:49 2014 +0000
+//Date: Sat Apr 05 10:15:11 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -95,6 +95,7 @@ class SSEUnionSetEstimator: public SumEstimator {
 class HybridEstimator: public SumEstimator {
 	public:
 		int depth_max;
+		int cutcnt;
 		std::vector<int> result;
 		std::vector<int> nr_remain;
 

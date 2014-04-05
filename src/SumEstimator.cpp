@@ -1,12 +1,13 @@
 //File: SumEstimator.cpp
-//Date: Sat Apr 05 00:06:34 2014 +0000
+//Date: Sat Apr 05 11:30:40 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
-#include "SumEstimator.h"
-#include "lib/common.h"
 #include <queue>
 #include <limits>
 #include <cmath>
+#include "SumEstimator.h"
+#include "lib/common.h"
+#include "lib/utils.h"
 using namespace std;
 using namespace boost;
 
@@ -35,22 +36,30 @@ int SumEstimator::get_exact_s(int source) {
 	return s;
 }
 
+#include <fstream>
 void SumEstimator::error() {
 	double ret = 0;
 	int pos_cnt = 0;
+	ofstream fout("/tmp/" + string_format("%d", np) + ".txt");
+#pragma omp parallel for schedule(static) num_threads(4)
 	REP(i, np) {
 		auto est = estimate(i);
 		auto truth = get_exact_s(i);
+		fout << truth << endl;
 		if (truth != 0 && est != numeric_limits<int>::max()) {
 			double err = (double)(truth - est) / truth;
-			if (err > 0)
-				pos_cnt ++;
+			if (err > 0) {
+				__sync_fetch_and_add(&pos_cnt, 1);
+//				pos_cnt ++;
+			}
 			if (fabs(err) > 0.05) {
 				print_debug("Error: %lf, truth: %d, est: %d\n", err, truth, est);
 			}
+#pragma omp critical
 			ret += fabs(err);
 		}
 	}
+	fout.close();
 	print_debug("Error: %lf, smaller: %lf\n", ret / np, (double)pos_cnt / np);
 }
 
@@ -248,7 +257,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	}
 
 	// bfs 2 depth
-	int cutcnt = 0;
+	cutcnt = 0;
 	{
 		TotalTimer ttt("depth 2");
 		vector<int> hash(np, 0);
@@ -276,8 +285,9 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			FOR_ITR(fr, graph[i]) {
 				int j = *fr;
 				FOR_ITR(fr2, graph[j]) {
-					if (hash[*fr2] == tag)
+					if (hash[*fr2] == tag) {
 						continue;
+					}
 					sum_dv2 += graph[*fr2].size();
 					hash[*fr2] = tag;
 					s_prev[i].set(*fr2);
@@ -287,6 +297,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 			}
 
 			if (not noneed[i]) {
+				// XXX this is wrong
 				int n3_upper = (int)sum_dv2 - (int)sum_dv1 + (int)graph[i].size() + 1;
 				m_assert(n3_upper >= 0);
 				int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
@@ -297,29 +308,25 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 				}
 			}
 		}
-		/*
-		 *static int printcnt = 0;
-		 *printcnt ++;
-		 *if (printcnt < 5 && np > 10000)  {
-		 *    fprintf("%d/%d\n", np, cutcnt);
-		 *}
-		 */
 	}
 
 	// union depth 3
 	{
+		int cnt = 0;
 		TotalTimer ttt("depth 3");
 		Bitset s(len);
 		REP(i, np) {
 			if (noneed[i]) continue;
 			if (result[i] == 0) continue;
 			if (nr_remain[i] == 0) continue;
+			cnt ++;
 			s.reset(len);
 			FOR_ITR(fr, graph[i])
 				s.or_arr(s_prev[*fr], len);
 			s.and_not_arr(s_prev[i], len);
 
 			int c = s.count(len);
+//			print_debug("S1: %lu, S2: %d S3: %d\n", graph[i].size(), s_prev[i].count(len) - graph[i].size(), c);
 			result[i] += c * 3;
 			nr_remain[i] -= c;
 			result[i] += nr_remain[i] * 4;

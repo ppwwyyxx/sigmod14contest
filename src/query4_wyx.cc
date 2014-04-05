@@ -1,6 +1,6 @@
 /*
- * $File: query4.cpp
- * $Date: Sat Apr 05 00:04:07 2014 +0000
+ * $File: query4_wyx.cc
+ * $Date: Sat Apr 05 11:30:19 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -82,13 +82,15 @@ vector<int> Query4Calculator::work() {
 	est_dist_max = max(2, (int)floor(log((double)diameter) / log(2.0) + 0.5));
 	est_dist_max = 3;
 
+	const bool use_estimate = (np > 10000 && k < 20);
+
 	vector<bool> noneed(np, false);
 	size_t thres = (size_t)((double)np * 0.5);
 	vector<PII> wrong_result_with_person; wrong_result_with_person.reserve(np);
 	int sum_bound = 1e9;
 	{
 		TotalTimer tttt("estimate random");
-		if (np > 10000 && k < 20) {
+		if (use_estimate) {
 //			RandomChoiceEstimator estimator1(friends, degree, pow(log(np), 0.333) / (20.2 * pow(np, 0.333)));
 			RandomChoiceEstimator estimator1(friends, degree, 0.002);
 //			estimator1.error();
@@ -129,7 +131,7 @@ vector<int> Query4Calculator::work() {
 	HybridEstimator estimator(friends, degree, est_dist_max, noneed, sum_bound);
 	estimated_s = move(estimator.result);
 
-	if (np > 10000 && k < 20)
+	if (use_estimate)
 		REPL(i, thres, np)
 			estimated_s[wrong_result_with_person[i].second] = 1e9;
 
@@ -186,8 +188,8 @@ vector<int> Query4Calculator::work() {
 #ifndef DEBUG
 		if (print < 4)
 #endif
-			fprintf(stderr, "cnt: %lu/%d/%d/%d~%d~%d\n", np, cnt, k,
-					exact_s[ans.front()], exact_s[ans.back()], sum_bound);
+			fprintf(stderr, "%lu/%d/%d/%d~%d~%d/%d\n", np, cnt, k,
+					exact_s[ans.front()], exact_s[ans.back()], sum_bound, estimator.cutcnt);
 		print ++;
 	}
 	return move(ans);

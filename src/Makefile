@@ -1,12 +1,12 @@
 # $File: Makefile
-# $Date: Fri Apr 04 23:12:07 2014 +0000
+# $Date: Sat Apr 05 10:02:34 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
 
 BUILD ?= develop
 
-INCLUDE_DIR = -Iinclude -Ithird-party
+INCLUDE_DIR = -Iinclude -isystem third-party
 
 DEFINES += -DGOOGLE_HASH
 #DEFINES += -DNUM_THREADS=1		# to disable multi-threading

@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Fri Apr 04 11:13:24 2014 +0000
+//Date: Sat Apr 05 10:05:06 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -388,7 +388,7 @@ void read_tags_forums_places(const string& dir) {
 
 	{		// read person->tags
 		safe_open(dir + "/person_hasInterest_tag.csv");
-		fgets(buffer, BUFFER_LEN, fin);
+		fgets(buffer, 1024, fin);
 		while (fscanf(fin, "%d|%d", &pid, &tid) == 2) {
 			int c_id = id_map[tid];
 			Data::tags[pid].insert(c_id);
@@ -408,12 +408,12 @@ void read_tags_forums_places(const string& dir) {
 }
 
 void read_org_places(const string& fname, const vector<int>& org_places) {
-	char buffer[1024];
+	char buffer[2048];
 	safe_open(fname);
-	fgets(buffer, BUFFER_LEN, fin);
+	fgets(buffer, 2048, fin);
 	int oid, pid;
 	while (fscanf(fin, "%d|%d", &pid, &oid) == 2) {
-		fgets(buffer, BUFFER_LEN, fin);
+		fgets(buffer, 2048, fin);
 		m_assert(oid % 10 == 0);
 
 		Data::places[org_places[oid / 10]].persons.emplace_back(pid);
@@ -422,11 +422,11 @@ void read_org_places(const string& fname, const vector<int>& org_places) {
 }
 
 void build_places_tree(const string& dir) {
-	char buffer[1024];
+	char buffer[2048];
 	int pid, max_pid = 0;
 	{
 		safe_open(dir + "/place.csv");
-		fgets(buffer, BUFFER_LEN, fin);
+		fgets(buffer, 2048, fin);
 		while (fscanf(fin, "%d|", &pid) == 1) {
 			int k = 0; char c;
 			while ((c = (char)fgetc(fin)) != '|')
@@ -434,7 +434,7 @@ void build_places_tree(const string& dir) {
 			string place_name(buffer, k);
 			Data::placeid[place_name].emplace_back(pid);
 			update_max(max_pid, pid);
-			fgets(buffer, BUFFER_LEN, fin);
+			fgets(buffer, 2048, fin);
 		}
 		Data::places.resize(max_pid + 1);
 		fclose(fin);
@@ -442,7 +442,7 @@ void build_places_tree(const string& dir) {
 
 	{
 		safe_open(dir + "/place_isPartOf_place.csv");
-		fgets(buffer, BUFFER_LEN, fin);
+		fgets(buffer, 2048, fin);
 		int p1, p2;
 		while (fscanf(fin, "%d|%d", &p1, &p2) == 2) {
 			Data::places[p2].sub_places.emplace_back(&Data::places[p1]);
@@ -458,7 +458,7 @@ void read_places(const string& dir) {
 
 	{
 		safe_open(dir + "/person_isLocatedIn_place.csv");
-		fgets(buffer, BUFFER_LEN, fin);
+		fgets(buffer, 1024, fin);
 		int person, place;
 		while (fscanf(fin, "%d|%d", &person, &place) == 2) {
 			Data::places[place].persons.emplace_back(person);
@@ -469,7 +469,7 @@ void read_places(const string& dir) {
 	vector<int> org_places;
 	{
 		safe_open(dir + "/organisation_isLocatedIn_place.csv");
-		fgets(buffer, BUFFER_LEN, fin);
+		fgets(buffer, 1024, fin);
 		int pid, oid;
 		while (fscanf(fin, "%d|%d", &oid, &pid) == 2) {
 			m_assert(oid % 10 == 0);
@@ -499,7 +499,7 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 
 typedef std::pair<int, int> Type;
 
-/*
+/*		// cannot compile
  *void quick_sort(std::vector<Type>& arr) {
  *    auto pivot = arr[rand() % arr.size()];
  *    auto mid = std::partition(arr.begin(), arr.end(), [&](const Type &t){return t < pivot;});
@@ -536,7 +536,7 @@ typedef std::pair<int, int> Type;
 
 int find_count(const std::vector<std::pair<std::pair<int, int>, int>> &count, const std::pair<int, int> &pivot) {
 	// lower bound
-	int left = 0, right = count.size();
+	int left = 0, right = (int)count.size();
 	while (left + 1 < right) {
 		int mid = (left + right) >> 1;
 		if (count[mid].first <= pivot) {

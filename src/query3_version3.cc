@@ -89,7 +89,7 @@ void Query3Handler::add_query(int k, int h, const string& p, int index) {
 	Query3Calculator calc;
 	calc.work(k, h, p, global_answer[index]);
 
-	if (Data::nperson > 10000)
+	if (Data::nperson > 1e9)
 		continuation->cont();
 	return ;
 }

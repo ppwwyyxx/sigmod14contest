@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Sat Apr 05 15:35:25 2014 +0800
+//Date: Sat Apr 05 16:12:30 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <queue>
@@ -296,19 +296,17 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 				}
 			}
 
-			/*
-			 *if (not noneed[i]) {
-			 *    // XXX this is wrong
-			 *    int n3_upper = (int)sum_dv2 - (int)sum_dv1 + (int)graph[i].size() + 1;
-			 *    m_assert(n3_upper >= 0);
-			 *    int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
-			 *    if (est_s_lowerbound > sum_bound) {		// cut
-			 *        noneed[i] = true;
-			 *        cutcnt ++;
-			 *        result[i] = 1e9;
-			 *    }
-			 *}
-			 */
+			if (not noneed[i]) {
+				// XXX this is wrong
+				int n3_upper = (int)sum_dv2 - (int)sum_dv1 + (int)graph[i].size() + 1;
+				m_assert(n3_upper >= 0);
+				int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
+				if (est_s_lowerbound > sum_bound) {		// cut
+					noneed[i] = true;
+					cutcnt ++;
+					result[i] = 1e9;
+				}
+			}
 		}
 	}
 

@@ -1,5 +1,5 @@
 //File: read.h
-//Date: Tue Mar 18 20:04:21 2014 +0800
+//Date: Sat Apr 05 13:21:16 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -14,6 +14,6 @@ void read_tags_forums_places(const std::string&);
 
 
 
-void read_places(const std::string&);
+void read_places(std::string);
 void read_person_file(const std::string&);
 void read_person_knows_person(const std::string&);

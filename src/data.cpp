@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Fri Apr 04 10:49:53 2014 +0000
+//Date: Sat Apr 05 14:14:21 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -73,7 +73,7 @@ vector<bool> get_tag_persons_hash(const string& s) {
 
 	vector<bool> hash(Data::nperson, false);
 	FOR_ITR(itr, forums) {
-		set<int>& persons_in_forum = (*itr)->persons;
+		auto& persons_in_forum = (*itr)->persons;
 		FOR_ITR(p, persons_in_forum)
 			hash[*p] = true;
 	}

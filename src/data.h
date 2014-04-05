@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Fri Apr 04 11:13:38 2014 +0000
+//Date: Sat Apr 05 14:13:55 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -72,7 +72,7 @@ typedef int PersonInForum;
 // now it is only implemented as person id
 
 struct Forum {
-	std::set<PersonInForum> persons;
+	std::vector<int> persons;
 };
 
 class Data {

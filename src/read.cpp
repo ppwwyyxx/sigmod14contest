@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Apr 05 10:05:06 2014 +0800
+//Date: Sat Apr 05 14:19:11 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -7,7 +7,6 @@
 #include <mutex>
 #include <cstdio>
 #include <fstream>
-#include <list>
 #include <thread>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -301,43 +300,82 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		safe_open(dir + "/forum_hasTag_tag.csv");
 		ptr = buffer, buf_end = ptr + 1;
 		READ_TILL_EOL();
+
+		int last_fid = -1; vector<int>* last_ptr;
 		while (true) {
 			READ_INT(fid);
 			if (buffer == buf_end) break;
 			READ_INT(tid);
+
 			if (not q4_tag_ids.count(tid))
 				continue;
 			m_assert(id_map.find(tid) != id_map.end());
+
 			int c_tid = id_map[tid];
-			forum_to_tags[fid].emplace_back(c_tid);
+
+			if (fid != last_fid) {
+				auto & v = forum_to_tags[fid];
+				v.emplace_back(c_tid);
+				last_ptr = &v;
+			} else {
+				last_ptr->emplace_back(c_tid);
+			}
+
+			last_fid = fid;
 		}
 		fclose(fin);
 	}
+	PP(forum_to_tags.size());
 
 	{
 		GuardedTimer timer("read forum_hasMember_person");
 		safe_open(dir + "/forum_hasMember_person.csv");
 		ptr = buffer, buf_end = ptr + 1;
 		READ_TILL_EOL();
-		list<int> person_in_now_forum;
-		int old_fid = -1;
+		vector<int> person_in_now_forum;
+		int last_fid = -1;
+	//	bool last_skip = false; Forum* now_forum;
 		while (true) {	// assuming that same fid appears together
 			READ_INT(fid);
-			if (buffer == buf_end) break;
 
-			if (fid != old_fid && old_fid != -1) {
-				auto itr = forum_to_tags.find(old_fid);
+/*
+ *            if (buffer == buf_end) break;
+ *            if (fid != last_fid) {
+ *                auto itr = forum_to_tags.find(fid);
+ *                if (itr == forum_to_tags.end()) {
+ *                    last_skip = true;
+ *                    READ_TILL_EOL();
+ *                    continue;
+ *                }
+ *                last_skip = false;
+ *
+ *                now_forum = new Forum();
+ *
+ *                FOR_ITR(titr, itr->second)
+ *                    Data::tag_forums[*titr].emplace_back(now_forum);
+ *            } else {
+ *                if (last_skip) {
+ *                    READ_TILL_EOL();
+ *                    continue;
+ *                }
+ *            }
+ *            READ_INT(pid);
+ *            now_forum->persons.push_back(pid);
+ *            READ_TILL_EOL();
+ */
+			if ((fid != last_fid && last_fid != -1) || (buffer == buf_end)) {
+				auto itr = forum_to_tags.find(last_fid);
 				if (itr != forum_to_tags.end()) {
 					Forum* forum = new Forum();		// XXX these memory will never be freed until program exited.
-					FOR_ITR(p, person_in_now_forum)
-						forum->persons.insert(PersonInForum(*p));
-					FOR_ITR(titr, itr->second) {
+					forum->persons = move(person_in_now_forum);
+					FOR_ITR(titr, itr->second)
 						Data::tag_forums[*titr].emplace_back(forum);
-					}
 				}
 				person_in_now_forum.clear();
 			}
-			old_fid = fid;
+			if (buffer == buf_end) break;
+			last_fid = fid;
+
 			READ_INT(pid);
 			READ_TILL_EOL();
 			person_in_now_forum.emplace_back(pid);
@@ -384,6 +422,12 @@ void read_tags_forums_places(const string& dir) {
 		fclose(fin);
 	}
 	Data::person_in_tags.resize(Data::ntag);
+
+	/*
+	 *FOR_ITR(nameitr, q4_tag_set)
+	 *    q4_tag_ids.insert(Data::tagid[*nameitr]);
+	 */
+
 	q4_tag_set.clear();
 
 	{		// read person->tags
@@ -398,10 +442,8 @@ void read_tags_forums_places(const string& dir) {
 	}
 
 	//read places, need tag data to sort
-	read_places(dir);
-
-	tag_read = true;
-	tag_read_cv.notify_all();
+	thread th(bind(read_places, dir));
+	th.detach();
 
 	print_debug("Read tag and places spent %lf secs\n", timer.get_time());
 	read_forum(dir, id_map, q4_tag_ids);
@@ -452,7 +494,8 @@ void build_places_tree(const string& dir) {
 	}
 }
 
-void read_places(const string& dir) {
+void read_places(string dir) {
+	GuardedTimer tt("read places");
 	char buffer[1024];
 	build_places_tree(dir);
 
@@ -488,6 +531,10 @@ void read_places(const string& dir) {
 		vector<PersonInPlace>::iterator last = unique(it->persons.begin(), it->persons.end());
 		it->persons.resize(distance(it->persons.begin(), last));
 	}
+
+	// q3 and q2 will start here
+	tag_read = true;
+	tag_read_cv.notify_all();
 }
 
 void read_data(const string& dir) {		// may need to be implemented synchronously
@@ -578,6 +625,7 @@ void read_comments_tim(const std::string &dir) {
 		fclose(fin);
 	}
 
+//	exit(0);
 	WAIT_FOR(friends_hash_built);
 
 	vector<vector<int>> comments_2d(Data::nperson);
@@ -625,9 +673,9 @@ void read_comments_tim(const std::string &dir) {
 
 	print_debug("number of valid comment pair: %lu\n", comments.size());
 	{
-		GuardedTimer guarded_timer("sort");		// very fast
+		//	GuardedTimer guarded_timer("sort");		// very fast
 		std::sort(comments.begin(), comments.end());
-	//	quick_sort(comments);		// lambda cannot compile!
+		//	quick_sort(comments);		// lambda cannot compile!
 	}
 
 	// aggregate, very fast
@@ -642,7 +690,7 @@ void read_comments_tim(const std::string &dir) {
 	}
 
 	{
-		GuardedTimer timer("build graph");
+		//		GuardedTimer timer("build graph");		// very fast (0.05s/300k)
 		int index = 0;
 		REP(i, Data::nperson) {
 			auto& fs = Data::friends[i];

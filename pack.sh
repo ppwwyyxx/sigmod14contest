@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # File: pack.sh
-# Date: Tue Mar 18 15:08:39 2014 +0800
+# Date: Sat Apr 05 14:25:45 2014 +0800
 # Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 make clean -C src
@@ -22,3 +22,4 @@ tar czvf all.tar.gz \
 	run.sh README src main
 
 sed -i 's/#echo/echo/g;' src/Makefile
+make -C src

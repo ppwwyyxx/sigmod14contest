@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Apr 05 14:19:11 2014 +0800
+//Date: Sat Apr 05 14:36:22 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -334,51 +334,34 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		READ_TILL_EOL();
 		vector<int> person_in_now_forum;
 		int last_fid = -1;
-	//	bool last_skip = false; Forum* now_forum;
+		bool last_skip = false; Forum* now_forum;
 		while (true) {	// assuming that same fid appears together
 			READ_INT(fid);
 
-/*
- *            if (buffer == buf_end) break;
- *            if (fid != last_fid) {
- *                auto itr = forum_to_tags.find(fid);
- *                if (itr == forum_to_tags.end()) {
- *                    last_skip = true;
- *                    READ_TILL_EOL();
- *                    continue;
- *                }
- *                last_skip = false;
- *
- *                now_forum = new Forum();
- *
- *                FOR_ITR(titr, itr->second)
- *                    Data::tag_forums[*titr].emplace_back(now_forum);
- *            } else {
- *                if (last_skip) {
- *                    READ_TILL_EOL();
- *                    continue;
- *                }
- *            }
- *            READ_INT(pid);
- *            now_forum->persons.push_back(pid);
- *            READ_TILL_EOL();
- */
-			if ((fid != last_fid && last_fid != -1) || (buffer == buf_end)) {
-				auto itr = forum_to_tags.find(last_fid);
-				if (itr != forum_to_tags.end()) {
-					Forum* forum = new Forum();		// XXX these memory will never be freed until program exited.
-					forum->persons = move(person_in_now_forum);
-					FOR_ITR(titr, itr->second)
-						Data::tag_forums[*titr].emplace_back(forum);
-				}
-				person_in_now_forum.clear();
-			}
 			if (buffer == buf_end) break;
-			last_fid = fid;
+			if (fid != last_fid) {
+				last_fid = fid;
+				auto itr = forum_to_tags.find(fid);
+				if (itr == forum_to_tags.end()) {
+					last_skip = true;
+					READ_TILL_EOL();
+					continue;
+				}
+				last_skip = false;
 
+				now_forum = new Forum();
+
+				FOR_ITR(titr, itr->second)
+					Data::tag_forums[*titr].emplace_back(now_forum);
+			} else {
+				if (last_skip) {
+					READ_TILL_EOL();
+					continue;
+				}
+			}
 			READ_INT(pid);
+			now_forum->persons.push_back(pid);
 			READ_TILL_EOL();
-			person_in_now_forum.emplace_back(pid);
 		}
 		fclose(fin);
 	}

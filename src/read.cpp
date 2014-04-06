@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sun Apr 06 22:50:59 2014 +0000
+//Date: Mon Apr 07 00:41:40 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -643,7 +643,7 @@ void read_comments_tim(const std::string &dir) {
 	vector<int> owner;
 	Timer timer;
 	{
-		GuardedTimer guarded_timer("read comment_hasCreator_person.csv");
+		GuardedTimer guarded_timer("read comment_hasCreator_person.csv%d", 1);
 		safe_open(dir + "/comment_hasCreator_person.csv");
 		ptr = buffer, buf_end = ptr + 1;
 
@@ -725,6 +725,7 @@ void read_comments_tim(const std::string &dir) {
 			count.back().second ++;
 	}
 
+
 	{
 		GuardedTimer timer("build graph");		// very fast (0.05s/300k)
 		int index = 0;
@@ -732,14 +733,19 @@ void read_comments_tim(const std::string &dir) {
 			auto& fs = Data::friends[i];
 			FOR_ITR(itr, fs) {
 				int j = itr->pid;
-				PII now_pair{i, j};
-				while (count[index].first < now_pair)
+				PII now_pair = make_pair(i, j);
+				while (count[index].first < now_pair) {
 					index ++;
+					if (index == count.size()) break;
+				}
+				if (index == count.size()) break;
+
 				if (count[index].first == now_pair)
 					itr->ncmts = min(count[index].second, find_count(count, make_pair(j, i)));
 				else
 					itr->ncmts = 0;
 			}
+			if (index == count.size()) break;
 		}
 	}
 	print_debug("Read comment spent %lf secs\n", timer.get_time());

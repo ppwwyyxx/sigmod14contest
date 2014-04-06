@@ -1,14 +1,9 @@
 /*
  * $File: query4.cpp
- * $Date: Sat Apr 05 17:59:03 2014 +0000
+ * $Date: Sun Apr 06 23:57:56 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
-#include "query4.h"
-#include "data.h"
-#include "lib/common.h"
-#include "SumEstimator.h"
-#include "lib/hash_lib.h"
 #include <omp.h>
 #include <queue>
 #include <algorithm>
@@ -17,6 +12,13 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
+
+#include "query4.h"
+#include "data.h"
+#include "lib/common.h"
+#include "SumEstimator.h"
+#include "HybridEstimator.h"
+#include "lib/hash_lib.h"
 
 using namespace std;
 
@@ -85,8 +87,10 @@ vector<int> Query4Calculator::work() {
 	const bool use_estimate = (np > 10000 && k < 20);
 
 	vector<bool> noneed(np, false);
+	vector<int> approx_result;
+	vector<int> s_calculated;
 	size_t thres = (size_t)((double)np * 0.5);
-	vector<PII> wrong_result_with_person; wrong_result_with_person.reserve(np);
+	vector<PII> approx_result_with_person; approx_result_with_person.reserve(np);
 	int sum_bound = 1e9;
 	{
 		TotalTimer tttt("estimate random");
@@ -95,28 +99,34 @@ vector<int> Query4Calculator::work() {
 			RandomChoiceEstimator estimator1(friends, degree, 0.002);
 //			estimator1.error();
 
-			auto wrong_result = move(estimator1.result);
+			approx_result = move(estimator1.result);
 
-			FOR_ITR(index, estimator1.samples)
-				exact_s[*index] = wrong_result[*index];			// they are not wrong result
+			FOR_ITR(index, estimator1.samples) {
+				noneed[*index] = true;
+				exact_s[*index] = approx_result[*index];			// they are not wrong result
+				s_calculated.push_back(*index);
+			}
 
 			REP(i, np)
-				wrong_result_with_person.emplace_back(wrong_result[i], i);
-			sort(wrong_result_with_person.begin(), wrong_result_with_person.end());
-			REPL(i, thres, np)
-				noneed[wrong_result_with_person[i].second] = true;
+				approx_result_with_person.emplace_back(approx_result[i], i);
+			sort(approx_result_with_person.begin(), approx_result_with_person.end());
+			REPL(i, thres, np)		// XXX this is dangerous
+				noneed[approx_result_with_person[i].second] = true;
 
 			vector<PDI> some_real_cent;
 			int nr_sample = 2 * k;// can be x * k
-			int now_index = -1;
-			while (true) {
-				now_index ++;
-				int pid = wrong_result_with_person[now_index].second;
+			FOR_ITR(itr, approx_result_with_person) {
+				int pid = itr->second;
 				int s = get_exact_s(pid);
+
+				s_calculated.push_back(pid);
+				noneed[pid] = true;
 				if (s < 10)
 					continue;
-				some_real_cent.emplace_back(get_centrality_by_vtx_and_s(pid, s), pid);
-				if ((int)some_real_cent.size() == nr_sample) break;
+				some_real_cent.emplace_back(
+						get_centrality_by_vtx_and_s(pid, s), pid);
+				if ((int)some_real_cent.size() == nr_sample)
+					break;
 			}
 
 			// find kth largest
@@ -128,12 +138,16 @@ vector<int> Query4Calculator::work() {
 		}
 	}
 
-	HybridEstimator estimator(friends, degree, est_dist_max, noneed, sum_bound);
+	HybridEstimator estimator(friends, degree, est_dist_max,
+			noneed, sum_bound,
+			approx_result);
 	estimated_s = move(estimator.result);
 
 	if (use_estimate)
 		REPL(i, thres, np)
-			estimated_s[wrong_result_with_person[i].second] = 1e9;
+			estimated_s[approx_result_with_person[i].second] = 1e9;
+	FOR_ITR(itr, s_calculated)
+		estimated_s[*itr] = exact_s[*itr];
 
 	/*
 	 *auto print = estimated_s;

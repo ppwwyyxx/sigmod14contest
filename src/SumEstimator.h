@@ -1,5 +1,5 @@
 //File: SumEstimator.h
-//Date: Sat Apr 05 10:15:11 2014 +0800
+//Date: Sun Apr 06 23:25:56 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -88,19 +88,6 @@ class SSEUnionSetEstimator: public SumEstimator {
 
 		SSEUnionSetEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max);
 		void work();
-
-		int estimate(int i) { return result[i]; }
-};
-
-class HybridEstimator: public SumEstimator {
-	public:
-		int depth_max;
-		int cutcnt;
-		std::vector<int> result;
-		std::vector<int> nr_remain;
-
-		HybridEstimator(const std::vector<std::vector<int>>& _graph, int* degree, int _depth_max,
-				std::vector<bool>& noneed, int sum_bound);
 
 		int estimate(int i) { return result[i]; }
 };

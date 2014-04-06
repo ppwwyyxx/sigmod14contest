@@ -1,6 +1,6 @@
 /*
- * $File: query4_wyx.cc
- * $Date: Sat Apr 05 11:30:19 2014 +0800
+ * $File: query4.cpp
+ * $Date: Sat Apr 05 17:59:03 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -188,8 +188,9 @@ vector<int> Query4Calculator::work() {
 #ifndef DEBUG
 		if (print < 4)
 #endif
-			fprintf(stderr, "%lu/%d/%d/%d~%d~%d/%d\n", np, cnt, k,
-					exact_s[ans.front()], exact_s[ans.back()], sum_bound, estimator.cutcnt);
+			fprintf(stderr, "%lu/%d/%d/%d~%d~%d/%d: %.4lf\n", np, cnt, k,
+					exact_s[ans.front()], exact_s[ans.back()],
+					sum_bound, estimator.cutcnt, timer.get_time());
 		print ++;
 	}
 	return move(ans);

@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Sat Apr 05 16:05:09 2014 +0800
+//Date: Sun Apr 06 23:08:33 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -73,6 +73,7 @@ void read_query(const string& fname) {
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char* argv[]) {
+	PP(get_free_mem());
 	globaltimer.reset();
 	threadpool = new ThreadPool(NUM_THREADS);
 	Timer timer;

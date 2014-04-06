@@ -6,9 +6,11 @@
 #pragma once
 
 #include <cstdarg>
+#include <unistd.h>
 #include <cstdlib>
 #include <string>
 #include <cstdio>
+#include <fstream>
 #include <sstream>
 
 std::string TERM_COLOR(int k);
@@ -73,4 +75,26 @@ inline std::string string_format(const char* fmt, ...) {
 inline void print_progress(int percent) {
 	printf("progress: %d %%\r", percent);
 	fflush(stdout);
+}
+
+inline int get_free_mem() {		// return in MB;
+	std::ifstream fin("/proc/meminfo");
+	std::string str;
+	int nfree = -1, ncache = -1;
+	while (not fin.eof()) {
+		fin >> str;
+		if (str == "MemFree:") {
+			fin >> str;
+			nfree = stoi(str);
+			printf("free: %d\n", nfree);
+		} else if (str == "Cached:") {
+			fin >> str;
+			ncache = stoi(str);
+			printf("cacch: %d\n", ncache);
+		}
+	}
+	fin.close();
+	if (nfree == -1 || ncache == -1)
+		return -1;
+	return (nfree + ncache) / 1024;
 }

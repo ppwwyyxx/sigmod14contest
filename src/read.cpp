@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Sat Apr 05 16:05:13 2014 +0800
+//Date: Sun Apr 06 22:50:59 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -301,7 +301,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		ptr = buffer, buf_end = ptr + 1;
 		READ_TILL_EOL();
 
-		int last_fid = -1; vector<int>* last_ptr;
+		int last_fid = -1; vector<int>* last_ptr = nullptr;
 		while (true) {
 			READ_INT(fid);
 			if (buffer == buf_end) break;
@@ -665,7 +665,6 @@ void read_comments_tim(const std::string &dir) {
 
 	WAIT_FOR(friends_hash_built);
 
-	vector<vector<int>> comments_2d(Data::nperson);
 	vector<PII> comments;
 	{
 		GuardedTimer guarded_timer("read comment_replyOf_comment.csv");
@@ -727,7 +726,7 @@ void read_comments_tim(const std::string &dir) {
 	}
 
 	{
-		//		GuardedTimer timer("build graph");		// very fast (0.05s/300k)
+		GuardedTimer timer("build graph");		// very fast (0.05s/300k)
 		int index = 0;
 		REP(i, Data::nperson) {
 			auto& fs = Data::friends[i];

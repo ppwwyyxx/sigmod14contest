@@ -1,5 +1,15 @@
 src/build
 src/main
+src/gen_query
+papers
+gperftools
+all.tar.gz
+data/1000k*
+data/300k*
+data/400k*
+data/100k*
 src/.ycm_extra_conf.py
 main
 *.swp
+log
+*.pyc

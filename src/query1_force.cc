@@ -1,5 +1,5 @@
-//File: query1_force.cc
-//Date: Sat Apr 05 10:09:22 2014 +0800
+//File: query1.cpp
+//Date: Tue Apr 08 19:51:50 2014 +0800
 
 #include "query1.h"
 #include "lib/common.h"
@@ -58,6 +58,7 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 	}
 	return -1;
 }
+
 
 void Query1Handler::add_query(const Query1& q, int ind) {
 	int ans = bfs2(q.p1, q.p2, q.x);

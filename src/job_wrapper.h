@@ -1,8 +1,13 @@
 //File: job_wrapper.h
-//Date: Tue Apr 08 18:14:27 2014 +0000
+//Date: Tue Apr 08 19:51:48 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
+#ifndef __HEADER_JOBWRAPPER
+#define __HEADER_JOBWRAPPER
+
+
+
 #include <string>
 #include <mutex>
 #include "read.h"
@@ -36,7 +41,8 @@ inline int do_read_comments(const std::string dir) {
 inline int do_read_tags_forums_places(const std::string dir) {
 	Timer timer;
 	read_tags_forums_places(dir);
-//	if (Data::nperson > 11000) fprintf(stderr, "npl:%lu, forut:%.4lf\n", Data::placeid.size(), timer.get_time());
+//	if (Data::nperson > 11000)
+//		fprintf(stderr, "npl:%lu, forut:%.4lf\n", Data::placeid.size(), timer.get_time());
 	return 0;
 }
 
@@ -81,3 +87,14 @@ inline void start_4(int) {
 	}
 }
 
+// call after all q3 finished
+void destroy_q3_data() {
+	Data::placeid.clear();
+	Data::places.clear();
+	WAIT_FOR(q2_finished);
+	Data::tags.clear();
+}
+
+#else
+#error "This header should only be included once"
+#endif

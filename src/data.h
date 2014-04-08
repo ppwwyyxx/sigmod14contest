@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Tue Apr 08 18:30:00 2014 +0800
+//Date: Tue Apr 08 19:47:07 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -82,19 +82,27 @@ public:
 	static std::vector<std::vector<ConnectedPerson> > friends;
 	// friends[i] is a vector(sorted by 'id') of friends of the person with id=i
 	static std::vector<unordered_set<int>> friends_hash;
-	// will be destroyed after read_comments
+	// destroyed after read_comments
 
 	static int *birthday;	// birthday[i] for the person with id=i
+	// destroyed after q2 finished
 
 	static std::vector<TagSet> tags;
 	// tags[i] is a TagSet containing interest tags(continuous id) for the person with id=i
+	// destroyed after q2 and q3 finished
 
 	static std::vector<std::vector<int> > person_in_tags;
+	// destroyed after q2 finished
 
 	static std::vector<std::string> tag_name;		// name of each tags, indexed by continuous id
+	// destroyed after q2 finished!
+
+
+	// only used in q4 preprocessing:
 	static unordered_map<std::string, int, StringHashFunc> tagid;			// tag name -> tag id
 	static std::vector<std::vector<Forum*>> tag_forums;			// related forums for each tag
 
+	// destroyed after q3 finished:
 	static unordered_map<std::string, std::vector<int>, StringHashFunc> placeid;
 	// id of each place. note that for a specific name, there might be several places
 	static std::vector<PlaceNode> places;			// each place indexed by id

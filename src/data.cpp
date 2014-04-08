@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Tue Apr 08 18:29:57 2014 +0800
+//Date: Tue Apr 08 19:44:37 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"

@@ -1,5 +1,5 @@
 //File: globals.cpp
-//Date: Sat Apr 05 16:05:20 2014 +0800
+//Date: Tue Apr 08 19:37:09 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "globals.h"
@@ -7,14 +7,16 @@
 
 using namespace std;
 
-// global variables
-mutex tag_read_mt;
-bool tag_read = false;
-condition_variable tag_read_cv;
+#define DEFINE_SIGNAL(s) \
+	mutex s ## _mt; \
+	bool s = false; \
+	condition_variable s ## _cv;
 
-mutex friends_hash_built_mt;
-bool friends_hash_built = false;
-condition_variable friends_hash_built_cv;
+// global variables
+DEFINE_SIGNAL(tag_read)
+DEFINE_SIGNAL(friends_hash_built)
+DEFINE_SIGNAL(q2_finished)
+#undef DEFINE_SIGNAL
 
 Timer globaltimer;
 

@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Sun Apr 06 23:52:36 2014 +0800
+//Date: Tue Apr 08 19:38:01 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"

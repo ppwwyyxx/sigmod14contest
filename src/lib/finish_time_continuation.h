@@ -1,6 +1,6 @@
 /*
  * $File: finish_time_continuation.h
- * $Date: Mon Mar 31 14:51:01 2014 +0000
+ * $Date: Tue Apr 08 19:35:29 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -25,6 +25,8 @@ class FinishTimeContinuation {
 				fprintf(stderr, "%s: %f secs\n", prompt.c_str(), globaltimer.get_time());
 			}
 		}
+
+		int get_count() const { return count; }
 
 	private:
 		int count;

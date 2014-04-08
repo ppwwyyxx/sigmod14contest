@@ -83,15 +83,24 @@ int get_common_tag(int p1, int p2)
 	return ret;
 }
 
+void destroy_q3_data();
+
 void Query3Handler::add_query(int k, int h, const string& p, int index) {
 	TotalTimer timer("Q3");
 
 	Query3Calculator calc;
 	calc.work(k, h, p, global_answer[index]);
 
-	if (Data::nperson > 1e9)
+	if (Data::nperson > 1e4)
 		continuation->cont();
-	return ;
+
+	int task_count = continuation->get_count();
+	if (!task_count) {
+		thread th(destroy_q3_data);		// clear useless data
+		th.detach();
+	}
+
+	return;
 }
 
 void Query3Handler::work() { }

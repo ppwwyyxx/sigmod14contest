@@ -147,6 +147,9 @@ void Query2Handler::work() {
 	// clean q2 data
 	delete[] Data::birthday;
 	Data::tag_name.clear();
+	Data::person_in_tags.clear();
+	q2_finished = true;
+	q2_finished_cv.notify_all();
 }
 
 void Query2Handler::print_result() {

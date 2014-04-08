@@ -1,5 +1,5 @@
 //File: ThreadPool.cpp
-//Date: Sat Apr 05 15:49:46 2014 +0800
+//Date: Tue Apr 08 20:11:46 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "ThreadPool.hh"
@@ -14,12 +14,13 @@ namespace __ThreadPoolImpl
 			if (tp->stop && tp->nr_active_thread == 0 && tp->tasks.empty())
 				return;
 			while (tp->tasks.empty()) {
-				GuardedTimer wttt("thread got a job after waiting for...");
+				Timer wttt;
 				//	fprintf(stderr, "waiting %lu\n", tp->tasks.size());
 				tp->condition.wait(lock);
 				//	fprintf(stderr, "after waiting\n");
 				if (tp->stop && tp->nr_active_thread == 0 && tp->tasks.empty())
 					return;
+                print_debug("thread got a job after waiting for %.4lf secs\n", wttt.get_time());
 			}
 
 			m_assert(tp->tasks.size());

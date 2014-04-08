@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Tue Apr 08 19:44:46 2014 +0800
+//Date: Tue Apr 08 20:02:55 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -581,7 +581,6 @@ void read_data(const string& dir) {		// may need to be implemented synchronously
 	DEBUG_DECL(Timer, timer);
 	read_person_file(dir);
 	read_person_knows_person(dir);
-	print_debug("Read person spent %lf secs\n", timer.get_time());
 }
 
 /*		// cannot compile
@@ -736,16 +735,16 @@ void read_comments_tim(const std::string &dir) {
 				PII now_pair = make_pair(i, j);
 				while (count[index].first < now_pair) {
 					index ++;
-					if (index == count.size()) break;
+					if (index == (int)count.size()) break;
 				}
-				if (index == count.size()) break;
+				if (index == (int)count.size()) break;
 
 				if (count[index].first == now_pair)
 					itr->ncmts = min(count[index].second, find_count(count, make_pair(j, i)));
 				else
 					itr->ncmts = 0;
 			}
-			if (index == count.size()) break;
+			if (index == (int)count.size()) break;
 		}
 	}
 	print_debug("Read comment spent %lf secs\n", timer.get_time());

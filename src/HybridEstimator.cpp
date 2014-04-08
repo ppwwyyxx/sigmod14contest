@@ -1,8 +1,9 @@
 //File: HybridEstimator.cpp
-//Date: Tue Apr 08 19:38:01 2014 +0800
+//Date: Tue Apr 08 21:40:23 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
+#include "globals.h"
 using namespace std;
 
 HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, int* _degree,
@@ -22,6 +23,7 @@ void HybridEstimator::bfs_2_dp_1() {
 	Timer init;
 	int len = get_len_from_bit(np);
 
+	print_debug("Q4 with np=%d starts at %.4lf\n", np, globaltimer.get_time());
 	std::vector<Bitset> s_prev;
 	{
 		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
@@ -92,21 +94,44 @@ void HybridEstimator::bfs_2_dp_1() {
 	{
 		int cnt = 0;
 		TotalTimer ttt("depth 3");
-		Bitset s(len);
-		REP(i, np) {
-			if (noneed[i]) continue;
-			if (result[i] == 0) continue;
-			if (nr_remain[i] == 0) continue;
-			cnt ++;
-			s.reset(len);
-			FOR_ITR(fr, graph[i]) s.or_arr(s_prev[*fr], len);
-			s.and_not_arr(s_prev[i], len);
+		GuardedTimer tttt("depth 3");
+		int nr_empty = threadpool->get_nr_empty_thread();
+		if (nr_empty) {
+#pragma omp parallel for schedule(dynamic) num_threads(nr_empty)
+			REP(i, np) {
+				if (noneed[i]) continue;
+				if (result[i] == 0) continue;
+				if (nr_remain[i] == 0) continue;
+				cnt ++;
+				Bitset s(len);
+				FOR_ITR(fr, graph[i])
+					s.or_arr(s_prev[*fr], len);
+				s.and_not_arr(s_prev[i], len);
 
-			int c = s.count(len);
-			//			print_debug("S1: %lu, S2: %d S3: %d\n", graph[i].size(), s_prev[i].count(len) - graph[i].size(), c);
-			result[i] += c * 3;
-			nr_remain[i] -= c;
-			result[i] += nr_remain[i] * 4;
+				int c = s.count(len);
+				//			print_debug("S1: %lu, S2: %d S3: %d\n", graph[i].size(), s_prev[i].count(len) - graph[i].size(), c);
+				result[i] += c * 3;
+				nr_remain[i] -= c;
+				result[i] += nr_remain[i] * 4;
+			}
+		} else {
+			Bitset s(len);
+			REP(i, np) {
+				if (noneed[i]) continue;
+				if (result[i] == 0) continue;
+				if (nr_remain[i] == 0) continue;
+				cnt ++;
+				s.reset(len);
+				FOR_ITR(fr, graph[i]) s.or_arr(s_prev[*fr], len);
+				s.and_not_arr(s_prev[i], len);
+
+				int c = s.count(len);
+				//			print_debug("S1: %lu, S2: %d S3: %d\n", graph[i].size(), s_prev[i].count(len) - graph[i].size(), c);
+				result[i] += c * 3;
+				nr_remain[i] -= c;
+				result[i] += nr_remain[i] * 4;
+			}
 		}
 	}
+	print_debug("Q4 with np=%d have errorrate=%.4lf\n", np, average_err());
 }

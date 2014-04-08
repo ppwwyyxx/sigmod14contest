@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Sun Apr 06 23:57:56 2014 +0800
+ * $Date: Tue Apr 08 21:29:19 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -95,9 +95,9 @@ vector<int> Query4Calculator::work() {
 	{
 		TotalTimer tttt("estimate random");
 		if (use_estimate) {
-//			RandomChoiceEstimator estimator1(friends, degree, pow(log(np), 0.333) / (20.2 * pow(np, 0.333)));
+			//	RandomChoiceEstimator estimator1(friends, degree, pow(log(np), 0.333) / (20.2 * pow(np, 0.333)));
 			RandomChoiceEstimator estimator1(friends, degree, 0.002);
-//			estimator1.error();
+			// estimator1.error();
 
 			approx_result = move(estimator1.result);
 

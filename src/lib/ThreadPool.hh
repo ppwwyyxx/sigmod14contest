@@ -1,6 +1,6 @@
 /*
  * $File: ThreadPool.hh
- * $Date: Tue Apr 08 19:21:38 2014 +0800
+ * $Date: Tue Apr 08 21:18:42 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -96,6 +96,8 @@ public:
 
 	int get_nr_active_thread() const { return nr_active_thread; }
 
+	int get_nr_empty_thread() const { return (int)workers.size() - nr_active_thread; }
+
 	// the task queue
 	std::priority_queue<std::pair<int, std::function<void()>>,
 		std::vector<std::pair<int, std::function<void()>>>,
@@ -142,7 +144,7 @@ namespace __ThreadPoolImpl
  * vim: syntax=cpp11.doxygen foldmethod=marker
  */
 
-/*
+/*		// test
  *#include <cstdio>
  *int fint(int k) {
  *    std::this_thread::sleep_for(std::chrono::seconds(2));

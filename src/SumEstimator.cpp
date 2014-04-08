@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Sun Apr 06 23:26:38 2014 +0800
+//Date: Tue Apr 08 21:27:25 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <queue>
@@ -48,13 +48,10 @@ void SumEstimator::error() {
 		fout << truth << endl;
 		if (truth != 0 && est != numeric_limits<int>::max()) {
 			double err = (double)(truth - est) / truth;
-			if (err > 0) {
+			if (err > 0)
 				__sync_fetch_and_add(&pos_cnt, 1);
-//				pos_cnt ++;
-			}
-			if (fabs(err) > 0.05) {
+			if (fabs(err) > 0.05)
 				print_debug("Error: %lf, truth: %d, est: %d\n", err, truth, est);
-			}
 #pragma omp critical
 			ret += fabs(err);
 		}

@@ -34,9 +34,13 @@ do
     let peak="sample > peak ? sample : peak"
     #sleep 0.1
 done
-echo "Memory Usage: peak=$peak K" >&2
+echo "Resident Memory Usage: peak=$peak K" >&2
 ) &
 monpid=$!
+
+TIME=`date "+%m%d-%H:%M:%S"`
+MEMOUTPUT=log/mem-"$TIME".txt
+./src/mem_monitor 1 $MEMOUTPUT > /dev/null &
 
 
 # run the given command

@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Mon Apr 07 00:52:18 2014 +0800
+# $Date: Tue Apr 08 18:52:22 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -79,8 +79,17 @@ $(OBJ_DIR)/gen_query.o: gen_query.cc
 	@echo "[gen_query.o] ..."
 	@$(CXX) -c $< -o $@ $(CXXFLAGS)
 
+$(OBJ_DIR)/mem_monitor.o: mem_monitor.cc
+	@echo "[mem_monitor.o] ..."
+	@$(CXX) -c $< -o $@ $(CXXFLAGS)
+
 gen_query: $(filter-out $(OBJ_DIR)/main.o $(OBJ_DIR)/query2.o, $(OBJS)) $(OBJ_DIR)/gen_query.o
 	@echo "Linking gen_query"
+	@$(CXX) $^ -o $@ $(LDFLAGS)
+	@echo "done."
+
+mem_monitor: $(OBJ_DIR)/mem_monitor.o $(OBJ_DIR)/lib/utils.o $(OBJ_DIR)/lib/Timer.o $(OBJ_DIR)/lib/debugutils.o
+	@echo "Linking mem_monitor"
 	@$(CXX) $^ -o $@ $(LDFLAGS)
 	@echo "done."
 
@@ -96,8 +105,3 @@ TEST_DATA = ../data/1k
 
 run: $(TARGET)
 	./$(TARGET) $(TEST_DATA) $(TEST_DATA)-queries.txt
-
-# test memory usage
-mem: $(TARGET)
-	../memusg ./$(TARGET) $(TEST_DATA) $(TEST_DATA)-queries.txt
-

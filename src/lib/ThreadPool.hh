@@ -1,6 +1,6 @@
 /*
  * $File: ThreadPool.hh
- * $Date: Mon Mar 24 19:21:50 2014 +0800
+ * $Date: Tue Apr 08 19:21:38 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -94,6 +94,7 @@ public:
 
 	~ThreadPool();
 
+	int get_nr_active_thread() const { return nr_active_thread; }
 
 	// the task queue
 	std::priority_queue<std::pair<int, std::function<void()>>,
@@ -103,7 +104,7 @@ private:
 	friend void __ThreadPoolImpl::worker(ThreadPool *tp);
 
 	// need to keep track of threads so we can join them
-	std::vector< std::thread > workers;
+	std::vector<std::thread> workers;
 
 	// synchronization
 	std::mutex queue_mutex;
@@ -118,7 +119,7 @@ private:
 inline ThreadPool::ThreadPool(size_t threads)
 	: nr_active_thread(0), stop(false)
 {
-	for(size_t i = 0;i<threads;++i)
+	for(size_t i = 0;i < threads; ++ i)
 		workers.emplace_back(std::bind(__ThreadPoolImpl::worker, this));
 }
 

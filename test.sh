@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # File: test.sh
-# Date: Thu Mar 27 21:50:05 2014 +0000
+# Date: Tue Apr 08 18:57:08 2014 +0800
 # Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 [[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/" && exit 1)
@@ -24,6 +24,8 @@ mkdir -p log
 OUTPUT=log/ans-"$TIME".txt
 
 make -C src
+make mem_monitor -C src
 #export LD_PRELOAD=src/third-party/libtcmalloc.so
 time ./memusg ./src/main "$1" $QUERY > $OUTPUT
+kill -SIGHUP $(pgrep mem_monitor)
 diff $OUTPUT $ANS && echo "Accepted" || echo "Wrong Answer"

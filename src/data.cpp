@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Sat Apr 05 15:54:16 2014 +0800
+//Date: Tue Apr 08 18:29:57 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -42,7 +42,6 @@ void Data::allocate() {
 }
 
 void Data::free() {
-	delete[] birthday;
 }
 
 PersonSet PlaceNode::get_all_persons() {

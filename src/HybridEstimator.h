@@ -1,5 +1,5 @@
 //File: HybridEstimator.h
-//Date: Sun Apr 06 23:56:39 2014 +0800
+//Date: Tue Apr 08 19:18:12 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -24,6 +24,7 @@ class HybridEstimator: public SumEstimator {
 				const std::vector<int>& _approx_result);
 
 
+		// bfs 2level, dp 1level
 		void bfs_2_dp_1();
 
 		int estimate(int i) { return result[i]; }

@@ -53,6 +53,7 @@ int getf(int a, vector<int> &f) {
 }
 
 void Query2Handler::work() {
+	vector<vector<int>> ans;
 	f.resize(Data::ntag);
 	sum.resize(Data::ntag);
 	myfriends.resize(Data::nperson);
@@ -128,19 +129,31 @@ void Query2Handler::work() {
 		ans.push_back(find_ans(queries[queryP].k));
 
 	vector<vector<int>> final_ans((int)queries.size());
-	for (int i = 0; i < (int)queries.size(); i++)
+	int nquery = (int) queries.size();
+	for (int i = 0; i < nquery; i++)
 		final_ans[queries[i].qid] = ans[i];
-	ans = final_ans;
 
-	if (Data::nperson > 1e9)
+	all_ans.resize(nquery);
+	REP(i, nquery) {
+		int l = (int)final_ans[i].size();
+		all_ans[i].reserve(l);
+		REP(j, l)
+			all_ans[i].emplace_back(Data::tag_name[final_ans[i][j]]);
+	}
+
+	if (Data::nperson > 1e4)
 		continuation->cont();
+
+	// clean q2 data
+	delete[] Data::birthday;
+	Data::tag_name.clear();
 }
 
 void Query2Handler::print_result() {
 	for (int i = 0; i < (int)queries.size(); i++) {
-		for (int j = 0; j < (int)ans[i].size(); j++) {
+		for (int j = 0; j < (int)all_ans[i].size(); j++) {
 			if (j > 0) printf(" ");
-			printf("%s", Data::tag_name[ans[i][j]].c_str());
+			printf("%s", all_ans[i][j].c_str());
 		}
 		printf("\n");
 	}

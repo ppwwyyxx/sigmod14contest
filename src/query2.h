@@ -27,5 +27,5 @@ class Query2Handler {
 		std::shared_ptr<FinishTimeContinuation> continuation;
 
 	protected:
-        std::vector< std::vector<int> > ans;
+        std::vector<std::vector<std::string>> all_ans;
 };

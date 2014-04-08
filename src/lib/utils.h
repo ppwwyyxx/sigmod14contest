@@ -86,11 +86,11 @@ inline int get_free_mem() {		// return in MB;
 		if (str == "MemFree:") {
 			fin >> str;
 			nfree = stoi(str);
-			printf("free: %d\n", nfree);
+//			printf("free: %d\n", nfree);
 		} else if (str == "Cached:") {
 			fin >> str;
 			ncache = stoi(str);
-			printf("cacch: %d\n", ncache);
+//			printf("cacch: %d\n", ncache);
 		}
 	}
 	fin.close();

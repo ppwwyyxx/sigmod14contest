@@ -1,7 +1,7 @@
 /*
- * $File: query4_wyx.cc
+ * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Wed Apr 09 22:45:52 2014 +0800
+ * $Date: Wed Apr 09 23:34:41 2014 +0800
  */
 
 #include "query4.h"
@@ -150,8 +150,6 @@ vector<int> Query4Calculator::work() {
 		}
 	}
 
-	HybridEstimator estimator(friends, degree,
-			noneed, sum_bound, approx_result);
 #if 0
 	{
 		GuardedTimer tttt("search depth estimate");
@@ -164,6 +162,8 @@ vector<int> Query4Calculator::work() {
 
 	HybridEstimator estimator(friends, degree, 3, noneed, sum_bound);
 #endif
+	HybridEstimator estimator(friends, degree,
+			noneed, sum_bound, approx_result);
 	estimated_s = move(estimator.result);
 
 	if (use_estimate) {
@@ -171,6 +171,8 @@ vector<int> Query4Calculator::work() {
 			estimated_s[approx_result_with_person[i].second] = 1e9;
 		FOR_ITR(itr, s_calculated)
 			estimated_s[*itr] = exact_s[*itr];
+	} else {
+		m_assert(approx_result.size() == 0);		// Hybridestimator assumes this.
 	}
 
 	/*

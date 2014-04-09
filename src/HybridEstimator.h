@@ -1,5 +1,5 @@
 //File: HybridEstimator.h
-//Date: Wed Apr 09 08:47:37 2014 +0800
+//Date: Wed Apr 09 23:33:11 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -30,6 +30,10 @@ class HybridEstimator: public SumEstimator {
 
 		// error between result[] ans approx_result[]
 		double average_err(const std::vector<int>& now_result) {
+			if (approx_result.size() == 0) {		// small data not using estimation!
+				return 0.0;
+			}
+
 			int cnt0 = 0, cnt1 = 0, cnt2 = 0;
 			int np = (int)now_result.size();
 			double sum = 0;

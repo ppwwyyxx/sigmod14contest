@@ -13,16 +13,36 @@ Advisor:
 
 Techniques Used:
 	Q1:
-	    BFS starting from two person
+	    BFS. Start from two person respectively, meet in the middle
 
 	Q2:
-		Maintain k connected components for each tag, update them using Union-Find Set.
+		Maintain k connected components for each tag.
+		Sort the queries by birthday, and insert them to the graph.
+		Update all connected components using Union-Find Set during the insertion.
 
 	Q3:
-		Build inversed index list
+		Build inverted list on tag-person relationship.
 
 	Q4:
-		Estimate an upper bound and maintain the k-largest
+		BFS point p with depth=l, assuming the rest points is (l+1) steps away from p,
+		then we get an lower bound for s(p), i.e. the upper bound of centrality.
+		Put all the upper bound into a max-heap, iteratively take the top element,
+		calculate its accurate value, and insert it back into the heap.
+		Once an element becomes the top for the second time,
+		it is sured to be the max element among all. So we can get the point with top 1 centrality.
+		Get top k use the above method.
+
+		Pruning:
+		Use random selected points to calculate an estimation of all s(p).
+		Choose the 3*k smallest s(p), calculate their real values, and get the kth smallest one.
+		Then it could be used to prune the lower bound of s.
+		This is only used when graph is large, because estimation costs time.
+
+		Depth Choosing:
+		Depth is either 3 or 4.
+		After searching for the 3rd layers, calculate the average error of current lower bound of
+		all s(p) with respect of the estimation of all s(p).
+		Iff the error is larger than a threshold, go for the 4th layer.
 
 Third Party Code Used:
 	google sparsehash

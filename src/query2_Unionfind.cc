@@ -60,16 +60,16 @@ void Query2Handler::work() {
 	heap.resize(Data::ntag);
 	myhash.resize(Data::ntag);
 #ifdef GOOGLE_HASH
-	for (auto it = myhash.begin(); it != myhash.end(); it++) {
+	for (auto it = myhash.begin(); it != myhash.end(); it++)
 		it->set_empty_key(-1);
-	}
 #endif
 
 	// sort quries by d
 	sort(queries.begin(), queries.end());
 	// sort persons by d
 	vector<int> person;
-	for (int i = 0; i < Data::nperson; i++) person.push_back(i);
+	for (int i = 0; i < Data::nperson; i++)
+		person.push_back(i);
 	sort(person.begin(), person.end(), cmp_d);
 	// sort person in tags by d
 	for (int i = 0; i < (int)Data::person_in_tags.size(); i++) {
@@ -92,8 +92,8 @@ void Query2Handler::work() {
 	for (int i = 0; i < Data::nperson && queryP < (int)queries.size(); i++) {
 		int person_now = person[i];
 		// answer queries
-		for (; queries[queryP].d > Data::birthday[person_now] &&
-				queryP < (int)queries.size();
+		for (; queryP < (int)queries.size() &&
+				queries[queryP].d > Data::birthday[person_now];
 				queryP++)
 			ans.push_back(find_ans(queries[queryP].k));
 		if (queryP == (int)queries.size()) break;
@@ -117,25 +117,26 @@ void Query2Handler::work() {
 					continue;
 				int p = myhash[tag_now][friend_now];
 				int set_now = getf(p, f[tag_now]);
-				if (set_now == f[tag_now][(int)f[tag_now].size() - 1]) continue;
+				if (set_now == f[tag_now][f[tag_now].size() - 1U]) continue;
 				sum[tag_now][(int)f[tag_now].size() - 1] +=
 					sum[tag_now][set_now];
 				f[tag_now][set_now] = (int)f[tag_now].size() - 1;
-				heap.change(tag_now, sum[tag_now][(int)f[tag_now].size() - 1]);
+				heap.change(tag_now, sum[tag_now][f[tag_now].size() - 1U]);
 			}
 		}
 	}
 	for (; queryP < (int)queries.size(); queryP++)
 		ans.push_back(find_ans(queries[queryP].k));
 
-	vector<vector<int>> final_ans((int)queries.size());
 	int nquery = (int) queries.size();
+	vector<vector<int>> final_ans(nquery);
+	m_assert(ans.size() == nquery);
 	for (int i = 0; i < nquery; i++)
 		final_ans[queries[i].qid] = ans[i];
 
 	all_ans.resize(nquery);
 	REP(i, nquery) {
-		int l = (int)final_ans[i].size();
+		auto l = final_ans[i].size();
 		all_ans[i].reserve(l);
 		REP(j, l)
 			all_ans[i].emplace_back(Data::tag_name[final_ans[i][j]]);
@@ -157,7 +158,7 @@ void Query2Handler::print_result() {
 		for (int j = 0; j < (int)all_ans[i].size(); j++) {
 			if (j > 0) printf(" ");
 			printf("%s", all_ans[i][j].c_str());
-		}
+			}
 		printf("\n");
 	}
 }

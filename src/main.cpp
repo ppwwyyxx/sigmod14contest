@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Wed Apr 09 03:22:20 2014 +0800
+//Date: Wed Apr 09 21:54:07 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -100,7 +100,7 @@ int main(int argc, char* argv[]) {
 	q4.ans.resize(q4_set.size());
 	q3.global_answer.resize(q3_set.size());
 
-//	threadpool->enqueue(bind(do_read_comments, dir), start_1, 20);
+	threadpool->enqueue(bind(do_read_comments, dir), start_1, 20);
 	read_data(dir);
 	print_debug("Read return at %lf secs\n", timer.get_time());
 	/*

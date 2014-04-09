@@ -1,5 +1,5 @@
 //File: globals.cpp
-//Date: Tue Apr 08 19:37:09 2014 +0800
+//Date: Wed Apr 09 22:17:53 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "globals.h"
@@ -22,7 +22,7 @@ Timer globaltimer;
 
 ThreadPool* threadpool;
 
-vector<double> tot_time(5, 0);
+vector<double> tot_time(5, 0.0);
 
 unordered_set<string, StringHashFunc> q4_tag_set;
 // global variables

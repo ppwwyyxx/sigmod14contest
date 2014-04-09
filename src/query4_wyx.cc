@@ -1,8 +1,7 @@
 /*
  * $File: query4_wyx.cc
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Wed Apr 09 21:49:13 2014 +0000
- * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
+ * $Date: Wed Apr 09 22:26:11 2014 +0000
  */
 
 #include "query4.h"
@@ -171,13 +170,12 @@ vector<int> Query4Calculator::work() {
 #endif
 	estimated_s = move(estimator.result);
 
-
-
-	if (use_estimate)
+	if (use_estimate) {
 		REPL(i, thres, np)
 			estimated_s[approx_result_with_person[i].second] = 1e9;
-	FOR_ITR(itr, s_calculated)
-		estimated_s[*itr] = exact_s[*itr];
+		FOR_ITR(itr, s_calculated)
+			estimated_s[*itr] = exact_s[*itr];
+	}
 
 	/*
 	 *auto print = estimated_s;

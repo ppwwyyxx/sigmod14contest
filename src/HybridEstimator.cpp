@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Wed Apr 09 08:47:35 2014 +0800
+//Date: Wed Apr 09 21:53:47 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -92,9 +92,11 @@ void HybridEstimator::bfs_2_dp_1() {
 	// union depth 3
 	{
 		TotalTimer ttt("depth 3");
-		int nr_empty = threadpool->get_nr_empty_thread();
-		if (nr_empty) {
-#pragma omp parallel for schedule(dynamic) num_threads(nr_empty)
+		int nr_idle = threadpool->get_nr_idle_thread();
+		if (nr_idle) {
+			if (nr_idle == 1)
+				nr_idle = 2;
+#pragma omp parallel for schedule(dynamic) num_threads(nr_idle)
 			REP(i, np) {
 				if (noneed[i]) continue;
 				if (result[i] == 0) continue;
@@ -128,7 +130,8 @@ void HybridEstimator::bfs_2_dp_1() {
 			}
 		}
 	}
-	print_debug("Q4 with np=%d have errorrate=%.4lf\n", np, average_err(result));
+	if (approx_result.size())		// small graph doesn't use approx
+		print_debug("Q4 with np=%d have errorrate=%.4lf\n", np, average_err(result));
 }
 
 void HybridEstimator::bfs_2_dp_more() {
@@ -237,5 +240,6 @@ void HybridEstimator::bfs_2_dp_more() {
 		s.swap(s_prev);
 	}
 	result = move(tmp_result);
-	print_debug("Q4 with np=%d, depth=%d, have errorrate=%.4lf\n", np, depth, average_err(result));
+	if (approx_result.size())		// small graph doesn't use approx
+		print_debug("Q4 with np=%d, depth=%d, have errorrate=%.4lf\n", np, depth, average_err(result));
 }

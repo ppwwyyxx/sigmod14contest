@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Tue Apr 08 21:29:19 2014 +0800
+ * $Date: Wed Apr 09 03:25:07 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -89,7 +89,7 @@ vector<int> Query4Calculator::work() {
 	vector<bool> noneed(np, false);
 	vector<int> approx_result;
 	vector<int> s_calculated;
-	size_t thres = (size_t)((double)np * 0.5);
+	size_t thres = (size_t)((double)np * 0.51);		// 0.51 is ratio to keep
 	vector<PII> approx_result_with_person; approx_result_with_person.reserve(np);
 	int sum_bound = 1e9;
 	{

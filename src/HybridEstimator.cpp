@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Tue Apr 08 21:40:23 2014 +0800
+//Date: Wed Apr 09 03:22:58 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -23,7 +23,6 @@ void HybridEstimator::bfs_2_dp_1() {
 	Timer init;
 	int len = get_len_from_bit(np);
 
-	print_debug("Q4 with np=%d starts at %.4lf\n", np, globaltimer.get_time());
 	std::vector<Bitset> s_prev;
 	{
 		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
@@ -92,9 +91,7 @@ void HybridEstimator::bfs_2_dp_1() {
 
 	// union depth 3
 	{
-		int cnt = 0;
 		TotalTimer ttt("depth 3");
-		GuardedTimer tttt("depth 3");
 		int nr_empty = threadpool->get_nr_empty_thread();
 		if (nr_empty) {
 #pragma omp parallel for schedule(dynamic) num_threads(nr_empty)
@@ -102,7 +99,6 @@ void HybridEstimator::bfs_2_dp_1() {
 				if (noneed[i]) continue;
 				if (result[i] == 0) continue;
 				if (nr_remain[i] == 0) continue;
-				cnt ++;
 				Bitset s(len);
 				FOR_ITR(fr, graph[i])
 					s.or_arr(s_prev[*fr], len);
@@ -120,7 +116,6 @@ void HybridEstimator::bfs_2_dp_1() {
 				if (noneed[i]) continue;
 				if (result[i] == 0) continue;
 				if (nr_remain[i] == 0) continue;
-				cnt ++;
 				s.reset(len);
 				FOR_ITR(fr, graph[i]) s.or_arr(s_prev[*fr], len);
 				s.and_not_arr(s_prev[i], len);
@@ -133,5 +128,107 @@ void HybridEstimator::bfs_2_dp_1() {
 			}
 		}
 	}
-	print_debug("Q4 with np=%d have errorrate=%.4lf\n", np, average_err());
+	print_debug("Q4 with np=%d have errorrate=%.4lf\n", np, average_err(result));
+}
+
+void HybridEstimator::bfs_2_dp_more() {
+	Timer init;
+	int len = get_len_from_bit(np);
+
+	std::vector<Bitset> s_prev;
+	{
+		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
+		s_prev.reserve(np);
+		REP(i, np)
+			s_prev.emplace_back(len);
+
+		result.resize((size_t)np, 0);
+		nr_remain.resize(np);
+		REP(i, np)
+			nr_remain[i] = degree[i];
+	}
+
+	// bfs 2 depth
+	cutcnt = 0;
+	{
+		TotalTimer ttt("depth 2");
+		vector<int> hash(np, 0);
+		int tag = 0;
+		REP(i, np) {
+			tag ++;
+
+			// depth 0
+			hash[i] = tag;
+			s_prev[i].set(i);
+			nr_remain[i] -= 1;
+
+			size_t sum_dv1 = 0;
+			// depth 1
+			FOR_ITR(fr, graph[i]) {
+				sum_dv1 += graph[*fr].size();
+				hash[*fr] = tag;
+				s_prev[i].set(*fr);
+			}
+			nr_remain[i] -= (int)graph[i].size();
+			result[i] += (int)graph[i].size();
+
+			size_t sum_dv2 = 0;
+			// depth 2
+			FOR_ITR(fr, graph[i]) {
+				int j = *fr;
+				FOR_ITR(fr2, graph[j]) {
+					if (hash[*fr2] == tag)
+						continue;
+					sum_dv2 += graph[*fr2].size();
+					hash[*fr2] = tag;
+					s_prev[i].set(*fr2);
+					nr_remain[i] --;
+					result[i] += 2;
+				}
+			}
+
+			if (not noneed[i]) {
+				// XXX this is wrong
+				int n3_upper = (int)sum_dv2 - (int)sum_dv1 + (int)graph[i].size() + 1;
+				m_assert(n3_upper >= 0);
+				int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
+				if (est_s_lowerbound > sum_bound) {		// cut
+					noneed[i] = true;
+					cutcnt ++;
+					result[i] = 1e9;
+				}
+			}
+		}
+	}
+
+	vector<Bitset> s; s.reserve(np);		// XXX MEMORY!!
+	vector<int> tmp_result(np);
+	REP(i, np)
+		s.emplace_back(len);
+	int depth = 3;
+	while (true) {
+		// calculate s from s_prev
+		REP(i, np) {
+			if (noneed[i]) continue;
+			if (result[i] == 0) continue;
+			if (nr_remain[i] == 0) continue;
+			FOR_ITR(fr, graph[i])
+				s[i].or_arr(s_prev[*fr], len);
+			s[i].and_not_arr(s_prev[i], len);
+			int c = s[i].count(len);
+			result[i] += c * depth;
+			nr_remain[i] -= c;
+			tmp_result[i] = result[i] + nr_remain[i] * (depth + 1);
+		}
+		// judge whether tmp_result is accurate enough
+		double err = average_err(tmp_result);
+		if (err < 0.05)		// TODO NEED BETTER CRITERIA
+			break;
+
+		if (depth == 4)		// XXX at most 4? might be enough!  // TODO: 4th level can be implemented with half memory
+			break;
+		depth ++;
+	}
+	result = move(tmp_result);
+	print_debug("Q4 with np=%d, depth=%d, have errorrate=%.4lf\n", np, depth - 1, average_err(result));
 }

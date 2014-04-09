@@ -1,7 +1,7 @@
 /*
  * $File: query4_wyx.cc
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Wed Apr 09 22:26:11 2014 +0000
+ * $Date: Wed Apr 09 22:45:52 2014 +0800
  */
 
 #include "query4.h"
@@ -75,11 +75,9 @@ vector<int> Query4Calculator::work() {
 	Timer timer;
 
 
-	int est_dist_max;
 	int diameter = -1;
-#if 1
+#if 0
 	{
-		est_dist_max = 2;  // TODO: this parameter needs tune
 		std::vector<bool> diameter_hash(np), h2(np);
 		for (int i = 0; i < (int)np; i ++) {
 			if (diameter_hash[i])
@@ -98,9 +96,7 @@ vector<int> Query4Calculator::work() {
 	GuardedTimer asdfasf(string_format("graph: %lu diameter: %d", np, diameter).c_str());
 
 
-	est_dist_max = 3;
-
-	const bool use_estimate = true; //(np > 10000 && k < 20);
+	const bool use_estimate = (np > 10000 && k < 20);
 
 	vector<bool> noneed(np, false);
 	vector<int> approx_result;

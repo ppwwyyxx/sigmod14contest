@@ -38,6 +38,7 @@ void __print_debug__(const char *file, const char *func, int line, const char *f
 	va_start(ap, fmt);
 	vfprintf(stderr, fmt, ap);
 	va_end(ap);
+	fflush(stderr);
 }
 
 

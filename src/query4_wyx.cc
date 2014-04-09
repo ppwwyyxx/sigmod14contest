@@ -1,9 +1,16 @@
 /*
- * $File: query4.cpp
- * $Date: Wed Apr 09 08:47:52 2014 +0800
+ * $File: query4_wyx.cc
+ * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
+ * $Date: Wed Apr 09 21:49:13 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
+#include "query4.h"
+#include "data.h"
+#include "lib/common.h"
+#include "SumEstimator.h"
+#include "search_depth_estimator.h"
+#include "lib/hash_lib.h"
 #include <omp.h>
 #include <queue>
 #include <algorithm>
@@ -68,23 +75,33 @@ vector<int> Query4Calculator::work() {
 	TotalTimer ttt("q4calculator");
 	Timer timer;
 
-	int est_dist_max = 2;  // TODO: this parameter needs tune
-	int diameter = -1;
-	std::vector<bool> diameter_hash(np), h2(np);
-	for (int i = 0; i < (int)np; i ++) {
-		if (diameter_hash[i])
-			continue;
-		int fv, d;
-		bfs_diameter(friends, i, fv, d, h2);
-		bfs_diameter(friends, fv, fv, d, diameter_hash);
-		if (d > diameter)
-			diameter = d;
-	}
 
-	est_dist_max = max(2, (int)floor(log((double)diameter) / log(2.0) + 0.5));
+	int est_dist_max;
+	int diameter = -1;
+#if 1
+	{
+		est_dist_max = 2;  // TODO: this parameter needs tune
+		std::vector<bool> diameter_hash(np), h2(np);
+		for (int i = 0; i < (int)np; i ++) {
+			if (diameter_hash[i])
+				continue;
+			int fv, d;
+			bfs_diameter(friends, i, fv, d, h2);
+			bfs_diameter(friends, fv, fv, d, diameter_hash);
+			if (d > diameter)
+				diameter = d;
+		}
+
+		est_dist_max = max(2, (int)floor(log((double)diameter) / log(2.0) + 0.5));
+		print_debug("working on graph: %lu diameter: %d\n", np, diameter);
+	}
+#endif
+	GuardedTimer asdfasf(string_format("graph: %lu diameter: %d", np, diameter).c_str());
+
+
 	est_dist_max = 3;
 
-	const bool use_estimate = (np > 10000 && k < 20);
+	const bool use_estimate = true; //(np > 10000 && k < 20);
 
 	vector<bool> noneed(np, false);
 	vector<int> approx_result;
@@ -92,6 +109,7 @@ vector<int> Query4Calculator::work() {
 	size_t thres = (size_t)((double)np * 0.51);		// 0.51 is ratio to keep
 	vector<PII> approx_result_with_person; approx_result_with_person.reserve(np);
 	int sum_bound = 1e9;
+	std::vector<int> wrong_result;
 	{
 		TotalTimer tttt("estimate random");
 		if (use_estimate) {
@@ -100,7 +118,6 @@ vector<int> Query4Calculator::work() {
 			// estimator1.error();
 
 			approx_result = move(estimator1.result);
-
 			FOR_ITR(index, estimator1.samples) {
 				noneed[*index] = true;
 				exact_s[*index] = approx_result[*index];			// they are not wrong result
@@ -140,7 +157,21 @@ vector<int> Query4Calculator::work() {
 
 	HybridEstimator estimator(friends, degree,
 			noneed, sum_bound, approx_result);
+#if 0
+	{
+		GuardedTimer tttt("search depth estimate");
+		IDDepthEstimator depth_estimator(friends, wrong_result,
+				degree, 50);
+		est_dist_max = depth_estimator.get_search_depth();
+		fprintf(stderr, "np: %lu search_depth: %d\n", np, est_dist_max);
+	}
+
+
+	HybridEstimator estimator(friends, degree, 3, noneed, sum_bound);
+#endif
 	estimated_s = move(estimator.result);
+
+
 
 	if (use_estimate)
 		REPL(i, thres, np)
@@ -171,6 +202,7 @@ vector<int> Query4Calculator::work() {
 	int cnt = 0;
 	{
 		TotalTimer ttt("iterate q4 heap");		// about 6% of total q4 time
+		GuardedTimer tttt(string_format("np: %lu iterate q4 heap", np).c_str());
 		double last_centrality = 1e100;
 		int last_vtx = -1;
 		while (!q.empty()) {

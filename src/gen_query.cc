@@ -88,8 +88,11 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 	srand((unsigned)time(NULL));
+
 #ifdef GOOGLE_HASH
 	q4_tag_set.set_empty_key("");
+	Data::tagid.set_empty_key("");
+	Data::placeid.set_empty_key("");
 #endif
 	string dir(argv[1]);
 

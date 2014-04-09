@@ -1,6 +1,6 @@
 /*
  * $File: query4.cpp
- * $Date: Wed Apr 09 03:25:07 2014 +0800
+ * $Date: Wed Apr 09 08:47:52 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -138,9 +138,8 @@ vector<int> Query4Calculator::work() {
 		}
 	}
 
-	HybridEstimator estimator(friends, degree, est_dist_max,
-			noneed, sum_bound,
-			approx_result);
+	HybridEstimator estimator(friends, degree,
+			noneed, sum_bound, approx_result);
 	estimated_s = move(estimator.result);
 
 	if (use_estimate)

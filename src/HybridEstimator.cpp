@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Wed Apr 09 03:22:58 2014 +0800
+//Date: Wed Apr 09 08:47:35 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -7,14 +7,12 @@
 using namespace std;
 
 HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, int* _degree,
-		int _depth_max,
 		vector<bool>& _noneed, int _sum_bound,
 		const vector<int>& _approx_result):
-	SumEstimator(_graph), depth_max(_depth_max), degree(_degree),
+	SumEstimator(_graph), degree(_degree),
 	noneed(_noneed), sum_bound(_sum_bound),
 	approx_result(_approx_result)
 {
-	m_assert(depth_max == 3);
 	bfs_2_dp_1();
 }
 
@@ -75,17 +73,19 @@ void HybridEstimator::bfs_2_dp_1() {
 				}
 			}
 
-			if (not noneed[i]) {
-				// XXX this is wrong
-				int n3_upper = (int)sum_dv2 - (int)sum_dv1 + (int)graph[i].size() + 1;
-				m_assert(n3_upper >= 0);
-				int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
-				if (est_s_lowerbound > sum_bound) {		// cut
-					noneed[i] = true;
-					cutcnt ++;
-					result[i] = 1e9;
-				}
-			}
+			/*
+			 *if (not noneed[i]) {
+			 *    // XXX this is wrong
+			 *    int n3_upper = (int)sum_dv2 - (int)sum_dv1 + (int)graph[i].size() + 1;
+			 *    m_assert(n3_upper >= 0);
+			 *    int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
+			 *    if (est_s_lowerbound > sum_bound) {		// cut
+			 *        noneed[i] = true;
+			 *        cutcnt ++;
+			 *        result[i] = 1e9;
+			 *    }
+			 *}
+			 */
 		}
 	}
 
@@ -207,11 +207,15 @@ void HybridEstimator::bfs_2_dp_more() {
 		s.emplace_back(len);
 	int depth = 3;
 	while (true) {
+		TotalTimer ttt("Depth 3+");
 		// calculate s from s_prev
 		REP(i, np) {
-			if (noneed[i]) continue;
-			if (result[i] == 0) continue;
-			if (nr_remain[i] == 0) continue;
+			/*		// cannot prune in depth=3, because depth=4 need every s[i]_3
+			 *if (noneed[i]) continue;
+			 *if (result[i] == 0) continue;
+			 *if (nr_remain[i] == 0) continue;
+			 */
+			s[i].reset(len);
 			FOR_ITR(fr, graph[i])
 				s[i].or_arr(s_prev[*fr], len);
 			s[i].and_not_arr(s_prev[i], len);
@@ -222,13 +226,16 @@ void HybridEstimator::bfs_2_dp_more() {
 		}
 		// judge whether tmp_result is accurate enough
 		double err = average_err(tmp_result);
-		if (err < 0.05)		// TODO NEED BETTER CRITERIA
+		if (err < 0.05) {		// TODO Need better criteria
 			break;
+		}
+		print_debug("Err: %.4lf with np=%d\n", err, np);
 
 		if (depth == 4)		// XXX at most 4? might be enough!  // TODO: 4th level can be implemented with half memory
 			break;
 		depth ++;
+		s.swap(s_prev);
 	}
 	result = move(tmp_result);
-	print_debug("Q4 with np=%d, depth=%d, have errorrate=%.4lf\n", np, depth - 1, average_err(result));
+	print_debug("Q4 with np=%d, depth=%d, have errorrate=%.4lf\n", np, depth, average_err(result));
 }

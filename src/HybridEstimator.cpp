@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Wed Apr 09 21:53:47 2014 +0000
+//Date: Thu Apr 10 14:18:49 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -13,11 +13,12 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	noneed(_noneed), sum_bound(_sum_bound),
 	approx_result(_approx_result)
 {
-	bfs_2_dp_1();
+	bfs_2_dp_more();
 }
 
 
 void HybridEstimator::bfs_2_dp_1() {
+	depth = 3;
 	Timer init;
 	int len = get_len_from_bit(np);
 
@@ -94,6 +95,7 @@ void HybridEstimator::bfs_2_dp_1() {
 		TotalTimer ttt("depth 3");
 		int nr_idle = threadpool->get_nr_idle_thread();
 		if (nr_idle) {
+			print_debug("Idle thread: %d\n", nr_idle);
 			if (nr_idle == 1)
 				nr_idle = 2;
 #pragma omp parallel for schedule(dynamic) num_threads(nr_idle)
@@ -130,8 +132,6 @@ void HybridEstimator::bfs_2_dp_1() {
 			}
 		}
 	}
-	if (approx_result.size())		// small graph doesn't use approx
-		print_debug("Q4 with np=%d have errorrate=%.4lf\n", np, average_err(result));
 }
 
 void HybridEstimator::bfs_2_dp_more() {
@@ -204,11 +204,12 @@ void HybridEstimator::bfs_2_dp_more() {
 		}
 	}
 
+	double err = 0;
 	vector<Bitset> s; s.reserve(np);		// XXX MEMORY!!
 	vector<int> tmp_result(np);
 	REP(i, np)
 		s.emplace_back(len);
-	int depth = 3;
+	depth = 3;
 	while (true) {
 		TotalTimer ttt("Depth 3+");
 		// calculate s from s_prev
@@ -228,10 +229,8 @@ void HybridEstimator::bfs_2_dp_more() {
 			tmp_result[i] = result[i] + nr_remain[i] * (depth + 1);
 		}
 		// judge whether tmp_result is accurate enough
-		double err = average_err(tmp_result);
-		if (err < 0.05) {		// TODO Need better criteria
+		if (good_err(tmp_result))
 			break;
-		}
 		print_debug("Err: %.4lf with np=%d\n", err, np);
 
 		if (depth == 4)		// XXX at most 4? might be enough!  // TODO: 4th level can be implemented with half memory
@@ -240,6 +239,4 @@ void HybridEstimator::bfs_2_dp_more() {
 		s.swap(s_prev);
 	}
 	result = move(tmp_result);
-	if (approx_result.size())		// small graph doesn't use approx
-		print_debug("Q4 with np=%d, depth=%d, have errorrate=%.4lf\n", np, depth, average_err(result));
 }

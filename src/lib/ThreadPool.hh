@@ -1,6 +1,6 @@
 /*
  * $File: ThreadPool.hh
- * $Date: Wed Apr 09 21:37:58 2014 +0800
+ * $Date: Thu Apr 10 14:18:23 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -98,7 +98,6 @@ public:
 	int get_nr_active_thread() const { return nr_active_thread; }
 
 	int get_nr_idle_thread() const {
-		print_debug("Idle thread: %d\n", (int)workers.size() - nr_active_thread);
 		return (int)workers.size() - nr_active_thread;
 	}
 

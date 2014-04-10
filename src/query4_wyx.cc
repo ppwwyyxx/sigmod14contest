@@ -1,7 +1,7 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Wed Apr 09 23:34:41 2014 +0800
+ * $Date: Thu Apr 10 14:15:20 2014 +0000
  */
 
 #include "query4.h"
@@ -93,7 +93,6 @@ vector<int> Query4Calculator::work() {
 		print_debug("working on graph: %lu diameter: %d\n", np, diameter);
 	}
 #endif
-	GuardedTimer asdfasf(string_format("graph: %lu diameter: %d", np, diameter).c_str());
 
 
 	const bool use_estimate = (np > 10000 && k < 20);
@@ -229,9 +228,10 @@ vector<int> Query4Calculator::work() {
 #ifndef DEBUG
 		if (print < 4)
 #endif
-			fprintf(stderr, "%lu/%d/%d/%d~%d~%d/%d: %.4lf\n", np, cnt, k,
+			fprintf(stderr, "%lu/%d/%d/%d~%d~%d/%d, d:%d: %.4lf\n", np, cnt, k,
 					exact_s[ans.front()], exact_s[ans.back()],
-					sum_bound, estimator.cutcnt, timer.get_time());
+					sum_bound, estimator.cutcnt, estimator.depth,
+					timer.get_time());
 		print ++;
 	}
 	return move(ans);

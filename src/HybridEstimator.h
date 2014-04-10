@@ -1,5 +1,5 @@
 //File: HybridEstimator.h
-//Date: Wed Apr 09 23:33:11 2014 +0800
+//Date: Thu Apr 10 14:14:40 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -10,6 +10,7 @@ class HybridEstimator: public SumEstimator {
 		int cutcnt;
 		std::vector<int> result;
 		std::vector<int> nr_remain;
+		int depth;
 
 		int* degree;
 		std::vector<bool>& noneed;
@@ -29,7 +30,7 @@ class HybridEstimator: public SumEstimator {
 		int estimate(int i) { return result[i]; }
 
 		// error between result[] ans approx_result[]
-		double average_err(const std::vector<int>& now_result) {
+		bool good_err(const std::vector<int>& now_result) {
 			if (approx_result.size() == 0) {		// small data not using estimation!
 				return 0.0;
 			}
@@ -52,7 +53,10 @@ class HybridEstimator: public SumEstimator {
 				}
 			}
 			print_debug("Graph np=%d, cnt: %d/%d/%d\n", np, cnt0, cnt1, cnt2);
-			return sum / np;
+			sum /= np;
+			if (sum > 0.04 or cnt2 > 1500)
+				return false;
+			return true;
 		}
 };
 

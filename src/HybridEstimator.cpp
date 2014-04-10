@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Thu Apr 10 15:15:06 2014 +0800
+//Date: Thu Apr 10 15:18:02 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -61,11 +61,9 @@ void HybridEstimator::bfs_2_dp_1() {
 			FOR_ITR(fr, graph[i]) {
 				int j = *fr;
 				FOR_ITR(fr2, graph[j]) {
-					if (s_prev[i].get(*fr2))
+					if (s_prev[i].get_and_set(*fr2))
 						continue;
-
 					sum_dv2 += graph[*fr2].size();
-					s_prev[i].set(*fr2);
 					nr_remain[i] --;
 					result[i] += 2;
 				}
@@ -172,10 +170,9 @@ void HybridEstimator::bfs_2_dp_more() {
 			FOR_ITR(fr, graph[i]) {
 				int j = *fr;
 				FOR_ITR(fr2, graph[j]) {
-					if (s_prev[i].get(*fr2))
+					if (s_prev[i].get_and_set(*fr2))
 						continue;
 					sum_dv2 += graph[*fr2].size();
-					s_prev[i].set(*fr2);
 					nr_remain[i] --;
 					result[i] += 2;
 				}

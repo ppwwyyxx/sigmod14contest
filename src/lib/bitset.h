@@ -1,5 +1,5 @@
 //File: bitset.h
-//Date: Thu Apr 10 15:06:17 2014 +0800
+//Date: Thu Apr 10 15:17:37 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -162,10 +162,13 @@ class Bitset {
 			data[idx] = _mm_or_si128(data[idx],	_mm_load_si128(lut + pos));
 		}
 
-		inline bool get(int k) {
+		inline bool get_and_set(int k) {
 			uint32_t idx = (uint32_t)(k >> 7),
 					 pos = (uint32_t)(k % 128);
-			return *((uint32_t*)(data + idx) + (pos >> 5U)) & (1U << (pos % 32U));
+			bool ret = *((uint32_t*)(data + idx) + (pos >> 5U)) & (1U << (pos % 32U));
+			if (not ret)
+				data[idx] = _mm_or_si128(data[idx],	_mm_load_si128(lut + pos));
+			return ret;
 		}
 
 		// data &= ~(r.data)

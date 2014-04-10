@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Tue Apr 08 21:04:53 2014 +0000
+//Date: Thu Apr 10 11:04:58 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -55,6 +55,7 @@ inline void start_1(int) {
 	REP(i, q1_set.size())
 		q1.add_query(q1_set[i], (int)i);
 	tot_time[1] += timer.get_time();
+	PP(q1_cmt_vst);
 }
 
 inline void start_2() {

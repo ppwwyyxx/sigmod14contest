@@ -1,5 +1,5 @@
 //File: mem_monitor.cc
-//Date: Tue Apr 08 19:08:08 2014 +0000
+//Date: Thu Apr 10 11:06:08 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <iostream>
@@ -17,14 +17,6 @@ using namespace std;
 #define REP(x, y) for (auto x = decltype(y){0}; x < (y); x ++)
 #define REPL(x, y, z) for (auto x = decltype(z){y}; x < (z); x ++)
 #define REPD(x, y, z) for (auto x = decltype(z){y}; x >= (z); x --)
-#define P(a) std::cout << (a) << std::endl
-#define PP(a) std::cout << #a << ": " << (a) << std::endl
-#define PA(arr) \
-	do { \
-		std::cout << #arr << ": "; \
-		std::copy(begin(arr), end(arr), std::ostream_iterator<std::remove_reference<decltype(arr)>::type::value_type>(std::cout, " ")); \
-		std::cout << std::endl;  \
-	} while (0)
 
 sig_atomic_t signaled = 0;
 

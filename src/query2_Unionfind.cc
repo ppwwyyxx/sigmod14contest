@@ -130,7 +130,7 @@ void Query2Handler::work() {
 
 	int nquery = (int) queries.size();
 	vector<vector<int>> final_ans(nquery);
-	m_assert(ans.size() == nquery);
+	m_assert((int)ans.size() == nquery);
 	for (int i = 0; i < nquery; i++)
 		final_ans[queries[i].qid] = ans[i];
 

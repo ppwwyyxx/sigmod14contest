@@ -1,5 +1,5 @@
 //File: globals.h
-//Date: Tue Apr 08 19:38:48 2014 +0800
+//Date: Thu Apr 10 11:04:21 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -32,6 +32,8 @@ DECLARE_SIGNAL(q2_finished)
 extern ThreadPool* threadpool;
 
 extern std::vector<double> tot_time;
+
+extern int q1_cmt_vst;
 
 extern unordered_set<std::string, StringHashFunc> q4_tag_set;
 // end of global variables!!

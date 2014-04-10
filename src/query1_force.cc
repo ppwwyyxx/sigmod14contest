@@ -1,5 +1,5 @@
 //File: query1.cpp
-//Date: Tue Apr 08 20:02:44 2014 +0800
+//Date: Thu Apr 10 11:08:12 2014 +0800
 
 #include "query1.h"
 #include "lib/common.h"
@@ -29,7 +29,10 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 			auto& friends = Data::friends[now_ele];
 			for (auto it = friends.begin(); it != friends.end(); it ++) {
 				int person = it -> pid;
-				if (it->ncmts <= x) continue;
+				if (x >= 0) {
+					q1_cmt_vst ++;
+					if (it->ncmts <= x) continue;
+				}
 				// TODO friends is not sorted by cmt because cmt is read later
 				if (not vst1[person]) {
 					if (vst2[person]) return depth1 + depth2;
@@ -47,7 +50,10 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 			for (auto it = friends.begin(); it != friends.end(); it ++) {
 				int person = it -> pid;
 				// TODO friends is not sorted by cmt because cmt is read later
-				if (it->ncmts <= x) continue;
+				if (x >= 0) {
+					q1_cmt_vst ++;
+					if (it->ncmts <= x) continue;
+				}
 				if (not vst2[person]) {
 					if (vst1[person]) return depth1 + depth2;
 					q2.push_back(person);

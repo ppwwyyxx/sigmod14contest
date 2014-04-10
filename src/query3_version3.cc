@@ -1,4 +1,4 @@
-//File: query3.cpp
+//File: query3_version3.cc
 //Author: Wenbo Tao.
 //Method:	Inverted List.
 
@@ -65,24 +65,6 @@ int bfs3(int p1, int p2, int x, int h) {
 	return 2e9;
 }
 
-int get_common_tag(int p1, int p2)
-{
-	TagSet &t1 = Data::tags[p1], &t2 = Data::tags[p2];
-	int ret = 0;
-	TagSet::iterator it1 = t1.begin(), it2 = t2.begin();
-	while (it1 != t1.end() && it2 != t2.end())
-	{
-		if (*it1 == *it2)
-			++ret;
-		if (*it1 < *it2)
-			++it1;
-		else
-			++it2;
-	}
-	//printf("%d and %d : %d\n", p1, p2, ret);
-	return ret;
-}
-
 void destroy_q3_data();
 
 void Query3Handler::add_query(int k, int h, const string& p, int index) {
@@ -99,7 +81,6 @@ void Query3Handler::add_query(int k, int h, const string& p, int index) {
 		thread th(destroy_q3_data);		// clear useless data
 		th.detach();
 	}
-
 	return;
 }
 
@@ -356,6 +337,7 @@ void Query3Calculator::work(int k, int h, const string &p, std::vector<Answer3> 
 		for (int j = i + 1; j < (int) people.size() && (int) tmp.size() < k; j ++)
 			if (! dup.count(make_pair(people[i], people[j])) && bfs3(people[i], people[j], -1, h) <= h)
 				dup.insert(make_pair(people[i], people[j])), tmp.push_back(Answer3(0, people[i], people[j]));
+	// TODO count, insert
 
 	ans = move(tmp);
 }

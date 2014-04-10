@@ -1,5 +1,5 @@
 //File: bitset.h
-//Date: Thu Apr 10 15:17:37 2014 +0800
+//Date: Thu Apr 10 15:54:23 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -152,22 +152,32 @@ class Bitset {
 	public:
 		__m128i* data;
 
-		Bitset(int len) { data = (__m128i*)calloc(len, sizeof(__m128i)); }
+		Bitset(int len) {
+			//data = (__m128i*)calloc(len, sizeof(__m128i));
+			data = (__m128i*)_mm_malloc(len * sizeof(__m128i), 16);
+			reset(len);
+		}
 
-		~Bitset() { free(data); }
+		~Bitset() {
+			//free(data);
+			_mm_free(data);
+		}
 
 		inline void set(int k) {
 			int idx = k >> 7;
 			int pos = k % 128;
-			data[idx] = _mm_or_si128(data[idx],	_mm_load_si128(lut + pos));
+			//data[idx] = _mm_or_si128(data[idx],	_mm_load_si128(lut + pos));
+			data[idx] = _mm_or_si128(data[idx],	lut[pos]);
 		}
 
+		// return whether bit is set, and set it if it is not
 		inline bool get_and_set(int k) {
 			uint32_t idx = (uint32_t)(k >> 7),
 					 pos = (uint32_t)(k % 128);
 			bool ret = *((uint32_t*)(data + idx) + (pos >> 5U)) & (1U << (pos % 32U));
 			if (not ret)
-				data[idx] = _mm_or_si128(data[idx],	_mm_load_si128(lut + pos));
+				data[idx] = _mm_or_si128(data[idx],	lut[pos]);
+				//data[idx] = _mm_or_si128(data[idx],	_mm_load_si128(lut + pos));
 			return ret;
 		}
 

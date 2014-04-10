@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Thu Apr 10 15:18:02 2014 +0800
+//Date: Thu Apr 10 15:57:06 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -202,6 +202,7 @@ void HybridEstimator::bfs_2_dp_more() {
 	}
 	depth = 3;
 	while (true) {
+		// TODO separate d3 and d4 to save memory at d4
 		TotalTimer ttt("Depth 3+");
 		// calculate s from s_prev
 		REP(i, np) {
@@ -221,13 +222,13 @@ void HybridEstimator::bfs_2_dp_more() {
 			tmp_result[i] = result[i] + nr_remain[i] * (depth + 1);
 		}
 
+		if (depth == 4)		// XXX at most 4? might be enough!  // TODO: 4th level can be implemented with half memory
+			break;
+
 		// judge whether tmp_result is accurate enough
 		if (good_err(tmp_result))
 			break;
 		print_debug("Err: %.4lf with np=%d\n", err, np);
-
-		if (depth == 4)		// XXX at most 4? might be enough!  // TODO: 4th level can be implemented with half memory
-			break;
 		depth ++;
 		s.swap(s_prev);
 	}

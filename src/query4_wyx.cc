@@ -1,7 +1,7 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Thu Apr 10 14:15:20 2014 +0000
+ * $Date: Thu Apr 10 14:52:46 2014 +0800
  */
 
 #include "query4.h"
@@ -197,7 +197,7 @@ vector<int> Query4Calculator::work() {
 	int cnt = 0;
 	{
 		TotalTimer ttt("iterate q4 heap");		// about 6% of total q4 time
-		GuardedTimer tttt(string_format("np: %lu iterate q4 heap", np).c_str());
+		DEBUG_DECL(GuardedTimer, tttt(string_format("np: %d iterate q4 heap", np).c_str()));
 		double last_centrality = 1e100;
 		int last_vtx = -1;
 		while (!q.empty()) {

@@ -1,5 +1,5 @@
 //File: HybridEstimator.h
-//Date: Thu Apr 10 14:14:40 2014 +0000
+//Date: Thu Apr 10 14:50:51 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -35,24 +35,21 @@ class HybridEstimator: public SumEstimator {
 				return 0.0;
 			}
 
-			int cnt0 = 0, cnt1 = 0, cnt2 = 0;
+			int cnt1 = 0, cnt2 = 0;
 			int np = (int)now_result.size();
 			double sum = 0;
 			REP(i, np) {
 				if (approx_result[i] > 100 && not noneed[i]) {
 					double err = (double)(now_result[i] - approx_result[i]) / approx_result[i];
-					if (err < -0.01) {
-						cnt0 ++;
-						if (err < -0.05) {
-							cnt1 ++;
-							if (err < -0.1)
-								cnt2 ++;
-						}
+					if (err < -0.05) {
+						cnt1 ++;
+						if (err < -0.1)
+							cnt2 ++;
 					}
 					sum += fabs(err);
 				}
 			}
-			print_debug("Graph np=%d, cnt: %d/%d/%d\n", np, cnt0, cnt1, cnt2);
+			print_debug("Graph np=%d, cnt: %d/%d\n", np, cnt1, cnt2);
 			sum /= np;
 			if (sum > 0.04 or cnt2 > 1500)
 				return false;

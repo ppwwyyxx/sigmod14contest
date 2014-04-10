@@ -1,5 +1,5 @@
 //File: bitset.h
-//Date: Fri Apr 04 21:48:35 2014 +0000
+//Date: Thu Apr 10 15:06:17 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -162,6 +162,12 @@ class Bitset {
 			data[idx] = _mm_or_si128(data[idx],	_mm_load_si128(lut + pos));
 		}
 
+		inline bool get(int k) {
+			uint32_t idx = (uint32_t)(k >> 7),
+					 pos = (uint32_t)(k % 128);
+			return *((uint32_t*)(data + idx) + (pos >> 5U)) & (1U << (pos % 32U));
+		}
+
 		// data &= ~(r.data)
 		inline void and_not_arr(const Bitset& r, int len) {
 			sse2_sub_arr(data, r.data, r.data + len);
@@ -182,10 +188,10 @@ class Bitset {
 };
 
 inline void prefetch_range(char *addr, size_t len) {
-    char *cp;
-    char *end = addr + len;
+	char *cp;
+	char *end = addr + len;
 
-    for (cp = addr; cp < end; cp += 512)
+	for (cp = addr; cp < end; cp += 512)
 		_mm_prefetch(cp, _MM_HINT_T0);
-   //     __builtin_prefetch(cp, 1, 3);
+	//     __builtin_prefetch(cp, 1, 3);
 }

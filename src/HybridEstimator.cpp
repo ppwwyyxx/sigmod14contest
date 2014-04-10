@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Thu Apr 10 14:18:49 2014 +0000
+//Date: Thu Apr 10 15:15:06 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -13,7 +13,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	noneed(_noneed), sum_bound(_sum_bound),
 	approx_result(_approx_result)
 {
-	bfs_2_dp_more();
+	bfs_2_dp_1();
 }
 
 
@@ -39,13 +39,11 @@ void HybridEstimator::bfs_2_dp_1() {
 	cutcnt = 0;
 	{
 		TotalTimer ttt("depth 2");
-		vector<int> hash(np, 0);
 		int tag = 0;
 		REP(i, np) {
 			tag ++;
 
 			// depth 0
-			hash[i] = tag;
 			s_prev[i].set(i);
 			nr_remain[i] -= 1;
 
@@ -53,7 +51,6 @@ void HybridEstimator::bfs_2_dp_1() {
 			// depth 1
 			FOR_ITR(fr, graph[i]) {
 				sum_dv1 += graph[*fr].size();
-				hash[*fr] = tag;
 				s_prev[i].set(*fr);
 			}
 			nr_remain[i] -= (int)graph[i].size();
@@ -64,29 +61,27 @@ void HybridEstimator::bfs_2_dp_1() {
 			FOR_ITR(fr, graph[i]) {
 				int j = *fr;
 				FOR_ITR(fr2, graph[j]) {
-					if (hash[*fr2] == tag)
+					if (s_prev[i].get(*fr2))
 						continue;
+
 					sum_dv2 += graph[*fr2].size();
-					hash[*fr2] = tag;
 					s_prev[i].set(*fr2);
 					nr_remain[i] --;
 					result[i] += 2;
 				}
 			}
 
-			/*
-			 *if (not noneed[i]) {
-			 *    // XXX this is wrong
-			 *    int n3_upper = (int)sum_dv2 - (int)sum_dv1 + (int)graph[i].size() + 1;
-			 *    m_assert(n3_upper >= 0);
-			 *    int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
-			 *    if (est_s_lowerbound > sum_bound) {		// cut
-			 *        noneed[i] = true;
-			 *        cutcnt ++;
-			 *        result[i] = 1e9;
-			 *    }
-			 *}
-			 */
+			if (not noneed[i]) {
+				// XXX this is wrong
+				int n3_upper = (int)sum_dv2 - (int)sum_dv1 + (int)graph[i].size() + 1;
+				m_assert(n3_upper >= 0);
+				int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
+				if (est_s_lowerbound > sum_bound) {		// cut
+					noneed[i] = true;
+					cutcnt ++;
+					result[i] = 1e9;
+				}
+			}
 		}
 	}
 
@@ -155,13 +150,11 @@ void HybridEstimator::bfs_2_dp_more() {
 	cutcnt = 0;
 	{
 		TotalTimer ttt("depth 2");
-		vector<int> hash(np, 0);
 		int tag = 0;
 		REP(i, np) {
 			tag ++;
 
 			// depth 0
-			hash[i] = tag;
 			s_prev[i].set(i);
 			nr_remain[i] -= 1;
 
@@ -169,7 +162,6 @@ void HybridEstimator::bfs_2_dp_more() {
 			// depth 1
 			FOR_ITR(fr, graph[i]) {
 				sum_dv1 += graph[*fr].size();
-				hash[*fr] = tag;
 				s_prev[i].set(*fr);
 			}
 			nr_remain[i] -= (int)graph[i].size();
@@ -180,10 +172,9 @@ void HybridEstimator::bfs_2_dp_more() {
 			FOR_ITR(fr, graph[i]) {
 				int j = *fr;
 				FOR_ITR(fr2, graph[j]) {
-					if (hash[*fr2] == tag)
+					if (s_prev[i].get(*fr2))
 						continue;
 					sum_dv2 += graph[*fr2].size();
-					hash[*fr2] = tag;
 					s_prev[i].set(*fr2);
 					nr_remain[i] --;
 					result[i] += 2;
@@ -207,18 +198,22 @@ void HybridEstimator::bfs_2_dp_more() {
 	double err = 0;
 	vector<Bitset> s; s.reserve(np);		// XXX MEMORY!!
 	vector<int> tmp_result(np);
-	REP(i, np)
-		s.emplace_back(len);
+	{
+		TotalTimer tt("hybrid alloc");
+		REP(i, np)
+			s.emplace_back(len);
+	}
 	depth = 3;
 	while (true) {
 		TotalTimer ttt("Depth 3+");
 		// calculate s from s_prev
 		REP(i, np) {
-			/*		// cannot prune in depth=3, because depth=4 need every s[i]_3
-			 *if (noneed[i]) continue;
-			 *if (result[i] == 0) continue;
-			 *if (nr_remain[i] == 0) continue;
-			 */
+			if (depth == 4) {	// cannot prune in depth=3, because depth=4 need every s[i]_3
+				if (noneed[i]) continue;
+				if (result[i] == 0) continue;
+				if (nr_remain[i] == 0) continue;
+			}
+
 			s[i].reset(len);
 			FOR_ITR(fr, graph[i])
 				s[i].or_arr(s_prev[*fr], len);
@@ -228,6 +223,7 @@ void HybridEstimator::bfs_2_dp_more() {
 			nr_remain[i] -= c;
 			tmp_result[i] = result[i] + nr_remain[i] * (depth + 1);
 		}
+
 		// judge whether tmp_result is accurate enough
 		if (good_err(tmp_result))
 			break;

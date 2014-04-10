@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Thu Apr 10 11:39:06 2014 +0000
+//Date: Thu Apr 10 18:41:41 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -441,11 +441,12 @@ void read_tags_forums_places(const string& dir) {
 	{		// read tag and tag names
 		safe_open(dir + "/tag.csv");
 		fgets(buffer, 1024, fin);
+		string tag_name;
 		while (fscanf(fin, "%d|", &tid) == 1) {
-			int k = 0; char c;
+			char c;
+			tag_name.clear();
 			while ((c = (char)fgetc(fin)) != '|')
-				buffer[k++] = c;
-			string tag_name(buffer, k);
+				tag_name += c;
 			id_map[tid] = (int)Data::tag_name.size();
 
 			if (q4_tag_set.count(tag_name))		// cache all q4 tid (real tid)
@@ -509,11 +510,12 @@ void build_places_tree(const string& dir) {
 	{
 		safe_open(dir + "/place.csv");
 		fgets(buffer, 2048, fin);
+		string place_name;
 		while (fscanf(fin, "%d|", &pid) == 1) {
-			int k = 0; char c;
+			place_name.clear();
+			char c;
 			while ((c = (char)fgetc(fin)) != '|')
-				buffer[k++] = c;
-			string place_name(buffer, k);
+				place_name += c;
 			Data::placeid[place_name].emplace_back(pid);
 			update_max(max_pid, pid);
 			fgets(buffer, 2048, fin);

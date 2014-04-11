@@ -1,7 +1,7 @@
 /*
  * $File: query4_wyx.cc
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Fri Apr 11 19:55:00 2014 +0000
+ * $Date: Fri Apr 11 23:15:50 2014 +0800
  */
 
 #include "query4.h"
@@ -161,8 +161,8 @@ vector<int> Query4Calculator::work() {
 
 	HybridEstimator estimator(friends, degree, 3, noneed, sum_bound);
 #endif
-//    HybridEstimator
-	VectorMergeHybridEstimator
+    HybridEstimator
+//	VectorMergeHybridEstimator
 		estimator(friends, degree,
 				noneed, sum_bound, approx_result);
 
@@ -232,15 +232,20 @@ vector<int> Query4Calculator::work() {
 		}
 	}
 
-	if (np > 11000 || true) {
+	if (np > 11000) {
 		static int print = 0;
 #ifndef DEBUG
-		if (print < 4)
+		if (print < 3) {
+
 #endif
-			fprintf(stderr, "%lu/%d/%d/%d~%d~%d/%d, d:%d: %.4lf\n", np, cnt, k,
-					exact_s[ans.front()], exact_s[ans.back()],
-					sum_bound, estimator.cutcnt, estimator.depth,
-					timer.get_time());
+			fprintf(stderr, "%lu/%d/%dd%d:%.4lf\n", np, cnt, k,
+					estimator.depth, timer.get_time());
+#ifndef DEBUG
+		}
+#endif
+		if (estimator.cutcnt > 1000)
+			fprintf(stderr, "%d~%d~%d/%d\n", exact_s[ans.front()], exact_s[ans.back()],
+					sum_bound, estimator.cutcnt);
 		print ++;
 	}
 	manual_timer.record();

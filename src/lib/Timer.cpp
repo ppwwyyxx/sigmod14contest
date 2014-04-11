@@ -121,4 +121,34 @@ void TotalTimer::print() {
 		print_debug("%s spent %lf secs in all\n", itr->first.c_str(), itr->second);
 	}
 }
+
+ManualTotalTimer::ManualTotalTimer(const std::string &msg) : msg(msg) {
+	reset();
+}
+
+ManualTotalTimer::~ManualTotalTimer() {
+}
+
+void ManualTotalTimer::reset() {
+	timer.reset();
+}
+
+void ManualTotalTimer::record() {
+	{
+		static mutex mt;
+		lock_guard<mutex> lg(mt);
+		rst[msg] += timer.get_time();
+	}
+	reset();
+}
+
+void ManualTotalTimer::print() {
+	FOR_ITR(itr, rst) {
+		print_debug("%s spent %lf secs in all\n", itr->first.c_str(), itr->second);
+	}
+}
+
+
 std::map<std::string, double> TotalTimer::rst;
+
+std::map<std::string, double> ManualTotalTimer::rst;

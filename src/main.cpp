@@ -137,4 +137,5 @@ int main(int argc, char* argv[]) {
 	//fprintf(stderr, "\nTime: %.4fs\n", timer.get_time());
 	Data::free();
 	TotalTimer::print();
+	ManualTotalTimer::print();
 }

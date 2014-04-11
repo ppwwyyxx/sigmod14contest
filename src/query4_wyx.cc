@@ -1,7 +1,7 @@
 /*
- * $File: query4.cpp
+ * $File: query4_wyx.cc
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Thu Apr 10 14:52:46 2014 +0800
+ * $Date: Fri Apr 11 19:55:00 2014 +0000
  */
 
 #include "query4.h"
@@ -74,7 +74,7 @@ vector<int> Query4Calculator::work() {
 	TotalTimer ttt("q4calculator");
 	Timer timer;
 
-
+	ManualTotalTimer manual_timer("q4 manual");
 	int diameter = -1;
 #if 0
 	{
@@ -161,8 +161,17 @@ vector<int> Query4Calculator::work() {
 
 	HybridEstimator estimator(friends, degree, 3, noneed, sum_bound);
 #endif
-	HybridEstimator estimator(friends, degree,
-			noneed, sum_bound, approx_result);
+//    HybridEstimator
+	VectorMergeHybridEstimator
+		estimator(friends, degree,
+				noneed, sum_bound, approx_result);
+
+	{
+		GuardedTimer asdfasdf("estimate s");
+		TotalTimer  asdfasfasfdsadf("estimate s");
+		estimator.init();
+	}
+
 	estimated_s = move(estimator.result);
 
 	if (use_estimate) {
@@ -223,7 +232,7 @@ vector<int> Query4Calculator::work() {
 		}
 	}
 
-	if (np > 11000) {
+	if (np > 11000 || true) {
 		static int print = 0;
 #ifndef DEBUG
 		if (print < 4)
@@ -234,6 +243,7 @@ vector<int> Query4Calculator::work() {
 					timer.get_time());
 		print ++;
 	}
+	manual_timer.record();
 	return move(ans);
 }
 

@@ -22,6 +22,8 @@ class HybridEstimator: public SumEstimator {
 				std::vector<bool>& noneed, int sum_bound,
 				const std::vector<int>& _approx_result);
 
+		virtual void init();
+
 
 		// bfs 2level, dp 1level
 		void bfs_2_dp_1();
@@ -51,9 +53,29 @@ class HybridEstimator: public SumEstimator {
 			}
 			print_debug("Graph np=%d, cnt: %d/%d\n", np, cnt1, cnt2);
 			sum /= np;
-			if (sum > 0.04 or cnt2 > 1500)
+			if (sum > 0.04 or cnt2 > 1500) {
+//                fprintf(stderr, "sum: %f cnt2: %d\n", sum, cnt2);
 				return false;
+			}
 			return true;
 		}
 };
 
+
+class VectorMergeHybridEstimator: public HybridEstimator{
+	public:
+		VectorMergeHybridEstimator(const std::vector<std::vector<int>>& _graph, int* _degree,
+				std::vector<bool>& noneed, int sum_bound,
+				const std::vector<int>& _approx_result);
+
+		virtual void init();
+		void vector_dp();
+
+		void get_nr_le(int v0, int depth);
+		int estimate_s_limit_depth(int source, int depth_max);
+
+		int unique_merge(const std::vector<int> &a, const std::vector<int> &b, std::vector<int> &c);
+
+		int estimate_merge_cost(const std::vector<int> &sizes);
+		long long quick_unique_merge(const std::vector<std::vector<int> *> &items, std::vector<int> &out);
+};

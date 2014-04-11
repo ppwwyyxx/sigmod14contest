@@ -7,4 +7,4 @@ if [[ -z "$1" ]] ; then
     echo "Usage: $0 log/mem-xxx.xxx"
     exit
 fi
-cut -f 2 -d ' ' $1 >/tmp/xxx && ./plot-point.py -i /tmp/xxx --show
+cut -f 2 -d ' ' $1 | ./plot-point.py -i '$stdin$' --show

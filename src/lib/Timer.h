@@ -65,3 +65,17 @@ class TotalTimer {
 		static std::map<std::string, double> rst;
 };
 
+
+class ManualTotalTimer {
+	public:
+		ManualTotalTimer(const std::string& msg);
+		~ManualTotalTimer();
+
+		static void print();
+
+		std::string msg;
+		Timer timer;
+		void reset();
+		void record();
+		static std::map<std::string, double> rst;
+};

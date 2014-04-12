@@ -1,5 +1,5 @@
 //File: globals.h
-//Date: Thu Apr 10 11:04:21 2014 +0800
+//Date: Sat Apr 12 17:09:51 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -9,6 +9,7 @@
 #include "lib/hash_lib.h"
 #include "lib/ThreadPool.hh"
 #include "lib/Timer.h"
+#include "bread.h"
 // global variables!!
 
 #define WAIT_FOR(s) \
@@ -36,4 +37,6 @@ extern std::vector<double> tot_time;
 extern int q1_cmt_vst;
 
 extern unordered_set<std::string, StringHashFunc> q4_tag_set;
+
+extern bread mybread;
 // end of global variables!!

@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Thu Apr 10 11:04:58 2014 +0800
+//Date: Sat Apr 12 17:21:15 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -35,6 +35,7 @@ extern std::vector<Query4> q4_set;
 inline int do_read_comments(const std::string dir) {
 	Timer timer;
 	read_comments_tim(dir);
+//	mybread.init(dir);
 //	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
 	return 0;
 }

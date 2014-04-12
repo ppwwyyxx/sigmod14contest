@@ -1,9 +1,10 @@
 //File: query1.cpp
-//Date: Thu Apr 10 11:08:12 2014 +0800
+//Date: Sat Apr 12 17:22:11 2014 +0000
 
 #include "query1.h"
 #include "lib/common.h"
 #include "data.h"
+#include "bread.h"
 #include <cstdio>
 #include <queue>
 #include <algorithm>
@@ -31,6 +32,10 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 				int person = it -> pid;
 				if (x >= 0) {
 					q1_cmt_vst ++;
+					/*
+					 *if (not mybread.check(now_ele, person, x))
+					 *    continue;
+					 */
 					if (it->ncmts <= x) continue;
 				}
 				// TODO friends is not sorted by cmt because cmt is read later
@@ -53,6 +58,10 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 				if (x >= 0) {
 					q1_cmt_vst ++;
 					if (it->ncmts <= x) continue;
+					/*
+					 *if (not mybread.check(now_ele, person, x))
+					 *    continue;
+					 */
 				}
 				if (not vst2[person]) {
 					if (vst1[person]) return depth1 + depth2;

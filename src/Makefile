@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Sat Apr 12 00:52:42 2014 +0800
+# $Date: Sat Apr 12 20:32:55 2014 +0000
 
 OBJ_DIR = build
 TARGET = ./main
@@ -13,7 +13,7 @@ DEFINES += -DGOOGLE_HASH
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
 
-# OPTFLAGS += -g -O0 #-fsanitize=address
+#OPTFLAGS += -g -O0 #-fsanitize=address
 OPTFLAGS += -O3
 #LDFLAGS += -lprofiler
 
@@ -26,7 +26,7 @@ LIBS = $(MALLOC)
 ifeq ($(BUILD), submit)
 OPTFLAGS = -O3
 #OPTFLAGS += -fnothrow-opt -fno-rtti -march=native -mfpmath=sse -Ofast -flto -funroll-loops
-LDFLAGS = -Wl,--wrap=memcpy
+LDFLAGS += -Wl,--wrap=memcpy
 LDFLAGS += -static-libstdc++
 DEFINES += -DNUM_THREADS=4
 else

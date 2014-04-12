@@ -28,6 +28,7 @@ void bread::init(const std::string &dir)
 	people.resize(1000010);
 	safe_open(dir + "/comment_hasCreator_person.csv");
 	ptr = buffer, buf_end = ptr + 1;
+	n_vst = 0;
 
 	READ_TILL_EOL();
 	unsigned long long cid;
@@ -53,12 +54,14 @@ void bread::init(const std::string &dir)
 	madvise(mapped, size, MADV_WILLNEED);
 	ptr = (char*)mapped;
 	buf_end = (char*)mapped + size;
-	
+
 	MMAP_READ_TILL_EOL();
-	
+
 }
 
 bool bread::check(int a, int b, int threashold) {
+	n_vst ++;
+	PP(n_vst);
     return check_oneside(a, b, threashold) && check_oneside(b, a, threashold);
 }
 
@@ -68,13 +71,13 @@ bool bread::check_oneside(int a, int b, int threshold)
 	for (int i = 0; i < (int) people[a].size(); i ++)
 	{
 		int cid = people[a][i];
-		
+
 		for (int lo = 0, hi = (int) size - 1; lo <= hi; )
 		{
 			int mid = (lo + hi) >> 1;
-			
+
 			char* lp = ptr + mid;
-			
+
 			while ((*lp) != '\n') lp ++;
             // =,=!
             if ((lp +1) == buf_end) {
@@ -82,14 +85,14 @@ bool bread::check_oneside(int a, int b, int threshold)
                 continue;
             }
 			lp ++;
-			
+
 			unsigned long long cid1 = 0;
 			do {
 				cid1 = cid1 * 10 + *lp - '0';
 				lp ++;
 			} while (*lp != '|');
 			lp ++;
-			
+
 			if (cid1 == cid)
 			{
 			    unsigned long long cid2 = 0;
@@ -105,7 +108,7 @@ bool bread::check_oneside(int a, int b, int threshold)
 				lo = mid + 1;
 			else hi = mid - 1;
 		}
-		
+
 		if (tot > threshold) return true;
 	}
 	return false;

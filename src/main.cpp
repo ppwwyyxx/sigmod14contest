@@ -1,10 +1,11 @@
 //File: main.cpp
-//Date: Wed Apr 09 21:54:07 2014 +0000
+//Date: Fri Apr 11 23:01:45 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
 #include <string.h>
 #include <string>
+#include <omp.h>
 #include <thread>
 
 #include "lib/Timer.h"
@@ -104,6 +105,11 @@ int main(int argc, char* argv[]) {
 	read_data(dir);
 	print_debug("Read return at %lf secs\n", timer.get_time());
 	/*
+	 *if (Data::nperson > 10000) {
+	 *    fprintf(stderr, "th:%dmem:%d\n", thread::hardware_concurrency(), get_free_mem());
+	 *}
+	 */
+	/*
 	 *if (Data::nperson > 11000) {
 	 *    PP(edge_count(Data::friends));
 	 *}
@@ -127,12 +133,10 @@ int main(int argc, char* argv[]) {
 	tot_time[4] += TotalTimer::rst["Q4"];
 	if (Data::nperson > 10000) {
 		for (int i = 1; i <= 4; i ++)
-			fprintf(stderr, "q%d:%.4fs\t", i, tot_time[i]);
-		fprintf(stderr, "%.4lf ", TotalTimer::rst["get_tag_persons_hash"]);
+			fprintf(stderr, "q%d:%.4fs ", i, tot_time[i]);
 		fprintf(stderr, "%.4lf ", TotalTimer::rst["depth 2"]);
 		fprintf(stderr, "%.4lf ", TotalTimer::rst["depth 3"]);
 		fprintf(stderr, "%.4lf ", TotalTimer::rst["estimate random"]);
-		fprintf(stderr, "%.4lf ", TotalTimer::rst["build graph q4"]);
 	}
 	//fprintf(stderr, "\nTime: %.4fs\n", timer.get_time());
 	Data::free();

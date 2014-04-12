@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Thu Apr 10 20:47:01 2014 +0000
+# $Date: Sat Apr 12 00:52:42 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -15,7 +15,7 @@ OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
 
 # OPTFLAGS += -g -O0 #-fsanitize=address
 OPTFLAGS += -O3
-LDFLAGS += -lprofiler
+#LDFLAGS += -lprofiler
 
 #MALLOC = $(addprefix third-party/, libtcmalloc.a libunwind.a liblzma.a)
 MALLOC = $(addprefix third-party/, libllalloc.a)
@@ -26,9 +26,9 @@ LIBS = $(MALLOC)
 ifeq ($(BUILD), submit)
 OPTFLAGS = -O3
 #OPTFLAGS += -fnothrow-opt -fno-rtti -march=native -mfpmath=sse -Ofast -flto -funroll-loops
-LDFLAGS += -Wl,--wrap=memcpy
+LDFLAGS = -Wl,--wrap=memcpy
 LDFLAGS += -static-libstdc++
-DEFINES += -DNUM_THREADS=8
+DEFINES += -DNUM_THREADS=4
 else
 DEFINES += -DDEBUG
 #LDFLAGS += -lprofiler

@@ -1,11 +1,14 @@
 //File: bitset.h
-//Date: Thu Apr 10 15:54:23 2014 +0800
+//Date: Sat Apr 12 10:27:35 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
 #include <emmintrin.h>
 #include <cstdint>
+#include <iostream>
 #include <string.h>
+#include <vector>
+#include "common.h"
 #include "Timer.h"
 #include "debugutils.h"
 
@@ -152,16 +155,30 @@ class Bitset {
 	public:
 		__m128i* data;
 
+		// cannot be copied!
+		// XXX if used in vector, size must be reserved!
+
 		Bitset(int len) {
 			//data = (__m128i*)calloc(len, sizeof(__m128i));
 			data = (__m128i*)_mm_malloc(len * sizeof(__m128i), 16);
+			//m_assert(data != NULL);
 			reset(len);
 		}
 
+		Bitset(__m128i* _data):
+			data(_data) {}
+
+		/*
+		 *Bitset(const Bitset& r) = delete;
+		 *Bitset& operator = (const Bitset& r) = delete;
+		 */
+
 		~Bitset() {
 			//free(data);
-			_mm_free(data);
+			//_mm_free(data);
 		}
+
+		void free() { _mm_free(data); }
 
 		inline void set(int k) {
 			int idx = k >> 7;
@@ -198,6 +215,43 @@ class Bitset {
 		inline void reset(int len) {
 			memset(data, 0, len * sizeof(__m128i));
 		}
+};
+
+class BitBoard {
+	public:
+		__m128i* data;
+		std::vector<Bitset> bitsets;
+
+		BitBoard(int n) {
+			Timer t;
+			int len = get_len_from_bit(n);
+			size_t size = n * len * sizeof(__m128i);
+			data = (__m128i*)_mm_malloc(size, 16);
+			//PP(t.get_time());
+			memset(data, 0, size);
+			//data = (__m128i*)calloc(len * n, sizeof(__m128i));
+			//PP(t.get_time());
+
+
+			bitsets.reserve(n);
+			REP(i, n)
+				bitsets.emplace_back(data + i * len);
+			//PP(t.get_time());
+		}
+
+		~BitBoard() {
+			_mm_free(data);
+		}
+
+		Bitset& operator [] (int k) {
+			return bitsets[k];
+		}
+
+		void swap(BitBoard& r) {
+			std::swap(data, r.data);
+			bitsets.swap(r.bitsets);
+		}
+
 };
 
 inline void prefetch_range(char *addr, size_t len) {

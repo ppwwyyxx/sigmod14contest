@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Thu Apr 10 15:57:06 2014 +0800
+//Date: Sat Apr 12 10:28:31 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -19,7 +19,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 
 void HybridEstimator::init() {
 //    fprintf(stderr, "@@@@@@@@@@\n");
-	bfs_2_dp_more();
+	bfs_2_dp_1();
 }
 
 void HybridEstimator::bfs_2_dp_1() {
@@ -27,12 +27,10 @@ void HybridEstimator::bfs_2_dp_1() {
 	Timer init;
 	int len = get_len_from_bit(np);
 
-	std::vector<Bitset> s_prev;
+	//std::vector<Bitset> s_prev;
+	BitBoard s_prev{np};
 	{
 		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
-		s_prev.reserve(np);
-		REP(i, np)
-			s_prev.emplace_back(len);
 
 		result.resize((size_t)np, 0);
 		nr_remain.resize(np);
@@ -94,9 +92,11 @@ void HybridEstimator::bfs_2_dp_1() {
 		int nr_idle = threadpool->get_nr_idle_thread();
 		if (nr_idle) {
 			print_debug("Idle thread: %d\n", nr_idle);
-			if (nr_idle == 1)
-				nr_idle = 2;
-#pragma omp parallel for schedule(dynamic) num_threads(nr_idle)
+			/*
+			 *if (nr_idle == 1)
+			 *    nr_idle = 2;
+			 */
+#pragma omp parallel for schedule(dynamic) num_threads(4)
 			REP(i, np) {
 				if (noneed[i]) continue;
 				if (result[i] == 0) continue;
@@ -111,6 +111,7 @@ void HybridEstimator::bfs_2_dp_1() {
 				result[i] += c * 3;
 				nr_remain[i] -= c;
 				result[i] += nr_remain[i] * 4;
+				s.free();
 			}
 		} else {
 			Bitset s(len);
@@ -128,6 +129,7 @@ void HybridEstimator::bfs_2_dp_1() {
 				nr_remain[i] -= c;
 				result[i] += nr_remain[i] * 4;
 			}
+			s.free();
 		}
 	}
 }
@@ -136,12 +138,16 @@ void HybridEstimator::bfs_2_dp_more() {
 	Timer init;
 	int len = get_len_from_bit(np);
 
-	std::vector<Bitset> s_prev;
+	//std::vector<Bitset> s_prev;
+	BitBoard s_prev(np);
 	{
 		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
-		s_prev.reserve(np);
-		REP(i, np)
-			s_prev.emplace_back(len);
+		/*
+		 *s_prev.reserve(np);
+		 *REP(i, np)
+		 *    s_prev.emplace_back(len);
+		 */
+
 
 		result.resize((size_t)np, 0);
 		nr_remain.resize(np);
@@ -197,15 +203,18 @@ void HybridEstimator::bfs_2_dp_more() {
 		}
 	}
 
-	double err = 0;
-	vector<Bitset> s; s.reserve(np);		// XXX MEMORY!!
 	vector<int> tmp_result(np);
-	{
-		TotalTimer tt("hybrid alloc");
-		REP(i, np)
-			s.emplace_back(len);
-	}
+	BitBoard s(np);
+	/*
+	 *vector<Bitset> s; s.reserve(np);		// XXX MEMORY!!
+	 *{
+	 *    TotalTimer tt("hybrid alloc");
+	 *    REP(i, np)
+	 *        s.emplace_back(len);
+	 *}
+	 */
 	depth = 3;
+	double err = 0;
 	while (true) {
 		// TODO separate d3 and d4 to save memory at d4
 		TotalTimer ttt("Depth 3+");
@@ -238,12 +247,14 @@ void HybridEstimator::bfs_2_dp_more() {
 		s.swap(s_prev);
 	}
 
-	long long all = 0;
-	for (int i = 0; i < np; i ++)
-		all += s_prev[i].count(len);
-	double ave = all / (double)np;
-
-	fprintf(stderr, "ave popcount: d %d %f/%d %f\n", depth, ave, np, ave / np);
+/*
+ *    long long all = 0;
+ *    for (int i = 0; i < np; i ++)
+ *        all += s_prev[i].count(len);
+ *    double ave = all / (double)np;
+ *
+ *    fprintf(stderr, "ave popcount: d %d %f/%d %f\n", depth, ave, np, ave / np);
+ */
 
 	result = move(tmp_result);
 }

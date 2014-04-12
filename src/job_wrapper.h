@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Sat Apr 12 17:21:15 2014 +0000
+//Date: Sat Apr 12 20:39:45 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -36,7 +36,7 @@ inline int do_read_comments(const std::string dir) {
 	Timer timer;
 	read_comments_tim(dir);
 //	mybread.init(dir);
-//	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
+	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
 	return 0;
 }
 inline int do_read_tags_forums_places(const std::string dir) {

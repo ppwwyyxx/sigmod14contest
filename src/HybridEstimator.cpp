@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Sat Apr 12 10:28:31 2014 +0800
+//Date: Sat Apr 12 20:27:35 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -314,7 +314,8 @@ void VectorMergeHybridEstimator::vector_dp() {
 
 #if 0
 			// merge all neighbours
-			for (auto &fr: graph[i]) {
+			FOR_ITR(itr, graph[i]) {
+				auto& fr = *itr;
 				auto &prev = buf[cnt & 1];
 				auto &cur = buf[(cnt + 1) & 1];
 				auto &g = s_prev[fr];
@@ -342,8 +343,10 @@ void VectorMergeHybridEstimator::vector_dp() {
 #if 1
 			// TEST: estimate cost
 			vector<int> sizes;
-			for (auto &fr: graph[i])
+			FOR_ITR(itr, graph[i]) {
+				auto& fr = *itr;
 				sizes.emplace_back(s_prev[fr].size());
+			}
 			sizes.emplace_back(s_prev[i].size());
 			estimated_cost += estimate_merge_cost(sizes);
 #endif
@@ -357,7 +360,8 @@ void VectorMergeHybridEstimator::vector_dp() {
 			if (noneed[i])
 				continue;
 			int nr_next_depth_upper = 0;
-			for (auto &fr: s_now[i]) {
+			FOR_ITR(itr, s_now[i]) {
+				auto& fr = *itr;
 				nr_next_depth_upper += graph[fr].size();
 			}
 
@@ -435,7 +439,8 @@ int VectorMergeHybridEstimator::estimate_s_limit_depth(int source, int depth_max
 			break;
 		for (int i = 0; i < qsize; i ++) {
 			int v0 = q.front(); q.pop();
-			for (auto &v1: graph[v0]) {
+			FOR_ITR(itr, graph[v0]) {
+				auto& v1 = *itr;
 				if (hash[v1])
 					continue;
 				hash[v1] = true;

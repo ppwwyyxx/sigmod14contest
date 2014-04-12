@@ -312,7 +312,7 @@ void VectorMergeHybridEstimator::vector_dp() {
 			buf[1].resize(0);
 
 
-#if 1
+#if 0
 			// merge all neighbours
 			for (auto &fr: graph[i]) {
 				auto &prev = buf[cnt & 1];
@@ -451,14 +451,40 @@ int VectorMergeHybridEstimator::estimate_s_limit_depth(int source, int depth_max
 int VectorMergeHybridEstimator::unique_merge(const std::vector<int> &a, const std::vector<int> &b, std::vector<int> &c) {
 	TotalTimer ttt("unique_merge");
 
+#if 0
+	vector<bool> hash(np);
+	c.reserve(a.size() + b.size());
+	c.resize(0);
+	for (auto &v: a)
+		if (!hash[v]) {
+			hash[v] = true;
+			c.emplace_back(v);
+		}
+
+	for (auto &v: b)
+		if (!hash[v]) {
+			hash[v] = true;
+			c.emplace_back(v);
+		}
+
+#endif
+
 #if 1
+	c.resize(a.size() + b.size());
+	auto end = std::set_union(a.begin(), a.end(), b.begin(), b.end(), c.begin());
+	c.resize(end - c.begin());
+#endif
+
+#if 0
 	c.resize(a.size() + b.size());
 	std::merge(a.begin(), a.end(),
 			b.begin(), b.end(),
 			c.begin());
 	c.resize(std::unique(c.begin(), c.end()) - c.begin());
 
-#else
+#endif
+
+#if 0
 	c.reserve(a.size() + b.size());
 	c.resize(0);
 

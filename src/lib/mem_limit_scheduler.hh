@@ -1,6 +1,6 @@
 /*
  * $File: mem_limit_scheduler.hh
- * $Date: Sat Apr 12 00:11:31 2014 +0000
+ * $Date: Sat Apr 12 00:14:56 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -88,7 +88,8 @@ class MemLimitScheduler {
 				auto idit = acquired_mem_by_id.find(id);
 
 				assert(idit != acquired_mem_by_id.end()); // XXX
-				idit->second -= mem_size;
+//                idit->second -= mem_size;
+				idit->second --;
 				if (idit->second == 0) {
 					acquired_mem_by_id.erase(idit);
 					nr_free_slots ++;
@@ -116,7 +117,8 @@ class MemLimitScheduler {
 					acquired_mem_by_id[id] += mem_size;
 				}
 				else {  // nested acuquisition
-					it->second += mem_size;
+//                    it->second += mem_size;
+					it->second ++;
 					{
 						std::lock_guard<std::mutex> guard(nr_active_mutex);
 						nr_active --;

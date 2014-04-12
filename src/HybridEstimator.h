@@ -1,8 +1,9 @@
 //File: HybridEstimator.h
-//Date: Thu Apr 10 14:50:51 2014 +0800
+//Date: Fri Apr 11 23:01:34 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
+#include <cmath>
 #include "SumEstimator.h"
 
 class HybridEstimator: public SumEstimator {

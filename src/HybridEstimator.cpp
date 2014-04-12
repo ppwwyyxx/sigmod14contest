@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Thu Apr 10 15:57:06 2014 +0800
+//Date: Fri Apr 11 21:00:13 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -19,7 +19,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 
 void HybridEstimator::init() {
 //    fprintf(stderr, "@@@@@@@@@@\n");
-	bfs_2_dp_more();
+	bfs_2_dp_1();
 }
 
 void HybridEstimator::bfs_2_dp_1() {
@@ -94,9 +94,11 @@ void HybridEstimator::bfs_2_dp_1() {
 		int nr_idle = threadpool->get_nr_idle_thread();
 		if (nr_idle) {
 			print_debug("Idle thread: %d\n", nr_idle);
-			if (nr_idle == 1)
-				nr_idle = 2;
-#pragma omp parallel for schedule(dynamic) num_threads(nr_idle)
+			/*
+			 *if (nr_idle == 1)
+			 *    nr_idle = 2;
+			 */
+#pragma omp parallel for schedule(dynamic) num_threads(nr_idle + 1)
 			REP(i, np) {
 				if (noneed[i]) continue;
 				if (result[i] == 0) continue;
@@ -142,6 +144,7 @@ void HybridEstimator::bfs_2_dp_more() {
 		s_prev.reserve(np);
 		REP(i, np)
 			s_prev.emplace_back(len);
+
 
 		result.resize((size_t)np, 0);
 		nr_remain.resize(np);

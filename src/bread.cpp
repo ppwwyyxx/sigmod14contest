@@ -18,7 +18,7 @@
 #include "read.h"
 #include "cache.h"
 #include "data.h"
-#include "lib/fast_read.h";
+#include "lib/fast_read.h"
 using namespace std;
 
 
@@ -58,7 +58,11 @@ void bread::init(const std::string &dir)
 	
 }
 
-int bread::check(int a, int b, int threshold)
+bool bread::check(int a, int b, int threashold) {
+    return check_oneside(a, b, threashold) && check_oneside(b, a, threashold);
+}
+
+bool bread::check_oneside(int a, int b, int threshold)
 {
 	int tot = 0;
 	for (int i = 0; i < (int) people[a].size(); i ++)
@@ -71,7 +75,12 @@ int bread::check(int a, int b, int threshold)
 			
 			char* lp = ptr + mid;
 			
-			while ((*lp) != '\n') lp --;
+			while ((*lp) != '\n') lp ++;
+            // =,=!
+            if ((lp +1) == buf_end) {
+                hi = mid - 1;
+                continue;
+            }
 			lp ++;
 			
 			unsigned long long cid1 = 0;
@@ -80,14 +89,14 @@ int bread::check(int a, int b, int threshold)
 				lp ++;
 			} while (*lp != '|');
 			lp ++;
-			unsigned long long cid2 = 0;
-			do {
-				cid2 = cid2 * 10 + *lp - '0';
-				lp ++;
-			} while (*lp != '\n');
 			
 			if (cid1 == cid)
 			{
+			    unsigned long long cid2 = 0;
+			    do {
+				    cid2 = cid2 * 10 + *lp - '0';
+				    lp ++;
+			    } while (*lp != '\n');
 				if (owner[cid2 / 10] == b)
 					tot ++;
 				break;
@@ -97,9 +106,7 @@ int bread::check(int a, int b, int threshold)
 			else hi = mid - 1;
 		}
 		
-		if (tot > threshold) return 0;
+		if (tot > threshold) return true;
 	}
-	return 1;
-}			
-	
-	
+	return false;
+}

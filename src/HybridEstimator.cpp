@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Mon Apr 14 04:37:34 2014 +0000
+//Date: Mon Apr 14 05:19:44 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -100,7 +100,7 @@ void HybridEstimator::bfs_2_dp_1() {
 			 *if (nr_idle == 1)
 			 *    nr_idle = 2;
 			 */
-#pragma omp parallel for schedule(dynamic) num_threads(4)
+#pragma omp parallel for schedule(dynamic) num_threads(nr_idle + 1)
 			REP(i, np) {
 				if (noneed[i]) continue;
 				if (result[i] == 0) continue;

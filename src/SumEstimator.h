@@ -1,5 +1,5 @@
 //File: SumEstimator.h
-//Date: Sun Apr 06 23:25:56 2014 +0800
+//Date: Mon Apr 14 06:13:44 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -52,7 +52,7 @@ class RandomChoiceEstimator: public SumEstimator {
 		}
 
 		void work();
-		int bfs_all(int source, std::vector<int>&);
+		int bfs_all(int source, std::vector<int>*);
 
 		int estimate(int i) { return result[i]; }
 

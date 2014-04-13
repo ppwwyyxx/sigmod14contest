@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Mon Apr 14 04:57:02 2014 +0000
+//Date: Mon Apr 14 06:16:35 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <queue>
@@ -64,22 +64,23 @@ void RandomChoiceEstimator::work() {
 	vector<int> vst_cnt(np, 0);
 	auto n = samples.size();
 	vector<int> true_result(n);
-#pragma omp parallel for schedule(static) num_threads(2)
+#pragma omp parallel for schedule(dynamic) num_threads(2)
 	REP(i, n)
-		true_result[i] = bfs_all(samples[i], vst_cnt);
+		true_result[i] = bfs_all(samples[i], &vst_cnt);
+
 	REP(i, np) {
+		vst_cnt[i] = 1;
 		if (vst_cnt[i] == 0)
 			result[i] = get_exact_s(i);
 		else {
 			result[i] = result[i] * degree[i] / vst_cnt[i];
-
 		}
 	}
 	REP(i, n)
 		result[samples[i]] = true_result[i];
 }
 
-int RandomChoiceEstimator::bfs_all(int source, vector<int>& vst_cnt) {
+int RandomChoiceEstimator::bfs_all(int source, vector<int>* vst_cnt) {
 	int sum = 0;
 	queue<int> q;
 	vector<bool> vst(np);
@@ -92,11 +93,11 @@ int RandomChoiceEstimator::bfs_all(int source, vector<int>& vst_cnt) {
 			FOR_ITR(f, graph[top]) {
 				if (vst[*f]) continue;
 				vst[*f] = true;
-				result[*f] += depth + 1;
+				__sync_fetch_and_add(result.data() + (*f), depth + 1);
+//				result[*f] += depth + 1;
 
-				__sync_fetch_and_add(vst_cnt.data() + (*f), 1);		// TODO
-//				vst_cnt[*f] ++;
-
+				__sync_fetch_and_add(vst_cnt->data() + (*f), 1);		// TODO
+		//		(*vst_cnt)[*f] += 1;
 				q.push(*f);
 			}
 		}

@@ -147,7 +147,6 @@ void Query2Handler::work() {
 
 	// clean q2 data
 	delete[] Data::birthday;
-	Data::tag_name = vector<string>();
 	Data::person_in_tags = vector<vector<int>>();
 
 	f = vector<vector<int>>();

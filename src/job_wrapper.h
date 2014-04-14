@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Mon Apr 14 03:54:21 2014 +0000
+//Date: Mon Apr 14 04:13:49 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -81,7 +81,6 @@ inline void start_3() {
 
 inline void start_4(int) {
 	PP("start4");
-	return;
 	Timer timer;
 	size_t s = q4_set.size();
 	q4.continuation = std::make_shared<FinishTimeContinuation>(s, "q4 finish time");

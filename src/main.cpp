@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Mon Apr 14 04:02:29 2014 +0000
+//Date: Mon Apr 14 04:18:42 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -91,6 +91,7 @@ int main(int argc, char* argv[]) {
 	// initialize global variables...
 #ifdef GOOGLE_HASH
 	q4_tag_set.set_empty_key("");
+	q4_persons.set_empty_key("");
 	Data::tagid.set_empty_key("");
 	Data::placeid.set_empty_key("");
 #endif

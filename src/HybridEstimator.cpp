@@ -1,9 +1,10 @@
 //File: HybridEstimator.cpp
-//Date: Mon Apr 14 03:15:43 2014 +0000
+//Date: Mon Apr 14 04:37:34 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
 #include "globals.h"
+#include "data.h"
 using namespace std;
 
 HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, int* _degree,
@@ -19,7 +20,10 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 
 void HybridEstimator::init() {
 //    fprintf(stderr, "@@@@@@@@@@\n");
-	bfs_2_dp_more();
+	if (Data::nperson <= 100001)
+		bfs_2_dp_1();
+	else
+		bfs_2_dp_more();
 }
 
 void HybridEstimator::bfs_2_dp_1() {

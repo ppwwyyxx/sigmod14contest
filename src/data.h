@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Mon Apr 14 04:00:49 2014 +0000
+//Date: Mon Apr 14 04:38:54 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -67,10 +67,6 @@ typedef int PersonInForum;
 // Data structure to store a person in a forum
 // now it is only implemented as person id
 
-struct Forum {
-	std::vector<int> persons;
-};
-
 class Data {
 public:
 	static int nperson, ntag;
@@ -91,12 +87,11 @@ public:
 	// destroyed after q2 finished
 
 	static std::vector<std::string> tag_name;		// name of each tags, indexed by continuous id
-	// destroyed after q2 finished!
+	// TODO destroyed after q2 and q4 finished!
 
 
 	// only used in q4 preprocessing:
 	static unordered_map<std::string, int, StringHashFunc> tagid;			// tag name -> tag id
-	static std::vector<std::vector<Forum*>> tag_forums;			// related forums for each tag
 
 	// destroyed after q3 finished:
 	static unordered_map<std::string, std::vector<int>, StringHashFunc> placeid;

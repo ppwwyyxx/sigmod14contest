@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Sat Apr 12 20:39:54 2014 +0800
+# $Date: Mon Apr 14 04:17:57 2014 +0000
 
 OBJ_DIR = build
 TARGET = ./main
@@ -13,8 +13,8 @@ DEFINES += -DGOOGLE_HASH
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
 
-#OPTFLAGS += -g -O0 #-fsanitize=address
-OPTFLAGS += -O3
+OPTFLAGS += -g -O0 #-fsanitize=address
+#OPTFLAGS += -O3
 #LDFLAGS += -lprofiler
 
 #MALLOC = $(addprefix third-party/, libtcmalloc.a libunwind.a liblzma.a)

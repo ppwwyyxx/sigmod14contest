@@ -1,4 +1,4 @@
-//File: query3_version3.cc
+//File: query3.cpp
 //Author: Wenbo Tao.
 //Method:	Inverted List.
 

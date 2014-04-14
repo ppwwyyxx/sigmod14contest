@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Mon Apr 14 04:00:43 2014 +0000
+//Date: Mon Apr 14 04:39:33 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -20,7 +20,6 @@ vector<TagSet> Data::tags;
 vector<vector<int> > Data::person_in_tags;
 vector<string> Data::tag_name;
 unordered_map<std::string, int, StringHashFunc> Data::tagid;
-vector<vector<Forum*> > Data::tag_forums;
 unordered_map<string, vector<int>, StringHashFunc> Data::placeid;
 vector<PlaceNode> Data::places;
 vector<unordered_set<int>> Data::friends_hash;
@@ -65,17 +64,7 @@ PersonInPlace::PersonInPlace(int _pid):
 
 vector<bool> get_tag_persons_hash(const string& s) {
 	DEBUG_DECL(TotalTimer, tt("get_tag_persons_hash"));
-	int tagid = Data::tagid[s];
-	auto& forums = Data::tag_forums[tagid];
-	vector<int> persons;
-
-	vector<bool> hash(Data::nperson, false);
-	FOR_ITR(itr, forums) {
-		auto& persons_in_forum = (*itr)->persons;
-		FOR_ITR(p, persons_in_forum)
-			hash[*p] = true;
-	}
-	return hash;
+	return q4_persons[s];
 }
 
 vector<int> get_tag_persons(const string& s) {

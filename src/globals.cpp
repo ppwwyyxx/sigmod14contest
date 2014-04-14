@@ -1,5 +1,5 @@
 //File: globals.cpp
-//Date: Sat Apr 12 17:08:29 2014 +0000
+//Date: Mon Apr 14 04:07:09 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "globals.h"
@@ -27,6 +27,7 @@ vector<double> tot_time(5, 0.0);
 int q1_cmt_vst = 0;
 
 unordered_set<string, StringHashFunc> q4_tag_set;
+unordered_map<string, vector<bool>> q4_persons;
 
 bread mybread;
 // global variables

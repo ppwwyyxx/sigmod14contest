@@ -1,7 +1,7 @@
 /*
- * $File: query4_wyx.cc
+ * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Fri Apr 11 23:15:50 2014 +0800
+ * $Date: Mon Apr 14 04:36:22 2014 +0000
  */
 
 #include "query4.h"
@@ -232,7 +232,7 @@ vector<int> Query4Calculator::work() {
 		}
 	}
 
-	if (np > 11000) {
+	if (np > 1000) {
 		static int print = 0;
 #ifndef DEBUG
 		if (print < 3) {

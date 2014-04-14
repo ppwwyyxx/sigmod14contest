@@ -1,5 +1,5 @@
 //File: globals.h
-//Date: Sat Apr 12 17:09:51 2014 +0000
+//Date: Mon Apr 14 04:07:01 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -37,6 +37,7 @@ extern std::vector<double> tot_time;
 extern int q1_cmt_vst;
 
 extern unordered_set<std::string, StringHashFunc> q4_tag_set;
+extern unordered_map<std::string, std::vector<bool>> q4_persons;
 
 extern bread mybread;
 // end of global variables!!

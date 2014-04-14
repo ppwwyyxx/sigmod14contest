@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Mon Apr 14 03:59:52 2014 +0000
+//Date: Mon Apr 14 04:39:56 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -289,7 +289,6 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 	static char buffer[BUFFER_LEN];
 	Timer timer;
 	char* ptr, *buf_end;
-	Data::tag_forums.resize(Data::ntag);
 	int fid, tid, pid;
 	unordered_map<int, vector<int>> forum_to_tags;		// fid -> continuous tids
 #ifdef GOOGLE_HASH
@@ -343,7 +342,8 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		MMAP_READ_TILL_EOL();
 
 		int last_fid = -1;
-		bool last_skip = false; Forum* now_forum;
+		bool last_skip = false;
+		vector<vector<bool>*> hashes;
 		do {
 			fid = 0;
 			do {
@@ -362,9 +362,9 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 					continue;
 				}
 				last_skip = false;
-				now_forum = new Forum();
+				hashes.clear();
 				FOR_ITR(titr, itr->second)
-					Data::tag_forums[*titr].emplace_back(now_forum);
+					hashes.emplace_back(&q4_persons[Data::tag_name[*titr]]);
 			} else {
 				if (last_skip) {
 					MMAP_READ_TILL_EOL();
@@ -378,49 +378,13 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 				ptr ++;
 			} while (*ptr != '|');
 
-			now_forum->persons.push_back(pid);
+			FOR_ITR(hs, hashes)
+				(*(*hs))[pid] = true;
 
 			MMAP_READ_TILL_EOL();
 		} while (ptr != buf_end);
 		munmap(mapped, size);
 		close(fd);
-
-		/*
-		 *   safe_open(dir + "/forum_hasMember_person.csv");
-		 *   ptr = buffer, buf_end = ptr + 1;
-		 *   READ_TILL_EOL();
-		 *   int last_fid = -1;
-		 *   bool last_skip = false; Forum* now_forum;
-		 *   while (true) {	// assuming that same fid appears together
-		 *       READ_INT(fid);
-		 *
-		 *       if (buffer == buf_end) break;
-		 *       if (fid != last_fid) {
-		 *           last_fid = fid;
-		 *           auto itr = forum_to_tags.find(fid);
-		 *           if (itr == forum_to_tags.end()) {
-		 *               last_skip = true;
-		 *               READ_TILL_EOL();
-		 *               continue;
-		 *           }
-		 *           last_skip = false;
-		 *
-		 *           now_forum = new Forum();
-		 *
-		 *           FOR_ITR(titr, itr->second)
-		 *               Data::tag_forums[*titr].emplace_back(now_forum);
-		 *       } else {
-		 *           if (last_skip) {
-		 *               READ_TILL_EOL();
-		 *               continue;
-		 *           }
-		 *       }
-		 *       READ_INT(pid);
-		 *       now_forum->persons.push_back(pid);
-		 *       READ_TILL_EOL();
-		 *   }
-		 *   fclose(fin);
-		 */
 	}
 
 	print_debug("Read forum spent %lf secs\n", timer.get_time());
@@ -469,6 +433,9 @@ void read_tags_forums_places(const string& dir) {
 	 *    q4_tag_ids.insert(Data::tagid[*nameitr]);
 	 */
 
+	FOR_ITR(nameitr, q4_tag_set) {
+		q4_persons[*nameitr].resize(Data::nperson, false);
+	}
 	q4_tag_set = unordered_set<string, StringHashFunc>();
 
 	{		// read person->tags

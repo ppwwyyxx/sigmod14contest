@@ -1,7 +1,7 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Mon Apr 14 04:36:22 2014 +0000
+ * $Date: Mon Apr 14 04:56:32 2014 +0000
  */
 
 #include "query4.h"
@@ -108,8 +108,12 @@ vector<int> Query4Calculator::work() {
 		TotalTimer tttt("estimate random");
 		if (use_estimate) {
 			//	RandomChoiceEstimator estimator1(friends, degree, pow(log(np), 0.333) / (20.2 * pow(np, 0.333)));
-			RandomChoiceEstimator estimator1(friends, degree, 0.002);
-			// estimator1.error();
+			float perc = 0.002;
+			if (np > 100000) perc = 0.0015;
+			if (np > 180000) perc = 0.001;
+			RandomChoiceEstimator estimator1(friends, degree, perc);
+			if (np > 100000)
+				estimator1.error();
 
 			approx_result = move(estimator1.result);
 			FOR_ITR(index, estimator1.samples) {
@@ -161,8 +165,8 @@ vector<int> Query4Calculator::work() {
 
 	HybridEstimator estimator(friends, degree, 3, noneed, sum_bound);
 #endif
-    HybridEstimator
-//	VectorMergeHybridEstimator
+	HybridEstimator
+		//	VectorMergeHybridEstimator
 		estimator(friends, degree,
 				noneed, sum_bound, approx_result);
 

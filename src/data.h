@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Mon Apr 14 04:38:54 2014 +0000
+//Date: Mon Apr 14 04:47:57 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -87,11 +87,8 @@ public:
 	// destroyed after q2 finished
 
 	static std::vector<std::string> tag_name;		// name of each tags, indexed by continuous id
-	// TODO destroyed after q2 and q4 finished!
+	// destroyed after q2 and read q4 finished!
 
-
-	// only used in q4 preprocessing:
-	static unordered_map<std::string, int, StringHashFunc> tagid;			// tag name -> tag id
 
 	// destroyed after q3 finished:
 	static unordered_map<std::string, std::vector<int>, StringHashFunc> placeid;

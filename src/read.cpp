@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Mon Apr 14 04:39:56 2014 +0000
+//Date: Mon Apr 14 04:46:37 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -285,6 +285,7 @@ void read_comments_2file(const string& dir) {
 	print_debug("Read comment spent %lf secs\n", timer.get_time());
 }
 
+void destroy_tag_name();
 void read_forum(const string& dir, unordered_map<int, int>& id_map, const unordered_set<int>& q4_tag_ids) {
 	static char buffer[BUFFER_LEN];
 	Timer timer;
@@ -387,6 +388,9 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		close(fd);
 	}
 
+	thread th(destroy_tag_name);
+	th.detach();
+
 	print_debug("Read forum spent %lf secs\n", timer.get_time());
 }
 
@@ -418,9 +422,7 @@ void read_tags_forums_places(const string& dir) {
 #ifdef DEBUG
 			Data::real_tag_id.emplace_back(tid);
 #endif
-			Data::tagid[tag_name] = (int)Data::tag_name.size();
 			Data::tag_name.emplace_back(move(tag_name));
-			m_assert(Data::tagid.count(tag_name) == 0);		//  no repeated tag name
 			fgets(buffer, 1024, fin);
 		}
 		Data::ntag = (int)Data::tag_name.size();

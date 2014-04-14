@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Sat Apr 12 19:51:30 2014 +0800
+//Date: Mon Apr 14 04:57:02 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <queue>
@@ -51,7 +51,7 @@ void SumEstimator::error() {
 			if (err > 0)
 				__sync_fetch_and_add(&pos_cnt, 1);
 			if (fabs(err) > 0.05)
-				print_debug("Error: %lf, truth: %d, est: %d\n", err, truth, est);
+				print_debug("Error: %lf, truth: %d, est: %d, np: %d\n", err, truth, est, np);
 #pragma omp critical
 			ret += fabs(err);
 		}

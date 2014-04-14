@@ -147,8 +147,15 @@ void Query2Handler::work() {
 
 	// clean q2 data
 	delete[] Data::birthday;
-	Data::tag_name.clear();
-	Data::person_in_tags.clear();
+	Data::tag_name = vector<string>();
+	Data::person_in_tags = vector<vector<int>>();
+
+	f = vector<vector<int>>();
+	sum = vector<vector<int>>();
+	myfriends = vector<vector<int>>();
+	myhash = vector<unordered_map<int, int>>();
+	heap.free();
+
 	q2_finished = true;
 	q2_finished_cv.notify_all();
 }

@@ -1,5 +1,5 @@
 //File: query3.h
-//Date: Sat Mar 22 16:37:03 2014 +0800
+//Date: Mon Apr 14 03:34:01 2014 +0000
 
 #pragma once
 
@@ -76,7 +76,6 @@ class Query3Calculator {
 
 class Query3Handler {
 	public:
-		std::mutex mt_work_done;
 		void add_query(int k, int h, const std::string& p, int index);
 
 		void work();

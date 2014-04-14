@@ -17,7 +17,6 @@ struct Query2 {
 
 class Query2Handler {
 	public:
-		std::mutex mt_work_done;
 		void add_query(const Query2& q);
 
 		void work();

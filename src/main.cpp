@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Fri Apr 11 23:01:45 2014 +0800
+//Date: Mon Apr 14 04:02:29 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -8,6 +8,7 @@
 #include <omp.h>
 #include <thread>
 
+#include "lib/hash_lib.h"
 #include "lib/Timer.h"
 #include "lib/debugutils.h"
 #include "lib/common.h"

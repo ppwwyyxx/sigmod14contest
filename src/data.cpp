@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Thu Apr 10 18:42:19 2014 +0800
+//Date: Mon Apr 14 04:00:43 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -45,6 +45,7 @@ void Data::free() {
 }
 
 PersonSet PlaceNode::get_all_persons() {
+	// TODO faster?
 	PersonSet ret = persons;
 	for (vector<PlaceNode*>::iterator it = sub_places.begin();
 			it != sub_places.end(); it++) {

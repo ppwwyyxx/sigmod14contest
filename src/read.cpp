@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Thu Apr 10 18:41:41 2014 +0800
+//Date: Mon Apr 14 03:59:52 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -469,7 +469,7 @@ void read_tags_forums_places(const string& dir) {
 	 *    q4_tag_ids.insert(Data::tagid[*nameitr]);
 	 */
 
-	q4_tag_set.clear();
+	q4_tag_set = unordered_set<string, StringHashFunc>();
 
 	{		// read person->tags
 		safe_open(dir + "/person_hasInterest_tag.csv");
@@ -530,7 +530,6 @@ void build_places_tree(const string& dir) {
 		int p1, p2;
 		while (fscanf(fin, "%d|%d", &p1, &p2) == 2) {
 			Data::places[p2].sub_places.emplace_back(&Data::places[p1]);
-			Data::places[p1].parent = &Data::places[p2];
 		}
 		fclose(fin);
 	}
@@ -706,7 +705,7 @@ void read_comments_tim(const std::string &dir) {
 		munmap(mapped, size);
 		close(fd);
 	}
-	Data::friends_hash.clear();
+	Data::friends_hash = vector<unordered_set<int>>();
 
 	print_debug("number of valid comment pair: %lu\n", comments.size());
 	{

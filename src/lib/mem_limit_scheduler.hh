@@ -1,6 +1,6 @@
 /*
  * $File: mem_limit_scheduler.hh
- * $Date: Sat Apr 12 00:14:56 2014 +0000
+ * $Date: Mon Apr 14 03:14:42 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -167,7 +167,8 @@ class MemLimitScheduler {
 
 		static void schedule() {
 			std::lock_guard<std::mutex> lock(acquisitions_bigger_size_first_mutex);
-			for (auto it = acquisitions_bigger_size_first.begin(); it != acquisitions_bigger_size_first.end(); ) {
+			for (auto it = acquisitions_bigger_size_first.begin();
+					it != acquisitions_bigger_size_first.end(); ) {
 				{
 					std::lock_guard<std::mutex> nr_free_slots_lock(nr_free_slots_mutex);
 					if (nr_free_slots == 0)

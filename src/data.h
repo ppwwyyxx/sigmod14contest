@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Tue Apr 08 19:47:07 2014 +0800
+//Date: Mon Apr 14 04:00:49 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -57,14 +57,10 @@ typedef std::vector<PersonInPlace> PersonSet;	// must be sorted
 
 class PlaceNode {
 public:
-	PlaceNode* parent;
 	std::vector<PlaceNode*> sub_places;
 	PersonSet persons;		// sorted
 
 	PersonSet get_all_persons();		// sorted
-	// TODO the result of this func may need to be cached
-
-	PlaceNode(): parent(NULL){}
 };
 
 typedef int PersonInForum;
@@ -91,7 +87,7 @@ public:
 	// tags[i] is a TagSet containing interest tags(continuous id) for the person with id=i
 	// destroyed after q2 and q3 finished
 
-	static std::vector<std::vector<int> > person_in_tags;
+	static std::vector<std::vector<int>> person_in_tags;
 	// destroyed after q2 finished
 
 	static std::vector<std::string> tag_name;		// name of each tags, indexed by continuous id

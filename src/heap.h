@@ -43,6 +43,11 @@ public:
         place.resize(_n+1);
     }
 
+	void free() {
+		place = vector<int>();
+		heap = vector<HeapEle>();
+	}
+
 private:
     vector<int> place;
     vector<HeapEle> heap;

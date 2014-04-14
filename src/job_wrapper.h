@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Sat Apr 12 20:39:45 2014 +0800
+//Date: Mon Apr 14 03:54:21 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -76,10 +76,12 @@ inline void start_3() {
 		//print_debug("finish q3 %lu at %lf\n", i, timer.get_time());
 		threadpool->enqueue(bind(&Query3Handler::add_query, &q3, q3_set[i].k, q3_set[i].hop, q3_set[i].place, i));
 	}
+	q3_set = std::vector<Query3>();
 }
 
 inline void start_4(int) {
 	PP("start4");
+	return;
 	Timer timer;
 	size_t s = q4_set.size();
 	q4.continuation = std::make_shared<FinishTimeContinuation>(s, "q4 finish time");
@@ -89,12 +91,13 @@ inline void start_4(int) {
 	}
 }
 
+class Forum;
 // call after all q3 finished
 void destroy_q3_data() {
-	Data::placeid.clear();
-	Data::places.clear();
+	Data::placeid = unordered_map<std::string, std::vector<int>, StringHashFunc>();
+	Data::places = std::vector<PlaceNode>();
 	WAIT_FOR(q2_finished);
-	Data::tags.clear();
+	Data::tags = std::vector<TagSet>();
 }
 
 #else

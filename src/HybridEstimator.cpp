@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Mon Apr 14 14:55:22 2014 +0000
+//Date: Mon Apr 14 18:00:49 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -9,13 +9,13 @@ using namespace std;
 
 HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, int* _degree,
 		vector<bool>& _noneed, int _sum_bound,
-		const vector<int>& _approx_result):
+		const vector<int>& _approx_result,
+		Allocator& _allocator):
 	SumEstimator(_graph), degree(_degree),
 	noneed(_noneed), sum_bound(_sum_bound),
-	approx_result(_approx_result)
+	approx_result(_approx_result),
+	allocator(_allocator)
 {
-//    bfs_2_dp_1();
-//    init();
 }
 
 void HybridEstimator::init() {
@@ -28,6 +28,7 @@ void HybridEstimator::init() {
 		else
 			bfs_2_dp_more();
 	}
+	//bfs_2_dp_1();
 }
 
 void HybridEstimator::bfs_2_dp_1() {
@@ -36,7 +37,7 @@ void HybridEstimator::bfs_2_dp_1() {
 	int len = get_len_from_bit(np);
 
 	//std::vector<Bitset> s_prev;
-	BitBoard s_prev{np};
+	BitBoard s_prev(np, allocator);
 	{
 		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
 
@@ -140,6 +141,7 @@ void HybridEstimator::bfs_2_dp_1() {
 			s.free();
 		}
 	}
+	s_prev.free(allocator);
 }
 
 void HybridEstimator::bfs_2_dp_more() {
@@ -147,7 +149,7 @@ void HybridEstimator::bfs_2_dp_more() {
 	int len = get_len_from_bit(np);
 
 	//std::vector<Bitset> s_prev;
-	BitBoard s_prev(np);
+	BitBoard s_prev(np, allocator);
 	{
 		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
 		/*
@@ -212,7 +214,7 @@ void HybridEstimator::bfs_2_dp_more() {
 	}
 
 	vector<int> tmp_result(np);
-	BitBoard s(np);
+	BitBoard s(np, allocator);
 	/*
 	 *vector<Bitset> s; s.reserve(np);		// XXX MEMORY!!
 	 *{
@@ -255,18 +257,21 @@ void HybridEstimator::bfs_2_dp_more() {
 		s.swap(s_prev);
 	}
 
-/*
- *    long long all = 0;
- *    for (int i = 0; i < np; i ++)
- *        all += s_prev[i].count(len);
- *    double ave = all / (double)np;
- *
- *    fprintf(stderr, "ave popcount: d %d %f/%d %f\n", depth, ave, np, ave / np);
- */
+	/*
+	 *    long long all = 0;
+	 *    for (int i = 0; i < np; i ++)
+	 *        all += s_prev[i].count(len);
+	 *    double ave = all / (double)np;
+	 *
+	 *    fprintf(stderr, "ave popcount: d %d %f/%d %f\n", depth, ave, np, ave / np);
+	 */
+	s_prev.free(allocator);
+	s.free(allocator);
 
 	result = move(tmp_result);
 }
 
+#if 0
 
 VectorMergeHybridEstimator::VectorMergeHybridEstimator(
 		const std::vector<std::vector<int>>& _graph, int* _degree,
@@ -274,7 +279,6 @@ VectorMergeHybridEstimator::VectorMergeHybridEstimator(
 		const vector<int>& _approx_result):
 	HybridEstimator(_graph, _degree, _noneed, _sum_bound, _approx_result)
 {
-//    vector_dp();
 }
 
 
@@ -577,3 +581,4 @@ long long VectorMergeHybridEstimator::quick_unique_merge(const vector<vector<int
 	out = *heap.top();
 	return cost;
 }
+#endif

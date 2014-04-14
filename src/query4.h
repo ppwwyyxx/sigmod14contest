@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Fri Apr 04 19:49:36 2014 +0000
+//Date: Mon Apr 14 17:56:17 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -8,6 +8,7 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include "lib/allocator.hh"
 #include "lib/utils.h"
 #include "lib/Timer.h"
 #include "lib/hash_lib.h"
@@ -43,9 +44,11 @@ class Query4Calculator {
 
 		int contract_dist;
 		int contract_nr_vtx;
+		Allocator& allocator;
 
-		Query4Calculator(const std::vector<std::vector<int>>& _friends, int _k):
-			np(_friends.size()), friends(_friends), k(_k) {
+		Query4Calculator(const std::vector<std::vector<int>>& _friends,
+				int _k, Allocator& alloc):
+			np(_friends.size()), friends(_friends), k(_k), allocator(alloc) {
 
 				degree = new int[np];
 				estimated_s.resize(np);

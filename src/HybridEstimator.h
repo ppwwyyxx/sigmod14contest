@@ -1,10 +1,11 @@
 //File: HybridEstimator.h
-//Date: Mon Apr 14 12:14:22 2014 +0000
+//Date: Mon Apr 14 15:13:20 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
 #include <cmath>
 #include "SumEstimator.h"
+#include "lib/allocator.hh"
 
 class HybridEstimator: public SumEstimator {
 	public:
@@ -17,11 +18,13 @@ class HybridEstimator: public SumEstimator {
 		std::vector<bool>& noneed;
 		int sum_bound;
 		const std::vector<int>& approx_result;
+		Allocator& allocator;
 
 
 		HybridEstimator(const std::vector<std::vector<int>>& _graph, int* _degree,
 				std::vector<bool>& noneed, int sum_bound,
-				const std::vector<int>& _approx_result);
+				const std::vector<int>& _approx_result,
+				Allocator& _allocator);
 
 		virtual void init();
 
@@ -67,21 +70,23 @@ class HybridEstimator: public SumEstimator {
 		}
 };
 
-
-class VectorMergeHybridEstimator: public HybridEstimator{
-	public:
-		VectorMergeHybridEstimator(const std::vector<std::vector<int>>& _graph, int* _degree,
-				std::vector<bool>& noneed, int sum_bound,
-				const std::vector<int>& _approx_result);
-
-		virtual void init();
-		void vector_dp();
-
-		void get_nr_le(int v0, int depth);
-		int estimate_s_limit_depth(int source, int depth_max);
-
-		int unique_merge(const std::vector<int> &a, const std::vector<int> &b, std::vector<int> &c);
-
-		int estimate_merge_cost(const std::vector<int> &sizes);
-		long long quick_unique_merge(const std::vector<std::vector<int> *> &items, std::vector<int> &out);
-};
+/*
+ *
+ *class VectorMergeHybridEstimator: public HybridEstimator{
+ *    public:
+ *        VectorMergeHybridEstimator(const std::vector<std::vector<int>>& _graph, int* _degree,
+ *                std::vector<bool>& noneed, int sum_bound,
+ *                const std::vector<int>& _approx_result);
+ *
+ *        virtual void init();
+ *        void vector_dp();
+ *
+ *        void get_nr_le(int v0, int depth);
+ *        int estimate_s_limit_depth(int source, int depth_max);
+ *
+ *        int unique_merge(const std::vector<int> &a, const std::vector<int> &b, std::vector<int> &c);
+ *
+ *        int estimate_merge_cost(const std::vector<int> &sizes);
+ *        long long quick_unique_merge(const std::vector<std::vector<int> *> &items, std::vector<int> &out);
+ *};
+ */

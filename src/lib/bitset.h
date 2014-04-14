@@ -1,5 +1,5 @@
 //File: bitset.h
-//Date: Sat Apr 12 10:27:35 2014 +0800
+//Date: Mon Apr 14 16:08:41 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
+#include "allocator.hh"
 #include "common.h"
 #include "Timer.h"
 #include "debugutils.h"
@@ -222,16 +223,16 @@ class BitBoard {
 		__m128i* data;
 		std::vector<Bitset> bitsets;
 
-		BitBoard(int n) {
+		BitBoard(int n, Allocator& allocator) {
 			Timer t;
 			int len = get_len_from_bit(n);
 			size_t size = n * len * sizeof(__m128i);
-			data = (__m128i*)_mm_malloc(size, 16);
-			//PP(t.get_time());
-			memset(data, 0, size);
+			/*
+			 *data = (__m128i*)_mm_malloc(size, 16);
+			 *memset(data, 0, size);
+			 */
 			//data = (__m128i*)calloc(len * n, sizeof(__m128i));
-			//PP(t.get_time());
-
+			data = (__m128i*)allocator.alloc(size);
 
 			bitsets.reserve(n);
 			REP(i, n)
@@ -239,8 +240,13 @@ class BitBoard {
 			//PP(t.get_time());
 		}
 
-		~BitBoard() {
+		void free(Allocator& alloc) {
 			_mm_free(data);
+			//alloc.dealloc(data);
+		}
+
+		~BitBoard() {
+
 		}
 
 		Bitset& operator [] (int k) {

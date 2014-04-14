@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Mon Apr 14 13:29:00 2014 +0000
+//Date: Mon Apr 14 15:39:23 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -9,6 +9,7 @@
 #include <thread>
 
 #include "lib/hash_lib.h"
+#include "lib/allocator.hh"
 #include "lib/Timer.h"
 #include "lib/debugutils.h"
 #include "lib/common.h"
@@ -87,6 +88,7 @@ void read_query(const string& fname) {
 int main(int argc, char* argv[]) {
 	globaltimer.reset();
 	threadpool = new ThreadPool(NUM_THREADS);
+	SIGMODAllocator::init(4, 2lu * 1024 * 1024 * 1024);
 	Timer timer;
 	// initialize global variables...
 #ifdef GOOGLE_HASH
@@ -125,6 +127,8 @@ int main(int argc, char* argv[]) {
 
 	WAIT_FOR(comment_read);
 	delete threadpool;		// will wait to join all thread
+	FOR_ITR(itr, q4_jobs)
+		itr->join();
 
 	q1.print_result();
 	q2.print_result();

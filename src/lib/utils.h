@@ -80,21 +80,19 @@ inline void print_progress(int percent) {
 inline int get_free_mem() {		// return in MB;
 	std::ifstream fin("/proc/meminfo");
 	std::string str;
-	int nfree = -1, ncache = -1;
+	unsigned long nfree = 0, ncache = 0;
 	while (not fin.eof()) {
 		fin >> str;
 		if (str == "MemFree:") {
 			fin >> str;
-			nfree = stoi(str);
+			nfree = stoul(str);
 //			printf("free: %d\n", nfree);
 		} else if (str == "Cached:") {
 			fin >> str;
-			ncache = stoi(str);
+			ncache = stoul(str);
 //			printf("cacch: %d\n", ncache);
 		}
 	}
 	fin.close();
-	if (nfree == -1 || ncache == -1)
-		return -1;
 	return (nfree + ncache) / 1024;
 }

@@ -1,10 +1,11 @@
 //File: globals.h
-//Date: Mon Apr 14 13:27:01 2014 +0000
+//Date: Mon Apr 14 15:02:51 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
 
 #include <condition_variable>
+#include <thread>
 #include <mutex>
 #include "lib/hash_lib.h"
 #include "lib/ThreadPool.hh"
@@ -39,6 +40,7 @@ extern int q1_cmt_vst;
 
 extern unordered_set<std::string, StringHashFunc> q4_tag_set;
 extern unordered_map<std::string, std::vector<bool>> q4_persons;
+extern std::vector<std::thread> q4_jobs;
 
 extern bread mybread;
 // end of global variables!!

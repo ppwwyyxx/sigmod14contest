@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Mon Apr 14 13:33:33 2014 +0000
+//Date: Mon Apr 14 15:03:31 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -91,7 +91,8 @@ inline void start_4(int) {
 	q4.continuation = std::make_shared<FinishTimeContinuation>(s, "q4 finish time");
 	REP(i, s) {
 //		q4.add_query(q4_set[i].k, q4_set[i].tag, i);
-		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
+	//	threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
+		q4_jobs.emplace_back(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i));
 	}
 }
 

@@ -1,12 +1,13 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Mon Apr 14 14:49:01 2014 +0000
+ * $Date: Mon Apr 14 17:54:41 2014 +0000
  */
 
 #include "query4.h"
 #include "data.h"
 #include "lib/common.h"
+#include "lib/allocator.hh"
 #include "SumEstimator.h"
 #include "search_depth_estimator.h"
 #include "lib/hash_lib.h"
@@ -174,7 +175,7 @@ vector<int> Query4Calculator::work() {
 	HybridEstimator
 		//	VectorMergeHybridEstimator
 		estimator(friends, degree,
-				noneed, sum_bound, approx_result);
+				noneed, sum_bound, approx_result, allocator);
 
 	{
 		GuardedTimer asdfasdf("estimate s");
@@ -264,6 +265,8 @@ vector<int> Query4Calculator::work() {
 
 
 void Query4Handler::add_query(int k, const string& s, int index) {
+	Allocator allocator;
+	allocator.enter();
 	TotalTimer timer("Q4");
 	// build graph
 	vector<bool> persons = get_tag_persons_hash(s);
@@ -313,13 +316,14 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 	 */
 	// finish building graph
 
-	Query4Calculator worker(friends, k);
+	Query4Calculator worker(friends, k, allocator);
 	auto now_ans = worker.work();
 	FOR_ITR(itr, now_ans)
 		*itr = old_pid[*itr];
 	ans[index] = move(now_ans);
 	if (Data::nperson > 10000)
 		continuation->cont();
+	allocator.exit();
 }
 
 

@@ -1,6 +1,6 @@
 /*
  * $File: allocator.hh
- * $Date: Sat Apr 12 20:03:08 2014 +0000
+ * $Date: Mon Apr 14 19:04:54 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -54,8 +54,6 @@
 
 class SIGMODAllocator {
 	public:
-		static const size_t free_mem_size_max = 10000;
-
 		void enter(std::mutex &lock, size_t id) {
 			lock.lock();
 
@@ -75,27 +73,36 @@ class SIGMODAllocator {
 			th.detach();
 		}
 
+		size_t get_fake_free_mem() {
+			size_t mem_total = get_mem_total();
+			size_t fake_mem_total = 15lu * 1024 * 1024 * 1024;
+			assert(mem_total > get_free_mem()); //XXX
+			size_t used = mem_total - get_free_mem();
+			if (fake_mem_total < used)
+				return 0;
+			size_t fake_free_mem = fake_mem_total - used;
+			return fake_free_mem; //XXX
+		}
 		void *alloc(std::mutex &lock, size_t id, size_t size) {
 			while (true) {
 				// XXX: debug
-
-				size_t mem_total = get_mem_total();
-				size_t fake_mem_total = 15lu * 1024 * 1024 * 1024;
-				size_t used = mem_total - get_free_mem();
-				if (fake_mem_total >= used + reserve_mem) {
-					size_t fake_free_mem = fake_mem_total - used;
-					if (size <= fake_free_mem) {
-						fprintf(stderr, "size: %lu free_mem_size_max: %lu\n", size, fake_free_mem);
-						char *data = (char *)_mm_malloc(size, 16);
-						if (data) { // succeed
-							memset(data, 0, size);
-							return data;
-						}
+				size_t fake_free_mem = get_fake_free_mem();
+				if (size + reserve_mem<= fake_free_mem) {
+					std::lock_guard<std::mutex> lock(alloc_mutex);
+					fprintf(stderr, "alloc size: %luM free_mem_size_max: %luM\n", size / 1024 / 1024, fake_free_mem / 1024LU / 1024LU);
+					char *data = (char *)_mm_malloc(size, 16);
+					if (data) { // succeed
+						memset(data, 0, size);
+						return data;
+					} else {
+						PP("unknown error in malloc!");
 					}
 				}
 
+				fprintf(stderr, "failed to alloc size: %luM free_mem_size_max: %luM\n", size / 1024 / 1024, fake_free_mem / 1024 / 1024);
 				// failed
 				lock.lock();
+				nr_free_slots ++;
 				std::thread th(std::bind(&SIGMODAllocator::wait_mem, this, std::ref(lock), id, size, false));
 				th.detach();
 				lock.lock();
@@ -129,7 +136,7 @@ class SIGMODAllocator {
 		struct Acquisition {
 			Acquisition(std::mutex &lock, size_t id, size_t mem_size, bool is_enter) :
 				lock(lock), id(id), mem_size(mem_size), is_enter(is_enter) {
-			}
+				}
 			std::mutex &lock;
 			size_t id, mem_size;
 			bool is_enter;
@@ -156,6 +163,7 @@ class SIGMODAllocator {
 		std::set<Acquisition, AcquisitionBiggerSizeFirst> acquisitions_bigger_size_first;
 		std::mutex acquisitions_bigger_size_first_mutex,
 			free_mem_mutex, nr_free_slots_mutex;
+		std::mutex alloc_mutex;
 
 		void wait_mem(std::mutex &lock, size_t id, size_t size, bool is_enter) {
 			{
@@ -163,10 +171,10 @@ class SIGMODAllocator {
 				acquisitions_bigger_size_first.emplace(lock, id, size, is_enter);
 			}
 			{
-//                if (!is_enter) {
-//                    std::lock_guard<std::mutex> guard(nr_free_slots_mutex);
-//                    nr_free_slots ++;
-//                }
+				//                if (!is_enter) {
+				//                    std::lock_guard<std::mutex> guard(nr_free_slots_mutex);
+				//                    nr_free_slots ++;
+				//                }
 			}
 			schedule();
 		}
@@ -174,9 +182,11 @@ class SIGMODAllocator {
 
 		void schedule() {
 			std::lock_guard<std::mutex> lock(acquisitions_bigger_size_first_mutex);
+			std::lock_guard<std::mutex> lock_alloc(alloc_mutex);
 
-//            size_t free_mem = get_free_mem();
-			size_t free_mem = free_mem_size_max; // XXX: debug
+			//            size_t free_mem = get_free_mem();
+			size_t free_mem = get_fake_free_mem(); // XXX: debug
+			std::cerr << "schedule free mem: " << free_mem / 1024 / 1024 << "M" << std::endl;
 			for (auto it = acquisitions_bigger_size_first.begin(); it != acquisitions_bigger_size_first.end(); ) {
 				{
 					std::lock_guard<std::mutex> nr_free_slots_lock(nr_free_slots_mutex);
@@ -226,15 +236,15 @@ class SIGMODAllocator {
 				fin >> str;
 				if (str == "MemFree:") {
 					fin >> str;
-					nfree = stoi(str);
+					nfree = stoul(str);
 
-					std::cout << "MemFree: " << str << std::endl;
+					std::cerr << "MemFree: " << str << std::endl;
 
 				} else if (str == "Cached:") {
 					fin >> str;
-					ncache = stoi(str);
+					ncache = stoul(str);
 
-					std::cout << "Cached: " << str << std::endl;
+					std::cerr << "Cached: " << str << std::endl;
 				}
 			}
 			fin.close();
@@ -252,7 +262,7 @@ class SIGMODAllocator {
 				fin >> str;
 				if (str == "MemTotal:") {
 					fin >> str;
-					return stoi(str) * 1024lu;
+					return stoul(str) * 1024lu;
 				}
 			}
 			return 0;

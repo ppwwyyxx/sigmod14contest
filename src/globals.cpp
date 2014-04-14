@@ -1,5 +1,5 @@
 //File: globals.cpp
-//Date: Mon Apr 14 04:07:09 2014 +0000
+//Date: Mon Apr 14 13:21:53 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "globals.h"
@@ -16,6 +16,7 @@ using namespace std;
 DEFINE_SIGNAL(tag_read)
 DEFINE_SIGNAL(friends_hash_built)
 DEFINE_SIGNAL(q2_finished)
+DEFINE_SIGNAL(comment_read)
 #undef DEFINE_SIGNAL
 
 Timer globaltimer;

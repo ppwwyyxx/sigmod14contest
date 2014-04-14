@@ -1,6 +1,6 @@
 /*
  * $File: ThreadPool.hh
- * $Date: Thu Apr 10 14:18:23 2014 +0000
+ * $Date: Mon Apr 14 13:28:56 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -99,6 +99,11 @@ public:
 
 	int get_nr_idle_thread() const {
 		return (int)workers.size() - nr_active_thread;
+	}
+
+	void add_worker(int k) {
+		for (int i = 0; i < k; i ++)
+			workers.emplace_back(std::bind(__ThreadPoolImpl::worker, this));
 	}
 
 	// the task queue

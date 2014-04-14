@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Mon Apr 14 12:06:39 2014 +0000
+//Date: Mon Apr 14 13:28:51 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -20,7 +20,7 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 
 void HybridEstimator::init() {
 //    fprintf(stderr, "@@@@@@@@@@\n");
-	if (Data::nperson <= 100001)
+	if (Data::nperson <= 300001)
 		bfs_2_dp_1();
 	else
 		bfs_2_dp_more();

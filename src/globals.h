@@ -1,5 +1,5 @@
 //File: globals.h
-//Date: Mon Apr 14 04:07:01 2014 +0000
+//Date: Mon Apr 14 13:27:01 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -13,9 +13,9 @@
 // global variables!!
 
 #define WAIT_FOR(s) \
-	std::unique_lock<std::mutex> lk(s ## _mt); \
-	while (!s) (s ## _cv).wait(lk); \
-	lk.unlock();
+	std::unique_lock<std::mutex> s ## lk(s ## _mt); \
+	while (!s) (s ## _cv).wait(s ## lk); \
+	s ## lk.unlock();
 
 extern Timer globaltimer;
 
@@ -27,6 +27,7 @@ extern Timer globaltimer;
 DECLARE_SIGNAL(tag_read)
 DECLARE_SIGNAL(friends_hash_built)
 DECLARE_SIGNAL(q2_finished)
+DECLARE_SIGNAL(comment_read)
 
 #undef DECLARE_SIGNAL
 

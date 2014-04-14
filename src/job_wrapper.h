@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Mon Apr 14 13:23:19 2014 +0000
+//Date: Mon Apr 14 13:33:33 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -38,7 +38,7 @@ inline int do_read_comments(const std::string dir) {
 //	mybread.init(dir);
 	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
 
-	threadpool->add_worker(4);
+//	threadpool->add_worker(4);
 
 	comment_read = true;
 	comment_read_cv.notify_all();

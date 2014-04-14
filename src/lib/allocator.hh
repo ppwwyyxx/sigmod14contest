@@ -1,6 +1,6 @@
 /*
  * $File: allocator.hh
- * $Date: Mon Apr 14 19:04:54 2014 +0000
+ * $Date: Mon Apr 14 19:27:40 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -57,7 +57,7 @@ class SIGMODAllocator {
 		void enter(std::mutex &lock, size_t id) {
 			lock.lock();
 
-			std::thread th(std::bind(&SIGMODAllocator::wait_mem, this, std::ref(lock), id, 0, true));
+			std::thread th(std::bind(&SIGMODAllocator::wait_mem, this, std::ref(lock), id, 50, true));
 			th.detach();
 
 			lock.lock();
@@ -87,7 +87,7 @@ class SIGMODAllocator {
 			while (true) {
 				// XXX: debug
 				size_t fake_free_mem = get_fake_free_mem();
-				if (size + reserve_mem<= fake_free_mem) {
+				if (size + reserve_mem <= fake_free_mem) {
 					std::lock_guard<std::mutex> lock(alloc_mutex);
 					fprintf(stderr, "alloc size: %luM free_mem_size_max: %luM\n", size / 1024 / 1024, fake_free_mem / 1024LU / 1024LU);
 					char *data = (char *)_mm_malloc(size, 16);
@@ -197,7 +197,7 @@ class SIGMODAllocator {
 				it_next ++;
 				{
 					bool unlock = false;
-					if (it->is_enter || (!it->is_enter && free_mem >= it->mem_size + reserve_mem)) {
+					if ((it->is_enter && free_mem > 50ul * 1024 * 1024) || (!it->is_enter && free_mem >= it->mem_size + reserve_mem)) {
 						unlock = true;
 					}
 					if (unlock) {

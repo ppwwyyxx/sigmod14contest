@@ -1,7 +1,7 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Mon Apr 14 06:17:21 2014 +0800
+ * $Date: Mon Apr 14 11:44:31 2014 +0000
  */
 
 #include "query4.h"
@@ -109,8 +109,7 @@ vector<int> Query4Calculator::work() {
 		if (use_estimate) {
 			//	RandomChoiceEstimator estimator1(friends, degree, pow(log(np), 0.333) / (20.2 * pow(np, 0.333)));
 			float perc = 0.002;
-			if (np > 100000) perc = 0.0015;
-			if (np > 180000) perc = 0.001;
+			//if (np > 100000) perc = 0.0015;
 			RandomChoiceEstimator estimator1(friends, degree, perc);
 			/*
 			 *if (np > 100000)

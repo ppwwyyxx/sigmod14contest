@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Mon Apr 14 05:19:44 2014 +0800
+//Date: Mon Apr 14 12:06:39 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -338,8 +338,10 @@ void VectorMergeHybridEstimator::vector_dp() {
 #else
 
 			std::vector<std::vector<int> *> items;
-			for (auto &fr: graph[i])
+			FOR_ITR(itr, graph[i]) {
+				auto& fr = *itr;
 				items.emplace_back(&s_prev[fr]);
+			}
 			items.emplace_back(&s_prev[i]);
 			cost += quick_unique_merge(items, s_now[i]);
 #endif
@@ -555,8 +557,9 @@ long long VectorMergeHybridEstimator::quick_unique_merge(const vector<vector<int
 	}
 	vector<vector<int>> buf = *buf_ptr;
 	buf.resize(items.size());
-	for (auto &p: buf)
-		p.resize(0);
+	FOR_ITR(itr, buf) {
+		itr->resize(0);
+	}
 
 	std::priority_queue<vector<int> *, vector<vector<int>*>, VectorPtrComparator> heap(items.begin(), items.end());
 	int cnt = 0;

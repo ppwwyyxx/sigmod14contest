@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Mon Apr 14 06:16:35 2014 +0800
+//Date: Mon Apr 14 12:03:36 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <queue>
@@ -69,7 +69,6 @@ void RandomChoiceEstimator::work() {
 		true_result[i] = bfs_all(samples[i], &vst_cnt);
 
 	REP(i, np) {
-		vst_cnt[i] = 1;
 		if (vst_cnt[i] == 0)
 			result[i] = get_exact_s(i);
 		else {

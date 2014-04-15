@@ -1,10 +1,11 @@
 /*
  * $File: tasty_bread.cpp
- * $Date: Tue Apr 15 22:31:24 2014 +0000
+ * $Date: Tue Apr 15 23:20:42 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
 #include <stdlib.h>
+#include <iostream>
 #include <cstdio>
 #include <cassert>
 #include <sys/stat.h>
@@ -102,9 +103,11 @@ size_t tasty_bread::guess_position(
 		size_t left, size_t right,
 		int_t left_v, int_t right_v, int_t v) {
 
+//    int nr_bits_left_v = nr_bits_10_based(left_v);
+//    return (left + right) >> 1;
 	size_t pos = left + (double)(v - left_v) / (right_v - left_v) * (right - left);
-	assert(pos >= 0 && pos < size);
-	assert(pos >= left && pos <= right);
+//    assert(pos >= 0 && pos < size);
+//    assert(pos >= left && pos <= right);
 	return pos;
 }
 

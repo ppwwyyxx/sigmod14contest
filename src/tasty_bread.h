@@ -1,6 +1,6 @@
 /*
  * $File: tasty_bread.h
- * $Date: Tue Apr 15 22:13:56 2014 +0000
+ * $Date: Tue Apr 15 23:11:42 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -39,6 +39,11 @@ class tasty_bread {
 
 		int_t get_int(char *&p, char delim); // modify p to point to where delim is or buf_end
 		void move_to_line_start(char *&p);
+
+		inline int nr_bits_10_based(int_t num) {
+			static const double log10_over_log2 = 3.3219280948873626;
+			return num ? (64 - __builtin_clzll(num)) * log10_over_log2: 1;
+		}
 };
 
 /**

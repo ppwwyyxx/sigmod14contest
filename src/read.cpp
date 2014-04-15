@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Wed Apr 16 01:24:12 2014 +0800
+//Date: Wed Apr 16 01:36:39 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -607,32 +607,37 @@ int find_count(const std::vector<std::pair<std::pair<int, int>, int>> &count, co
 }
 
 void read_comments_tim(const std::string &dir) {
-	static char buffer[BUFFER_LEN];
 	char *ptr, *buf_end;
 
 	vector<int> owner;
 	Timer timer;
 	{
 		GuardedTimer guarded_timer("read comment_hasCreator_person.csv%d", 1);
-		safe_open(dir + "/comment_hasCreator_person.csv");
-		ptr = buffer, buf_end = ptr + 1;
+		int fd = open((dir + "/comment_hasCreator_person.csv").c_str(), O_RDONLY);
+		struct stat s; fstat(fd, &s);
+		size_t size = s.st_size;
+		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE|MAP_POPULATE, fd, 0);
+		madvise(mapped, size, MADV_WILLNEED);
 
-		READ_TILL_EOL();
-		unsigned long long cid;
-		int pid;
-		if (Data::nperson > 90000)
-			owner.reserve(65000000);
-		else if (Data::nperson > 9000)
-			owner.reserve(20100000);
-		while (true) {
-			READ_ULL(cid);
-			if (buffer == buf_end) break;
-			READ_INT(pid);
-			m_assert(cid % 10 == 0);
-			m_assert(cid / 10 == owner.size());
+		ptr = (char*) mapped;
+		buf_end = (char*) mapped + size;
+
+		MMAP_READ_TILL_EOL();
+		if (Data::nperson > 90000) owner.reserve(65000000);
+		else if (Data::nperson > 9000) owner.reserve(20100000);
+		do {
+			do { ptr ++; } while (*ptr != '|');
+			ptr ++;
+			int pid = 0;
+			do {
+				pid = pid * 10 + *ptr - '0';
+				ptr ++;
+			} while (*ptr != '\n');
 			owner.emplace_back(pid);
-		}
-		fclose(fin);
+			ptr ++;
+		} while (ptr != buf_end);
+		munmap(mapped, size);
+		close(fd);
 	}
 
 	WAIT_FOR(friends_hash_built);

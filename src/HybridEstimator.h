@@ -1,5 +1,5 @@
 //File: HybridEstimator.h
-//Date: Tue Apr 15 18:33:21 2014 +0800
+//Date: Wed Apr 16 01:47:08 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -31,6 +31,8 @@ class HybridEstimator: public SumEstimator {
 		void bfs_2_dp_1();
 		void bfs_2_dp_more();
 		void bfs_3();
+
+		int d3_estimate(int source);
 
 		int estimate(int i) { return result[i]; }
 

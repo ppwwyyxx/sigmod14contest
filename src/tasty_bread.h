@@ -1,6 +1,6 @@
 /*
  * $File: tasty_bread.h
- * $Date: Tue Apr 15 23:11:42 2014 +0000
+ * $Date: Tue Apr 15 23:21:20 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -24,7 +24,6 @@ class tasty_bread {
 		size_t last_nr_iter;
 #endif
 
-	protected:
 		size_t size;
 		size_t real_size;
 		char *buf_begin;

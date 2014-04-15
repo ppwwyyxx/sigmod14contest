@@ -1,6 +1,6 @@
 /*
  * $File: tasty_bread.cpp
- * $Date: Tue Apr 15 22:26:08 2014 +0000
+ * $Date: Tue Apr 15 22:31:24 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -48,7 +48,7 @@ tasty_bread::int_t tasty_bread::get_second(int_t first) {
 	last_nr_iter = 0;
 #endif
 
-	while (left + 1 < right) {
+	while (left < right) {
 
 #ifdef DEBUG_BREAD
 		last_nr_iter ++;
@@ -69,10 +69,10 @@ tasty_bread::int_t tasty_bread::get_second(int_t first) {
 			if (left_v == right_v)
 				return NOT_FOUND;
 			if (a < first) {
-				left = mid;
+				left = mid + 1;
 				left_v = a;
 			} else {  // a > first
-				right = mid;
+				right = mid - 1;
 				right_v = a;
 			}
 		}

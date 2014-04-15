@@ -1,5 +1,5 @@
 //File: data.h
-//Date: Mon Apr 14 04:47:57 2014 +0000
+//Date: Tue Apr 15 14:31:43 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -109,6 +109,7 @@ private:
 };
 
 std::vector<PersonInForum> get_tag_persons(const std::string& s);
+int cnt_tag_persons_hash(const std::string& s);
 std::vector<bool> get_tag_persons_hash(const std::string& s);
 
 template <typename T>

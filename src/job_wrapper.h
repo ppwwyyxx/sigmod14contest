@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Mon Apr 14 15:03:31 2014 +0000
+//Date: Tue Apr 15 18:30:01 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -14,6 +14,7 @@
 #include "lib/Timer.h"
 #include "lib/common.h"
 #include "lib/finish_time_continuation.h"
+#include "q4Scheduler.h"
 #include "globals.h"
 #include "query1.h"
 #include "query2.h"
@@ -35,10 +36,8 @@ extern std::vector<Query4> q4_set;
 inline int do_read_comments(const std::string dir) {
 	Timer timer;
 	read_comments_tim(dir);
-//	mybread.init(dir);
-	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
-
-//	threadpool->add_worker(4);
+	if (Data::nperson > 11000)
+		fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
 
 	comment_read = true;
 	comment_read_cv.notify_all();
@@ -86,28 +85,40 @@ inline void start_3() {
 
 inline void start_4(int) {
 	PP("start4");
+	//std::this_thread::sleep_for(std::chrono::seconds(7));
 	Timer timer;
 	size_t s = q4_set.size();
 	q4.continuation = std::make_shared<FinishTimeContinuation>(s, "q4 finish time");
-	REP(i, s) {
-//		q4.add_query(q4_set[i].k, q4_set[i].tag, i);
-	//	threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
-		q4_jobs.emplace_back(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i));
+	if (Data::nperson > 100000) {
+			q4_sched = new Q4Scheduler(4);
+			q4_sched->work();
+	} else {
+			REP(i, s) {
+					threadpool->enqueue(bind(&Query4Handler::add_query,
+											&q4, q4_set[i].k, q4_set[i].tag, i), 10);
+			}
 	}
 }
 
 // call after read forum
 void destroy_tag_name() {
-	WAIT_FOR(q2_finished);
-	Data::tag_name = std::vector<std::string>();
+		WAIT_FOR(q2_finished);
+		Data::tag_name.clear();
+		Data::tag_name.shrink_to_fit();
+		Data::tag_name = std::vector<std::string>();
 }
 
 // call after all q3 finished
 void destroy_q3_data() {
-	Data::placeid = unordered_map<std::string, std::vector<int>, StringHashFunc>();
-	Data::places = std::vector<PlaceNode>();
-	WAIT_FOR(q2_finished);
-	Data::tags = std::vector<TagSet>();
+		Data::placeid.clear();
+		Data::placeid = unordered_map<std::string, std::vector<int>, StringHashFunc>();
+		Data::places.clear();
+		Data::places.shrink_to_fit();
+		Data::places = std::vector<PlaceNode>();
+		WAIT_FOR(q2_finished);
+		Data::tags.clear();
+		Data::tags.shrink_to_fit();
+		Data::tags = std::vector<TagSet>();
 }
 
 #else

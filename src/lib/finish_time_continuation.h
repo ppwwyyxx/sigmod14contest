@@ -1,6 +1,6 @@
 /*
  * $File: finish_time_continuation.h
- * $Date: Tue Apr 08 19:35:29 2014 +0800
+ * $Date: Tue Apr 15 14:55:17 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 

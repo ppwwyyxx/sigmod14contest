@@ -1,6 +1,6 @@
 /*
  * $File: ThreadPool.hh
- * $Date: Mon Apr 14 13:28:56 2014 +0000
+ * $Date: Tue Apr 15 18:08:09 2014 +0000
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -110,6 +110,7 @@ public:
 	std::priority_queue<std::pair<int, std::function<void()>>,
 		std::vector<std::pair<int, std::function<void()>>>,
 			TaskCmp> tasks;
+	std::condition_variable condition;
 private:
 	friend void __ThreadPoolImpl::worker(ThreadPool *tp);
 
@@ -118,7 +119,6 @@ private:
 
 	// synchronization
 	std::mutex queue_mutex;
-	std::condition_variable condition;
 	std::mutex nr_active_thread_mutex;
 
 	int nr_active_thread;

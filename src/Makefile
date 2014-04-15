@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Mon Apr 14 22:54:35 2014 +0000
+# $Date: Tue Apr 15 20:22:33 2014 +0000
 
 OBJ_DIR = build
 TARGET = ./main
@@ -18,8 +18,7 @@ OPTFLAGS += -O3
 #LDFLAGS += -lprofiler
 
 #MALLOC = $(addprefix third-party/, libtcmalloc.a libunwind.a liblzma.a)
-MALLOC = $(addprefix third-party/, libllalloc.a)
-#LDFLAGS += -ltcmalloc -lc
+#MALLOC = $(addprefix third-party/, libllalloc.a)
 
 LIBS = $(MALLOC)
 
@@ -43,7 +42,7 @@ LDFLAGS += $(CONCURFLAGS) $(OPTFLAGS)
 
 
 CC = gcc
-CXX ?= g++
+CXX ?= g++-4.8
 SHELL = bash
 ccSOURCES = $(shell find . -name "*.cpp" | sed 's/^\.\///g')
 OBJS = $(addprefix $(OBJ_DIR)/,$(ccSOURCES:.cpp=.o))

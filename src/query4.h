@@ -1,5 +1,5 @@
 //File: query4.h
-//Date: Mon Apr 14 17:56:17 2014 +0000
+//Date: Tue Apr 15 16:59:16 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -8,7 +8,6 @@
 #include <memory>
 #include <mutex>
 #include <string>
-#include "lib/allocator.hh"
 #include "lib/utils.h"
 #include "lib/Timer.h"
 #include "lib/hash_lib.h"
@@ -44,25 +43,19 @@ class Query4Calculator {
 
 		int contract_dist;
 		int contract_nr_vtx;
-		Allocator& allocator;
 
 		Query4Calculator(const std::vector<std::vector<int>>& _friends,
-				int _k, Allocator& alloc):
-			np(_friends.size()), friends(_friends), k(_k), allocator(alloc) {
+				int _k):
+			np(_friends.size()), friends(_friends), k(_k) {
 
 				degree = new int[np];
 				estimated_s.resize(np);
 				exact_s.resize(np, -1);
 
 				compute_degree();
-
-				// XXX
-				contract_dist = (int)np;
-				contract_nr_vtx = 3;
 			}
 
 		std::vector<int> work();
-
 
 
 		~Query4Calculator() {
@@ -144,24 +137,6 @@ class Query4Calculator {
 		void estimate_all_s_using_delta_bfs(int est_dist_max);
 
 
-
-
-
-		// i don't know
-		static int dummy;
-
-		// cgraph
-		std::vector<std::vector<int>> cgraph;
-		std::vector<int> cgraph_vtx_weight;
-		std::vector<int> vtx_old2new;
-		std::vector<std::vector<int>> vtx_new2old;
-		std::vector<int> cgraph_estimated_s_inner;
-		std::vector<int> cgraph_estimated_s_outter;
-		std::vector<int> cgraph_estimated_s;
-
-		int estimate_s_using_cgraph(int source);
-		void contract_graph();
-		// end
 
 		//! change_vtx is a vector of pair (vtx, dist)
 		//! return number of vertex traversed

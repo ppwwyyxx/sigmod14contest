@@ -1,5 +1,5 @@
 //File: data.cpp
-//Date: Mon Apr 14 04:45:21 2014 +0000
+//Date: Tue Apr 15 14:31:12 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "data.h"
@@ -64,6 +64,15 @@ PersonInPlace::PersonInPlace(int _pid):
 vector<bool> get_tag_persons_hash(const string& s) {
 	DEBUG_DECL(TotalTimer, tt("get_tag_persons_hash"));
 	return q4_persons[s];
+}
+
+int cnt_tag_persons_hash(const string& s) {
+	int np = 0;
+	auto& hash = q4_persons[s];
+	REP(j, Data::nperson)
+		if (hash[j])
+			np ++;
+	return np;
 }
 
 vector<int> get_tag_persons(const string& s) {

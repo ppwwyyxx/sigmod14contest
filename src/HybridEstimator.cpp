@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Mon Apr 14 18:00:49 2014 +0000
+//Date: Tue Apr 15 18:33:44 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -9,26 +9,25 @@ using namespace std;
 
 HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, int* _degree,
 		vector<bool>& _noneed, int _sum_bound,
-		const vector<int>& _approx_result,
-		Allocator& _allocator):
+		const vector<int>& _approx_result):
 	SumEstimator(_graph), degree(_degree),
 	noneed(_noneed), sum_bound(_sum_bound),
-	approx_result(_approx_result),
-	allocator(_allocator)
-{
-}
+	approx_result(_approx_result) { }
 
 void HybridEstimator::init() {
-//    fprintf(stderr, "@@@@@@@@@@\n");
 	if (Data::nperson <= 300001)
 		bfs_2_dp_1();
 	else {
-		if (np > 150000)
+		if (np > 100000)
 			bfs_2_dp_1();
 		else
 			bfs_2_dp_more();
 	}
-	//bfs_2_dp_1();
+}
+
+void HybridEstimator::bfs_3() {
+		/// TODO
+
 }
 
 void HybridEstimator::bfs_2_dp_1() {
@@ -36,8 +35,7 @@ void HybridEstimator::bfs_2_dp_1() {
 	Timer init;
 	int len = get_len_from_bit(np);
 
-	//std::vector<Bitset> s_prev;
-	BitBoard s_prev(np, allocator);
+	BitBoard s_prev(np);
 	{
 		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
 
@@ -51,9 +49,7 @@ void HybridEstimator::bfs_2_dp_1() {
 	cutcnt = 0;
 	{
 		TotalTimer ttt("depth 2");
-		int tag = 0;
 		REP(i, np) {
-			tag ++;
 
 			// depth 0
 			s_prev[i].set(i);
@@ -101,11 +97,7 @@ void HybridEstimator::bfs_2_dp_1() {
 		int nr_idle = threadpool->get_nr_idle_thread();
 		if (nr_idle) {
 			print_debug("Idle thread: %d\n", nr_idle);
-			/*
-			 *if (nr_idle == 1)
-			 *    nr_idle = 2;
-			 */
-#pragma omp parallel for schedule(dynamic) num_threads(nr_idle + 1)
+#pragma omp parallel for schedule(dynamic) num_threads(3)
 			REP(i, np) {
 				if (noneed[i]) continue;
 				if (result[i] == 0) continue;
@@ -116,7 +108,6 @@ void HybridEstimator::bfs_2_dp_1() {
 				s.and_not_arr(s_prev[i], len);
 
 				int c = s.count(len);
-				//			print_debug("S1: %lu, S2: %d S3: %d\n", graph[i].size(), s_prev[i].count(len) - graph[i].size(), c);
 				result[i] += c * 3;
 				nr_remain[i] -= c;
 				result[i] += nr_remain[i] * 4;
@@ -141,15 +132,13 @@ void HybridEstimator::bfs_2_dp_1() {
 			s.free();
 		}
 	}
-	s_prev.free(allocator);
 }
 
 void HybridEstimator::bfs_2_dp_more() {
 	Timer init;
 	int len = get_len_from_bit(np);
 
-	//std::vector<Bitset> s_prev;
-	BitBoard s_prev(np, allocator);
+	BitBoard s_prev(np);
 	{
 		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
 		/*
@@ -169,10 +158,7 @@ void HybridEstimator::bfs_2_dp_more() {
 	cutcnt = 0;
 	{
 		TotalTimer ttt("depth 2");
-		int tag = 0;
 		REP(i, np) {
-			tag ++;
-
 			// depth 0
 			s_prev[i].set(i);
 			nr_remain[i] -= 1;
@@ -214,61 +200,49 @@ void HybridEstimator::bfs_2_dp_more() {
 	}
 
 	vector<int> tmp_result(np);
-	BitBoard s(np, allocator);
-	/*
-	 *vector<Bitset> s; s.reserve(np);		// XXX MEMORY!!
-	 *{
-	 *    TotalTimer tt("hybrid alloc");
-	 *    REP(i, np)
-	 *        s.emplace_back(len);
-	 *}
-	 */
+	BitBoard s(np);
 	depth = 3;
-	double err = 0;
-	while (true) {
-		// TODO separate d3 and d4 to save memory at d4
-		TotalTimer ttt("Depth 3+");
-		// calculate s from s_prev
-		REP(i, np) {
-			if (depth == 4) {	// cannot prune in depth=3, because depth=4 need every s[i]_3
-				if (noneed[i]) continue;
-				if (result[i] == 0) continue;
-				if (nr_remain[i] == 0) continue;
-			}
-
-			s[i].reset(len);
-			FOR_ITR(fr, graph[i])
-				s[i].or_arr(s_prev[*fr], len);
-			s[i].and_not_arr(s_prev[i], len);
-			int c = s[i].count(len);
-			result[i] += c * depth;
-			nr_remain[i] -= c;
-			tmp_result[i] = result[i] + nr_remain[i] * (depth + 1);
-		}
-
-		if (depth == 4)		// XXX at most 4? might be enough!  // TODO: 4th level can be implemented with half memory
-			break;
-
-		// judge whether tmp_result is accurate enough
-		if (good_err(tmp_result))
-			break;
-		print_debug("Err: %.4lf with np=%d\n", err, np);
-		depth ++;
-		s.swap(s_prev);
+	bool use_4 = true;
+	TotalTimer ttt("Depth 3+");
+#pragma omp parallel for schedule(dynamic) num_threads(3)
+	REP(i, np) {
+		s[i].reset(len);
+		FOR_ITR(fr, graph[i])
+			s[i].or_arr(s_prev[*fr], len);
+		s[i].and_not_arr(s_prev[i], len);
+		int c = s[i].count(len);
+		result[i] += c * depth;
+		nr_remain[i] -= c;
+		tmp_result[i] = result[i] + nr_remain[i] * (depth + 1);
 	}
 
-	/*
-	 *    long long all = 0;
-	 *    for (int i = 0; i < np; i ++)
-	 *        all += s_prev[i].count(len);
-	 *    double ave = all / (double)np;
-	 *
-	 *    fprintf(stderr, "ave popcount: d %d %f/%d %f\n", depth, ave, np, ave / np);
-	 */
-	s_prev.free(allocator);
-	s.free(allocator);
+	// judge whether tmp_result is accurate enough
+	if (good_err(tmp_result))
+		use_4 = false;
 
-	result = move(tmp_result);
+	if (use_4) {
+		depth ++;
+		s.swap(s_prev);
+		s.free();
+		Bitset ss(len);
+		REP(i, np) {
+			if (noneed[i]) continue;
+			if (result[i] == 0) continue;
+			if (nr_remain[i] == 0) continue;
+			ss.reset(len);
+			FOR_ITR(fr, graph[i])
+				ss.or_arr(s_prev[*fr], len);
+			ss.and_not_arr(s_prev[i], len);
+			int c = ss.count(len);
+			result[i] += c * depth;
+			nr_remain[i] -= c;
+			result[i] += nr_remain[i] * (depth + 1);
+		}
+		ss.free();
+	} else {
+		result = move(tmp_result);
+	}
+	s_prev.free();
 }
 
 #if 0
@@ -290,151 +264,151 @@ void VectorMergeHybridEstimator::vector_dp() {
 
 	vector<vector<int>> s_now(np), s_prev(np); // f[i]_k: {points | dist(points, i) <= k}
 
-	vector<vector<size_t>> count(np);  // of size np * depth
-	result.resize((size_t)np, 0);
-	cutcnt = 0;
+vector<vector<size_t>> count(np);  // of size np * depth
+result.resize((size_t)np, 0);
+cutcnt = 0;
 
-	{
-		for (int i = 0; i < np; i ++) {
-			s_now[i] = graph[i];
-			s_now[i].emplace_back(i);
-			sort(s_now[i].begin(), s_now[i].end());
+{
+	for (int i = 0; i < np; i ++) {
+		s_now[i] = graph[i];
+		s_now[i].emplace_back(i);
+		sort(s_now[i].begin(), s_now[i].end());
 
-			count[i].resize(2);
-			count[i][0] = 1;
-			count[i][1] = 1 + graph[i].size();
-//            fprintf(stderr, "%lu %lu %lu\n", count[i][1], s_now[i].size(), graph[i].size());
-			assert(count[i][1] == s_now[i].size());
-			result[i] = graph[i].size();
-		}
+		count[i].resize(2);
+		count[i][0] = 1;
+		count[i][1] = 1 + graph[i].size();
+		//            fprintf(stderr, "%lu %lu %lu\n", count[i][1], s_now[i].size(), graph[i].size());
+		assert(count[i][1] == s_now[i].size());
+		result[i] = graph[i].size();
 	}
+}
 
-	long long cost = 0;
-	long long estimated_cost = 0;;
-	vector<int> buf[2];
-	buf[0].resize(np);
-	buf[1].resize(np);
-	vector<int> tmp_result(result.size());
-	int depth_max = 3;
-	for (depth = 2; ;) {
-		s_now.swap(s_prev);
-		for (int i = 0; i < np; i ++) {
-			int cnt = 0;
-			buf[0].resize(0);
-			buf[1].resize(0);
+long long cost = 0;
+long long estimated_cost = 0;;
+vector<int> buf[2];
+buf[0].resize(np);
+buf[1].resize(np);
+vector<int> tmp_result(result.size());
+int depth_max = 3;
+for (depth = 2; ;) {
+	s_now.swap(s_prev);
+	for (int i = 0; i < np; i ++) {
+		int cnt = 0;
+		buf[0].resize(0);
+		buf[1].resize(0);
 
 
 #if 0
-			// merge all neighbours
-			FOR_ITR(itr, graph[i]) {
-				auto& fr = *itr;
-				auto &prev = buf[cnt & 1];
-				auto &cur = buf[(cnt + 1) & 1];
-				auto &g = s_prev[fr];
+		// merge all neighbours
+		FOR_ITR(itr, graph[i]) {
+			auto& fr = *itr;
+			auto &prev = buf[cnt & 1];
+			auto &cur = buf[(cnt + 1) & 1];
+			auto &g = s_prev[fr];
 
-				cost += unique_merge(prev, g, cur);
-//                cur.resize(prev.size() + g.size());
-//                merge(
-//                    prev.begin(), prev.end(),
-//                    g.begin(), g.end(),
-//                    cur.begin());
-//                cur.resize(unique(cur.begin(), cur.end()) - cur.begin());
-				cnt ++;
-			}
+			cost += unique_merge(prev, g, cur);
+			//                cur.resize(prev.size() + g.size());
+			//                merge(
+			//                    prev.begin(), prev.end(),
+			//                    g.begin(), g.end(),
+			//                    cur.begin());
+			//                cur.resize(unique(cur.begin(), cur.end()) - cur.begin());
+			cnt ++;
+		}
 
-			cost += unique_merge(buf[cnt & 1], s_prev[i], s_now[i]);
+		cost += unique_merge(buf[cnt & 1], s_prev[i], s_now[i]);
 #else
 
-			std::vector<std::vector<int> *> items;
-			FOR_ITR(itr, graph[i]) {
-				auto& fr = *itr;
-				items.emplace_back(&s_prev[fr]);
-			}
-			items.emplace_back(&s_prev[i]);
-			cost += quick_unique_merge(items, s_now[i]);
+		std::vector<std::vector<int> *> items;
+		FOR_ITR(itr, graph[i]) {
+			auto& fr = *itr;
+			items.emplace_back(&s_prev[fr]);
+		}
+		items.emplace_back(&s_prev[i]);
+		cost += quick_unique_merge(items, s_now[i]);
 #endif
 
 #if 1
-			// TEST: estimate cost
-			vector<int> sizes;
-			FOR_ITR(itr, graph[i]) {
-				auto& fr = *itr;
-				sizes.emplace_back(s_prev[fr].size());
-			}
-			sizes.emplace_back(s_prev[i].size());
-			estimated_cost += estimate_merge_cost(sizes);
+		// TEST: estimate cost
+		vector<int> sizes;
+		FOR_ITR(itr, graph[i]) {
+			auto& fr = *itr;
+			sizes.emplace_back(s_prev[fr].size());
+		}
+		sizes.emplace_back(s_prev[i].size());
+		estimated_cost += estimate_merge_cost(sizes);
 #endif
 
 
-			count[i].resize(depth + 1);
-			count[i][depth] = s_now[i].size();
+		count[i].resize(depth + 1);
+		count[i][depth] = s_now[i].size();
 
-			result[i] += (count[i][depth] - count[i][depth - 1]) * depth;
+		result[i] += (count[i][depth] - count[i][depth - 1]) * depth;
 
-			if (noneed[i])
-				continue;
-			int nr_next_depth_upper = 0;
-			FOR_ITR(itr, s_now[i]) {
-				auto& fr = *itr;
-				nr_next_depth_upper += graph[fr].size();
-			}
-
-			int est_s_lowerbound =
-				result[i] +
-				(degree[i] - count[i][depth]) * (depth + 1);
-//
-//                nr_next_depth_upper * (depth + 1) +
-//                std::max(0, (int)(degree[i] - count[i][depth] - nr_next_depth_upper)) * (depth + 2);
-			tmp_result[i] = est_s_lowerbound;
-
-
-			if (0) {
-				int s = get_exact_s(i);
-				if (est_s_lowerbound > s)
-					fprintf(stderr, "%d %d\n", est_s_lowerbound, s);
-				m_assert(est_s_lowerbound <= s);
-			}
-
-			if (not noneed[i]) {
-//                fprintf(stderr, "%d %d\n", est_s_lowerbound, sum_bound);
-				if (est_s_lowerbound > sum_bound) {		// cut
-					noneed[i] = true;
-					cutcnt ++;
-					result[i] = 1e9;
-				}
-			}
+		if (noneed[i])
+			continue;
+		int nr_next_depth_upper = 0;
+		FOR_ITR(itr, s_now[i]) {
+			auto& fr = *itr;
+			nr_next_depth_upper += graph[fr].size();
 		}
 
-		if (depth == depth_max)
-			break;
-		if (good_err(tmp_result))
-			break;
+		int est_s_lowerbound =
+			result[i] +
+			(degree[i] - count[i][depth]) * (depth + 1);
+		//
+		//                nr_next_depth_upper * (depth + 1) +
+		//                std::max(0, (int)(degree[i] - count[i][depth] - nr_next_depth_upper)) * (depth + 2);
+		tmp_result[i] = est_s_lowerbound;
 
-//        fprintf(stderr, "depth: %d\n", depth);
-		depth ++;
+
+		if (0) {
+			int s = get_exact_s(i);
+			if (est_s_lowerbound > s)
+				fprintf(stderr, "%d %d\n", est_s_lowerbound, s);
+			m_assert(est_s_lowerbound <= s);
+		}
+
+		if (not noneed[i]) {
+			//                fprintf(stderr, "%d %d\n", est_s_lowerbound, sum_bound);
+			if (est_s_lowerbound > sum_bound) {		// cut
+				noneed[i] = true;
+				cutcnt ++;
+				result[i] = 1e9;
+			}
+		}
 	}
 
-    fprintf(stderr, "merge cost: %lld %lld %f\n", cost, estimated_cost, (double)estimated_cost / cost);
+	if (depth == depth_max)
+		break;
+	if (good_err(tmp_result))
+		break;
 
-	result = move(tmp_result);
+	//        fprintf(stderr, "depth: %d\n", depth);
+	depth ++;
+}
+
+fprintf(stderr, "merge cost: %lld %lld %f\n", cost, estimated_cost, (double)estimated_cost / cost);
+
+result = move(tmp_result);
 
 #if 0
-	for (int i = 0; i < np; i ++) {
-		auto &r = result[i] = 0;
-		for (int d = 1; d <= depth; d ++)
-			r += (count[i][d] - count[i][d - 1]) * d;
-		r += (degree[i] - count[i][depth]) * (depth + 1);
+for (int i = 0; i < np; i ++) {
+	auto &r = result[i] = 0;
+	for (int d = 1; d <= depth; d ++)
+		r += (count[i][d] - count[i][d - 1]) * d;
+	r += (degree[i] - count[i][depth]) * (depth + 1);
 
 #if 0
-		int p = estimate_s_limit_depth(i, depth);
-		if (r != p) {
-			fprintf(stderr, "%d %d\n", r, p);
-		}
-		m_assert(r == p);
+	int p = estimate_s_limit_depth(i, depth);
+	if (r != p) {
+		fprintf(stderr, "%d %d\n", r, p);
+	}
+	m_assert(r == p);
 #endif
 
-//        fprintf(stderr, "%d\n", r);
-	}
+	//        fprintf(stderr, "%d\n", r);
+}
 #endif
 }
 

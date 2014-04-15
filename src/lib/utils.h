@@ -92,7 +92,11 @@ inline int get_free_mem() {		// return in MB;
 			ncache = stoul(str);
 //			printf("cacch: %d\n", ncache);
 		}
+		if (nfree && ncache)
+			break;
 	}
 	fin.close();
+	if (nfree == 0 || ncache == 0)
+		return -1;
 	return (nfree + ncache) / 1024;
 }

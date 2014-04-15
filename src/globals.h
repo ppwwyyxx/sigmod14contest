@@ -1,5 +1,5 @@
 //File: globals.h
-//Date: Mon Apr 14 15:02:51 2014 +0000
+//Date: Tue Apr 15 14:54:56 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -28,6 +28,7 @@ extern Timer globaltimer;
 DECLARE_SIGNAL(tag_read)
 DECLARE_SIGNAL(friends_hash_built)
 DECLARE_SIGNAL(q2_finished)
+DECLARE_SIGNAL(q4_finished)
 DECLARE_SIGNAL(comment_read)
 
 #undef DECLARE_SIGNAL
@@ -41,6 +42,8 @@ extern int q1_cmt_vst;
 extern unordered_set<std::string, StringHashFunc> q4_tag_set;
 extern unordered_map<std::string, std::vector<bool>> q4_persons;
 extern std::vector<std::thread> q4_jobs;
+class Q4Scheduler;
+extern Q4Scheduler* q4_sched;
 
 extern bread mybread;
 // end of global variables!!

@@ -1,5 +1,5 @@
 //File: q4Scheduler.h
-//Date: Tue Apr 15 17:58:45 2014 +0000
+//Date: Wed Apr 16 01:26:20 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -117,7 +117,7 @@ class Q4Scheduler {
 			int m = ::get_free_mem();
 			int tot = Q4Scheduler::get_mem_total();
 			int used = tot - m;
-			int ret = 14u * 1024 - used;
+			int ret = 13u * 1024 - used;
 			if (ret < 0) return 0;
 			return ret;
 		}

@@ -1,5 +1,5 @@
 //File: query1.cpp
-//Date: Sat Apr 12 17:22:11 2014 +0000
+//Date: Wed Apr 16 01:22:28 2014 +0800
 
 #include "query1.h"
 #include "lib/common.h"
@@ -31,7 +31,6 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 			for (auto it = friends.begin(); it != friends.end(); it ++) {
 				int person = it -> pid;
 				if (x >= 0) {
-					q1_cmt_vst ++;
 					/*
 					 *if (not mybread.check(now_ele, person, x))
 					 *    continue;
@@ -56,7 +55,6 @@ int bfs2(int p1, int p2, int x) {			// 10k: 0.014sec / 1500queries
 				int person = it -> pid;
 				// TODO friends is not sorted by cmt because cmt is read later
 				if (x >= 0) {
-					q1_cmt_vst ++;
 					if (it->ncmts <= x) continue;
 					/*
 					 *if (not mybread.check(now_ele, person, x))

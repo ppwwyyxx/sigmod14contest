@@ -2,6 +2,7 @@
 #include "data.h"
 #include "lib/debugutils.h"
 #include "heap.h"
+#include "lib/utils.h"
 #include <vector>
 #include <cstdio>
 #include <algorithm>
@@ -147,22 +148,11 @@ void Query2Handler::work() {
 
 	// clean q2 data
 	delete[] Data::birthday;
-	Data::person_in_tags.clear();
-	Data::person_in_tags.shrink_to_fit();
-	Data::person_in_tags = vector<vector<int>>();
-
-	f.clear();
-	f.shrink_to_fit();
-	sum.clear();
-	sum.shrink_to_fit();
-	myhash.clear();
-	myhash.shrink_to_fit();
-	myfriends.clear();
-	myfriends.shrink_to_fit();
-	f = vector<vector<int>>();
-	sum = vector<vector<int>>();
-	myfriends = vector<vector<int>>();
-	myhash = vector<unordered_map<int, int>>();
+	FreeAll(Data::person_in_tags);
+	FreeAll(f);
+	FreeAll(sum);
+	FreeAll(myhash);
+	FreeAll(myfriends);
 	heap.free();
 
 	q2_finished = true;

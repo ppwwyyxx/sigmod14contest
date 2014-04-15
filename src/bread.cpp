@@ -21,6 +21,7 @@
 #include "lib/fast_read.h"
 using namespace std;
 
+const int CACHE_FIRST_LEN = 20;
 
 void bread::init(const std::string &dir)
 {
@@ -45,71 +46,79 @@ void bread::init(const std::string &dir)
 		owner.emplace_back(pid);
 	}
 	fclose(fin);
+	tasty.init(dir);
 
-
-	int fd = open((dir + "/comment_replyOf_comment.csv").c_str(), O_RDONLY);
-	struct stat s; fstat(fd, &s);
-	size = s.st_size;
-	void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE|MAP_POPULATE, fd, 0);
-	madvise(mapped, size, MADV_WILLNEED);
-	ptr = (char*)mapped;
-	buf_end = (char*)mapped + size;
-
-	MMAP_READ_TILL_EOL();
-
+	unsigned long long maxv = tasty.max_v;
+	m_assert(maxv);
+	/*
+	 *int n_digit = 64 - __builtin_clzll(maxv);
+	 *PP(n_digit);PP(maxv);
+	 *n_offset = n_digit < CACHE_FIRST_LEN ? 0 : n_digit - CACHE_FIRST_LEN;
+	 */
+	cache.resize(maxv, 0);
+	c2.resize(Data::nperson);
+	FOR_ITR(itr, c2)
+		itr->set_empty_key(-1);
+	/*
+	 *FOR_ITR(itr, cache)
+	 *    itr->set_empty_key((1 << (n_offset + 1)) - 1);
+	 */
 }
 
+#include <unordered_set>
 bool bread::check(int a, int b, int threashold) {
+	/*
+	 *if (a < b) swap(a, b);
+	 *static std::unordered_set<pair<int, int>> c;
+	 *c.emplace(a, b);
+	 *PP(c.size());
+	 */
+
 	n_vst ++;
-	PP(n_vst);
+	if (n_vst % 10000 == 0)
+		PP(n_vst);
     return check_oneside(a, b, threashold) && check_oneside(b, a, threashold);
 }
 
 bool bread::check_oneside(int a, int b, int threshold)
 {
+	auto& m = c2[a][b];
+	if (m > threshold)
+		return true;
 	int tot = 0;
-	for (int i = 0; i < (int) people[a].size(); i ++)
+	auto& pp = people[a];
+	for (int i = 0; i < (int) pp.size(); i ++)
 	{
-		int cid = people[a][i];
-
-		for (int lo = 0, hi = (int) size - 1; lo <= hi; )
-		{
-			int mid = (lo + hi) >> 1;
-
-			char* lp = ptr + mid;
-
-			while ((*lp) != '\n') lp ++;
-            // =,=!
-            if ((lp +1) == buf_end) {
-                hi = mid - 1;
-                continue;
-            }
-			lp ++;
-
-			unsigned long long cid1 = 0;
-			do {
-				cid1 = cid1 * 10 + *lp - '0';
-				lp ++;
-			} while (*lp != '|');
-			lp ++;
-
-			if (cid1 == cid)
-			{
-			    unsigned long long cid2 = 0;
-			    do {
-				    cid2 = cid2 * 10 + *lp - '0';
-				    lp ++;
-			    } while (*lp != '\n');
-				if (owner[cid2 / 10] == b)
-					tot ++;
-				break;
+		unsigned long long cid = pp[i];
+		int owner2 = get_second(cid);
+		if (owner2 == b) {
+			tot ++;
+			if (tot > threshold) {
+				m = tot;
+				return true;
 			}
-			if (cid1 < cid)
-				lo = mid + 1;
-			else hi = mid - 1;
 		}
-
-		if (tot > threshold) return true;
 	}
+	if (tot > m)
+		m = tot;
 	return false;
 }
+
+
+int bread::get_second(unsigned long long cid) {
+	/*
+	 *int idx = cid >> n_offset,
+	 *    offset = cid & ((1 << n_offset) - 1);
+	 */
+
+	int* pp = cache.data() + cid;
+	if (*pp == 0) {
+		ULL t = tasty.get_second(cid);
+		if (t == tasty_bread::NOT_FOUND)
+			*pp = 1e9;
+		else
+			*pp = owner[t / 10];
+	}
+	return *pp;
+}
+

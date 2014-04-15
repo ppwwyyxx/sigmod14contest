@@ -100,3 +100,9 @@ inline int get_free_mem() {		// return in MB;
 		return -1;
 	return (nfree + ncache) / 1024;
 }
+
+template <typename T>
+void FreeAll(T & t ) {
+    T tmp;
+    t.swap( tmp );
+}

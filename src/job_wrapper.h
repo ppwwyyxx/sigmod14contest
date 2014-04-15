@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Tue Apr 15 18:30:01 2014 +0800
+//Date: Wed Apr 16 01:22:11 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -35,6 +35,7 @@ extern std::vector<Query4> q4_set;
 
 inline int do_read_comments(const std::string dir) {
 	Timer timer;
+	//mybread.init(dir);
 	read_comments_tim(dir);
 	if (Data::nperson > 11000)
 		fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
@@ -103,22 +104,16 @@ inline void start_4(int) {
 // call after read forum
 void destroy_tag_name() {
 		WAIT_FOR(q2_finished);
-		Data::tag_name.clear();
-		Data::tag_name.shrink_to_fit();
-		Data::tag_name = std::vector<std::string>();
+		FreeAll(Data::tag_name);
 }
 
 // call after all q3 finished
 void destroy_q3_data() {
 		Data::placeid.clear();
 		Data::placeid = unordered_map<std::string, std::vector<int>, StringHashFunc>();
-		Data::places.clear();
-		Data::places.shrink_to_fit();
-		Data::places = std::vector<PlaceNode>();
+		FreeAll(Data::places);;
 		WAIT_FOR(q2_finished);
-		Data::tags.clear();
-		Data::tags.shrink_to_fit();
-		Data::tags = std::vector<TagSet>();
+		FreeAll(Data::tags);
 }
 
 #else

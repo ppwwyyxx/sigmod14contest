@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Tue Apr 15 14:55:36 2014 +0800
+//Date: Tue Apr 15 17:21:42 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -103,14 +103,21 @@ inline void start_4(int) {
 // call after read forum
 void destroy_tag_name() {
 	WAIT_FOR(q2_finished);
+	Data::tag_name.clear();
+	Data::tag_name.shrink_to_fit();
 	Data::tag_name = std::vector<std::string>();
 }
 
 // call after all q3 finished
 void destroy_q3_data() {
+	Data::placeid.clear();
 	Data::placeid = unordered_map<std::string, std::vector<int>, StringHashFunc>();
+	Data::places.clear();
+	Data::places.shrink_to_fit();
 	Data::places = std::vector<PlaceNode>();
 	WAIT_FOR(q2_finished);
+	Data::tags.clear();
+	Data::tags.shrink_to_fit();
 	Data::tags = std::vector<TagSet>();
 }
 

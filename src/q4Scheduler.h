@@ -1,5 +1,5 @@
 //File: q4Scheduler.h
-//Date: Tue Apr 15 15:05:25 2014 +0800
+//Date: Tue Apr 15 17:38:01 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -47,13 +47,13 @@ class Q4Scheduler {
 			size_t nq4 = q4_set.size();
 			REP(i, nq4) {
 				std::string & s = q4_set[i].tag;
-				int np = cnt_tag_persons_hash(s);
+				size_t np = cnt_tag_persons_hash(s);
 				int size = np * np / 8 / 1024 / 1024;
 				if (np < 100000 && Data::nperson > 3000000)
 					size *= 2;
 				jobs.insert(Q4Job(q4_set[i].k, i, s, size));
 			}
-			mem_free = get_free_mem();
+			mem_free = Q4Scheduler::get_free_mem();
 		}
 
 		void work() {
@@ -67,6 +67,9 @@ class Q4Scheduler {
 			if (n_free) {
 				for (auto itr = jobs.begin(); itr != jobs.end();) {
 					if (itr->mem < mem_free) {
+						print_debug("About to start job with np=%d, mem=%d, nfree=%d, mem_using=%d, mem_free=%d\n",
+								cnt_tag_persons_hash(itr->tag), itr->mem, n_free,
+								mem_using, mem_free);
 						__sync_fetch_and_add(&n_free, -1);
 						__sync_fetch_and_add(&mem_free, -itr->mem);
 						__sync_fetch_and_add(&mem_using, itr->mem);
@@ -83,21 +86,43 @@ class Q4Scheduler {
 		}
 
 		void do_job(Q4Job job) {
-			print_debug("Start job with np=%d, nfree=%d, mem_using=%d, mem_free=%d\n",
-					cnt_tag_persons_hash(job.tag), n_free,
+			print_debug("Start job with np=%d, mem=%d, nfree=%d, mem_using=%d, mem_free=%d\n",
+					cnt_tag_persons_hash(job.tag), job.mem, n_free,
 					mem_using, mem_free);
 			q4.add_query(job.k, job.tag, job.idx);
 			__sync_fetch_and_add(&n_free, 1);
 			__sync_fetch_and_add(&mem_free, job.mem);
 			__sync_fetch_and_add(&mem_using, -job.mem);
+			refresh_mem();
 			work();
 		}
 
 		void refresh_mem() {
-			int free = get_free_mem();
+			int free = Q4Scheduler::get_free_mem();
 			mem_free = free - mem_using;
 		}
 
+		static int get_mem_total() { // in MB
+			std::ifstream fin("/proc/meminfo");
+			std::string str;
+			while (not fin.eof()) {
+				fin >> str;
+				if (str == "MemTotal:") {
+					fin >> str;
+					return (int)(stoul(str) / 1024lu);
+				}
+			}
+			return 0;
+		}
 
+		static int get_free_mem() {
+			// might be fake
+			int m = ::get_free_mem();
+			int tot = Q4Scheduler::get_mem_total();
+			int used = tot - m;
+			int ret = 14u * 1024 - used;
+			if (ret < 0) return 0;
+			return ret;
+		}
 
 };

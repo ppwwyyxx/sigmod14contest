@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Tue Apr 15 15:40:47 2014 +0800
+//Date: Tue Apr 15 17:29:41 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -134,7 +134,6 @@ void HybridEstimator::bfs_2_dp_more() {
 	Timer init;
 	int len = get_len_from_bit(np);
 
-	//std::vector<Bitset> s_prev;
 	BitBoard s_prev(np);
 	{
 		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
@@ -201,7 +200,6 @@ void HybridEstimator::bfs_2_dp_more() {
 	depth = 3;
 	bool use_4 = true;
 	TotalTimer ttt("Depth 3+");
-	// calculate s from s_prev
 #pragma omp parallel for schedule(dynamic) num_threads(3)
 	REP(i, np) {
 		s[i].reset(len);
@@ -240,6 +238,7 @@ void HybridEstimator::bfs_2_dp_more() {
 	} else {
 		result = move(tmp_result);
 	}
+	s_prev.free();
 }
 
 #if 0

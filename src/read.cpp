@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Mon Apr 14 04:46:37 2014 +0000
+//Date: Tue Apr 15 19:56:46 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -141,7 +141,8 @@ void read_comments(const string &dir) {
 		READ_TILL_EOL();
 		unsigned long long cid;
 		int pid;
-		if (Data::nperson > 9000) owner.reserve(20100000);
+		if (Data::nperson > 90000) owner.reserve(65000000);
+		else if (Data::nperson > 9000) owner.reserve(20100000);
 		while (true) {
 			READ_INT(cid);
 			if (buffer == buf_end) break;

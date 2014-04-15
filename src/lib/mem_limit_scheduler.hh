@@ -1,6 +1,6 @@
 /*
  * $File: mem_limit_scheduler.hh
- * $Date: Mon Apr 14 03:14:42 2014 +0000
+ * $Date: Tue Apr 15 18:31:11 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -108,7 +108,7 @@ class MemLimitScheduler {
 
 			{
 				std::lock_guard<std::mutex> guard(acquisitions_bigger_size_first_mutex);
-				acquisitions_bigger_size_first.emplace(lock, id, mem_size);
+				acquisitions_bigger_size_first.insert(Acquisition(lock, id, mem_size));
 			}
 			{
 				std::lock_guard<std::mutex> guard(acquired_mem_by_id_mutex);

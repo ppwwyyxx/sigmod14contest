@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Tue Apr 15 18:09:44 2014 +0000
+//Date: Tue Apr 15 18:30:01 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -89,37 +89,36 @@ inline void start_4(int) {
 	Timer timer;
 	size_t s = q4_set.size();
 	q4.continuation = std::make_shared<FinishTimeContinuation>(s, "q4 finish time");
-	/*
-	 *REP(i, s) {
-	 *    threadpool->enqueue(bind(&Query4Handler::add_query,
-	 *                &q4, q4_set[i].k, q4_set[i].tag, i), 10);
-	 *}
-	 *q4_finished = true; // not really, but works for compatibility
-	 *q4_finished_cv.notify_all();
-	 */
-	q4_sched = new Q4Scheduler(3);
-	q4_sched->work();
+	if (Data::nperson > 100000) {
+			q4_sched = new Q4Scheduler(4);
+			q4_sched->work();
+	} else {
+			REP(i, s) {
+					threadpool->enqueue(bind(&Query4Handler::add_query,
+											&q4, q4_set[i].k, q4_set[i].tag, i), 10);
+			}
+	}
 }
 
 // call after read forum
 void destroy_tag_name() {
-	WAIT_FOR(q2_finished);
-	Data::tag_name.clear();
-	Data::tag_name.shrink_to_fit();
-	Data::tag_name = std::vector<std::string>();
+		WAIT_FOR(q2_finished);
+		Data::tag_name.clear();
+		Data::tag_name.shrink_to_fit();
+		Data::tag_name = std::vector<std::string>();
 }
 
 // call after all q3 finished
 void destroy_q3_data() {
-	Data::placeid.clear();
-	Data::placeid = unordered_map<std::string, std::vector<int>, StringHashFunc>();
-	Data::places.clear();
-	Data::places.shrink_to_fit();
-	Data::places = std::vector<PlaceNode>();
-	WAIT_FOR(q2_finished);
-	Data::tags.clear();
-	Data::tags.shrink_to_fit();
-	Data::tags = std::vector<TagSet>();
+		Data::placeid.clear();
+		Data::placeid = unordered_map<std::string, std::vector<int>, StringHashFunc>();
+		Data::places.clear();
+		Data::places.shrink_to_fit();
+		Data::places = std::vector<PlaceNode>();
+		WAIT_FOR(q2_finished);
+		Data::tags.clear();
+		Data::tags.shrink_to_fit();
+		Data::tags = std::vector<TagSet>();
 }
 
 #else

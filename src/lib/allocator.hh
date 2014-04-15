@@ -1,6 +1,6 @@
 /*
  * $File: allocator.hh
- * $Date: Mon Apr 14 22:30:57 2014 +0000
+ * $Date: Tue Apr 15 18:31:01 2014 +0800
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
  */
 
@@ -175,7 +175,7 @@ class SIGMODAllocator {
 		void wait_mem(std::mutex &lock, size_t id, size_t size, bool is_enter) {
 			{
 				std::lock_guard<std::mutex> guard(acquisitions_bigger_size_first_mutex);
-				acquisitions_bigger_size_first.emplace(lock, id, size, is_enter);
+				acquisitions_bigger_size_first.insert(Acquisition(lock, id, size, is_enter));
 				PP(acquisitions_bigger_size_first.size());
 			}
 			if (is_enter)

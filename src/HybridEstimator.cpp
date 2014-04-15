@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Tue Apr 15 17:29:41 2014 +0000
+//Date: Tue Apr 15 18:33:44 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -23,7 +23,11 @@ void HybridEstimator::init() {
 		else
 			bfs_2_dp_more();
 	}
-	//bfs_2_dp_1();
+}
+
+void HybridEstimator::bfs_3() {
+		/// TODO
+
 }
 
 void HybridEstimator::bfs_2_dp_1() {

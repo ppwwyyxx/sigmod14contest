@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Mon Apr 14 23:58:34 2014 +0000
+//Date: Tue Apr 15 14:56:34 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -88,7 +88,7 @@ void read_query(const string& fname) {
 int main(int argc, char* argv[]) {
 	globaltimer.reset();
 	threadpool = new ThreadPool(NUM_THREADS);
-	SIGMODAllocator::init(4, 2lu * 1024 * 1024 * 1024);
+	//SIGMODAllocator::init(4, 2lu * 1024 * 1024 * 1024);
 	Timer timer;
 	// initialize global variables...
 #ifdef GOOGLE_HASH
@@ -98,7 +98,6 @@ int main(int argc, char* argv[]) {
 #endif
 	// end
 	string dir(argv[1]);
-
 
 	read_query(string(argv[2]));		// read query first, so we can read data optionally later
 	q4.ans.resize(q4_set.size());
@@ -120,17 +119,14 @@ int main(int argc, char* argv[]) {
 
 	threadpool->enqueue(bind(do_read_tags_forums_places, dir), start_4);
 	WAIT_FOR(tag_read);
-	//fprintf(stderr, "nperson: %d, ntags: %d\n", Data::nperson, Data::ntag);		// print this earlier, in case of crash
-
 	threadpool->enqueue(start_2);
 	start_3();
-
-	WAIT_FOR(comment_read);
-	delete threadpool;		// will wait to join all thread
 	/*
-	 *FOR_ITR(itr, q4_jobs)
-	 *    itr->join();
+	 *WAIT_FOR(comment_read);
+	 *threadpool->add_worker(4);
 	 */
+	WAIT_FOR(q4_finished);
+	delete threadpool;		// will wait to join all thread
 
 	q1.print_result();
 	q2.print_result();

@@ -1,7 +1,7 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Tue Apr 15 00:00:50 2014 +0000
+ * $Date: Tue Apr 15 15:46:07 2014 +0800
  */
 
 #include "query4.h"
@@ -75,7 +75,6 @@ vector<int> Query4Calculator::work() {
 	Timer timer;
 
 	ManualTotalTimer manual_timer("q4 manual");
-	int diameter = -1;
 #if 0
 	{
 		std::vector<bool> diameter_hash(np), h2(np);
@@ -159,20 +158,7 @@ vector<int> Query4Calculator::work() {
 		}
 	}
 
-#if 0
-	{
-		GuardedTimer tttt("search depth estimate");
-		IDDepthEstimator depth_estimator(friends, wrong_result,
-				degree, 50);
-		est_dist_max = depth_estimator.get_search_depth();
-		fprintf(stderr, "np: %lu search_depth: %d\n", np, est_dist_max);
-	}
-
-
-	HybridEstimator estimator(friends, degree, 3, noneed, sum_bound);
-#endif
 	HybridEstimator
-		//	VectorMergeHybridEstimator
 		estimator(friends, degree,
 				noneed, sum_bound, approx_result);
 

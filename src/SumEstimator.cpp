@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Tue Apr 15 00:01:59 2014 +0000
+//Date: Tue Apr 15 15:43:56 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <queue>
@@ -12,8 +12,6 @@ using namespace std;
 using namespace boost;
 
 
-__thread std::vector<boost::dynamic_bitset<>> *UnionSetDepthEstimator::s;
-__thread std::vector<boost::dynamic_bitset<>> *UnionSetDepthEstimator::s_prev;
 
 int SumEstimator::get_exact_s(int source) {
 	std::vector<bool> hash(np);
@@ -102,77 +100,6 @@ int RandomChoiceEstimator::bfs_all(int source, vector<int>* vst_cnt) {
 		}
 	}
 	return sum;
-}
-
-UnionSetDepthEstimator::UnionSetDepthEstimator(
-		const std::vector<std::vector<int>>& _graph,
-		int* degree, int _depth_max)
-		: SumEstimator(_graph), depth_max(_depth_max) {
-	DEBUG_DECL(Timer, init);
-	size_t alloc = np;
-	/*
-	 *if (!s){
-	 *    s = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-	 *    s_prev = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-	 *} else if ((int)s->size() < np) {
-	 *    delete s; delete s_prev;
-	 *    s = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-	 *    s_prev = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-	 *} else {
-	 *    REP(i, s->size()) {
-	 *        (*s)[i].reset();
-	 *        (*s_prev)[i].reset();
-	 *    }
-	 *}
-	 */
-	s = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-	s_prev = new std::vector<boost::dynamic_bitset<>>(alloc, boost::dynamic_bitset<>(alloc));
-
-
-	result.resize((size_t)np, 0);
-	nr_remain.resize(np);
-
-	auto& out_scope_ptr = *s_prev;
-
-//#pragma omp parallel for schedule(static) num_threads(4)
-	REP(i, np) {
-		out_scope_ptr[i][i] = 1;
-		FOR_ITR(fr, graph[i]) {
-			out_scope_ptr[i][*fr] = 1;
-		}
-		result[i] += (int)graph[i].size();
-		nr_remain[i] = degree[i] - 1 - (int)graph[i].size();
-	}
-	work();
-	delete s; delete s_prev;
-}
-
-void UnionSetDepthEstimator::work() {
-	DEBUG_DECL(TotalTimer, gg("union work"));
-	auto& out_s_prev = *s_prev;
-	auto& out_s = *s;
-
-	for (int k = 2; k <= depth_max; k ++) {
-		// CANNOT USE OMP HERE!
-//#pragma omp parallel for schedule(dynamic) num_threads(4)
-		REP(i, np) {
-			out_s[i].reset();
-			FOR_ITR(fr, graph[i])
-				out_s[i] |= out_s_prev[*fr];
-			out_s[i] &= (~out_s_prev[i]);
-
-			int c = (int)out_s[i].count();
-			result[i] += c * k;
-			nr_remain[i] -= c;
-
-			out_s[i] |= out_s_prev[i];
-		}
-		s->swap(out_s_prev);
-	}
-	//s_prev is ans
-
-	REP(i, np)
-		result[i] += nr_remain[i] * (depth_max + 1);
 }
 
 SSEUnionSetEstimator::SSEUnionSetEstimator(

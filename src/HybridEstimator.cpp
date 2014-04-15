@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Tue Apr 15 00:12:50 2014 +0000
+//Date: Tue Apr 15 15:40:47 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -15,7 +15,6 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	approx_result(_approx_result) { }
 
 void HybridEstimator::init() {
-//    fprintf(stderr, "@@@@@@@@@@\n");
 	if (Data::nperson <= 300001)
 		bfs_2_dp_1();
 	else {
@@ -32,7 +31,6 @@ void HybridEstimator::bfs_2_dp_1() {
 	Timer init;
 	int len = get_len_from_bit(np);
 
-	//std::vector<Bitset> s_prev;
 	BitBoard s_prev(np);
 	{
 		TotalTimer tt("hybrid alloc");			// about 3% of total q4 time
@@ -95,7 +93,7 @@ void HybridEstimator::bfs_2_dp_1() {
 		int nr_idle = threadpool->get_nr_idle_thread();
 		if (nr_idle) {
 			print_debug("Idle thread: %d\n", nr_idle);
-#pragma omp parallel for schedule(dynamic) num_threads(nr_idle + 1)
+#pragma omp parallel for schedule(dynamic) num_threads(3)
 			REP(i, np) {
 				if (noneed[i]) continue;
 				if (result[i] == 0) continue;

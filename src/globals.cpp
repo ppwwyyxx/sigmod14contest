@@ -1,5 +1,5 @@
 //File: globals.cpp
-//Date: Mon Apr 14 15:02:47 2014 +0000
+//Date: Tue Apr 15 14:51:54 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "globals.h"
@@ -16,6 +16,7 @@ using namespace std;
 DEFINE_SIGNAL(tag_read)
 DEFINE_SIGNAL(friends_hash_built)
 DEFINE_SIGNAL(q2_finished)
+DEFINE_SIGNAL(q4_finished)
 DEFINE_SIGNAL(comment_read)
 #undef DEFINE_SIGNAL
 
@@ -30,6 +31,7 @@ int q1_cmt_vst = 0;
 unordered_set<string, StringHashFunc> q4_tag_set;
 unordered_map<string, vector<bool>> q4_persons;
 vector<thread> q4_jobs;
+Q4Scheduler* q4_sched;
 
 bread mybread;
 // global variables

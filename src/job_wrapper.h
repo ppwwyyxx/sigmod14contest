@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Mon Apr 14 23:58:28 2014 +0000
+//Date: Tue Apr 15 14:55:36 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -14,6 +14,7 @@
 #include "lib/Timer.h"
 #include "lib/common.h"
 #include "lib/finish_time_continuation.h"
+#include "q4Scheduler.h"
 #include "globals.h"
 #include "query1.h"
 #include "query2.h"
@@ -35,10 +36,8 @@ extern std::vector<Query4> q4_set;
 inline int do_read_comments(const std::string dir) {
 	Timer timer;
 	read_comments_tim(dir);
-//	mybread.init(dir);
-	if (Data::nperson > 11000) fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
-
-//	threadpool->add_worker(4);
+	if (Data::nperson > 11000)
+		fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
 
 	comment_read = true;
 	comment_read_cv.notify_all();
@@ -89,11 +88,16 @@ inline void start_4(int) {
 	Timer timer;
 	size_t s = q4_set.size();
 	q4.continuation = std::make_shared<FinishTimeContinuation>(s, "q4 finish time");
-	REP(i, s) {
-//		q4.add_query(q4_set[i].k, q4_set[i].tag, i);
-		threadpool->enqueue(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i), 10);
-	//	q4_jobs.emplace_back(bind(&Query4Handler::add_query, &q4, q4_set[i].k, q4_set[i].tag, i));
-	}
+	/*
+	 *REP(i, s) {
+	 *    threadpool->enqueue(bind(&Query4Handler::add_query,
+	 *                &q4, q4_set[i].k, q4_set[i].tag, i), 10);
+	 *}
+	 *q4_finished = true; // not really, but works for compatibility
+	 *q4_finished_cv.notify_all();
+	 */
+	q4_sched = new Q4Scheduler(3);
+	q4_sched->work();
 }
 
 // call after read forum

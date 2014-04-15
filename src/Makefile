@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Tue Apr 15 15:48:29 2014 +0800
+# $Date: Tue Apr 15 15:53:46 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -17,7 +17,7 @@ OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
 OPTFLAGS += -O3
 #LDFLAGS += -lprofiler
 
-#MALLOC = $(addprefix third-party/, libtcmalloc.a libunwind.a liblzma.a)
+MALLOC = $(addprefix third-party/, libtcmalloc.a libunwind.a liblzma.a)
 #MALLOC = $(addprefix third-party/, libllalloc.a)
 #LDFLAGS += -ltcmalloc -lc
 

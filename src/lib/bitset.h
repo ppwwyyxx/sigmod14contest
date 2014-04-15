@@ -241,8 +241,8 @@ class BitBoard {
 		}
 
 		void free(Allocator& alloc) {
-			_mm_free(data);
-			//alloc.dealloc(data);
+//            _mm_free(data);
+			alloc.dealloc(data);
 		}
 
 		~BitBoard() {

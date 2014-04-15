@@ -64,7 +64,7 @@ void RandomChoiceEstimator::work() {
 	vector<int> vst_cnt(np, 0);
 	auto n = samples.size();
 	vector<int> true_result(n);
-#pragma omp parallel for schedule(dynamic) num_threads(2)
+//#pragma omp parallel for schedule(dynamic) num_threads(2)
 	REP(i, n)
 		true_result[i] = bfs_all(samples[i], &vst_cnt);
 

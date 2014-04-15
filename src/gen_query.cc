@@ -1,5 +1,5 @@
 //File: gen_query.cc
-//Date: Sat Apr 05 00:59:03 2014 +0000
+//Date: Tue Apr 15 10:54:38 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -9,6 +9,7 @@
 
 #include "data.h"
 #include "read.h"
+#include "job_wrapper.h"
 #include "query4.h"
 #include "lib/common.h"
 #define random(l, r) (rand() % ((r) - (l) + 1) + (l))
@@ -75,7 +76,7 @@ void make_q4()
 	REP(i, Data::ntag) {
 		string name = Data::tag_name[i];
 		auto p = get_tag_persons(name);
-		if (p.size() > 30000) {
+		if (p.size() > 50000) {
 			PP(p.size());
 			printf("query4(%d, %s)\n", random(1, q4_max_k), name.c_str());
 		}
@@ -91,7 +92,7 @@ int main(int argc, char* argv[]) {
 
 #ifdef GOOGLE_HASH
 	q4_tag_set.set_empty_key("");
-	Data::tagid.set_empty_key("");
+	q4_persons.set_empty_key("");
 	Data::placeid.set_empty_key("");
 #endif
 	string dir(argv[1]);
@@ -110,8 +111,6 @@ int main(int argc, char* argv[]) {
 		fgets(buffer, 1024, fin);
 	}
 	fclose(fin);
-
-
 
 	read_data(dir);
 	read_tags_forums_places(dir);

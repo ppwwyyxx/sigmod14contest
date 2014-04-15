@@ -1,5 +1,5 @@
 //File: bitset.h
-//Date: Mon Apr 14 16:08:41 2014 +0000
+//Date: Mon Apr 14 23:59:57 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -169,15 +169,19 @@ class Bitset {
 		Bitset(__m128i* _data):
 			data(_data) {}
 
+		void assign(Bitset& r) {
+			__m128i* old = data;
+			data = r.data;
+			r.data = NULL;
+			_mm_free(old);
+		}
+
 		/*
 		 *Bitset(const Bitset& r) = delete;
 		 *Bitset& operator = (const Bitset& r) = delete;
 		 */
 
-		~Bitset() {
-			//free(data);
-			//_mm_free(data);
-		}
+		~Bitset() { }
 
 		void free() { _mm_free(data); }
 
@@ -223,30 +227,31 @@ class BitBoard {
 		__m128i* data;
 		std::vector<Bitset> bitsets;
 
-		BitBoard(int n, Allocator& allocator) {
+		BitBoard(int n) {
 			Timer t;
 			int len = get_len_from_bit(n);
 			size_t size = n * len * sizeof(__m128i);
+			data = (__m128i*)_mm_malloc(size, 16);
+			memset(data, 0, size);
+
 			/*
-			 *data = (__m128i*)_mm_malloc(size, 16);
-			 *memset(data, 0, size);
+			 *print_debug("Before allocating %dM for np=%d\n", size / 1024 / 1024, n);
+			 *data = (__m128i*)allocator.alloc(size);
+			 *print_debug("After allocating %dM for np=%d\n", size / 1024 / 1024, n);
 			 */
-			//data = (__m128i*)calloc(len * n, sizeof(__m128i));
-			data = (__m128i*)allocator.alloc(size);
 
 			bitsets.reserve(n);
 			REP(i, n)
 				bitsets.emplace_back(data + i * len);
-			//PP(t.get_time());
-		}
-
-		void free(Allocator& alloc) {
-			_mm_free(data);
-			//alloc.dealloc(data);
 		}
 
 		~BitBoard() {
+			_mm_free(data);
+		}
 
+		void free() {
+			_mm_free(data);
+			data = NULL;
 		}
 
 		Bitset& operator [] (int k) {

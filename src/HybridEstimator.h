@@ -1,11 +1,10 @@
 //File: HybridEstimator.h
-//Date: Mon Apr 14 15:13:20 2014 +0000
+//Date: Mon Apr 14 23:57:47 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
 #include <cmath>
 #include "SumEstimator.h"
-#include "lib/allocator.hh"
 
 class HybridEstimator: public SumEstimator {
 	public:
@@ -18,13 +17,12 @@ class HybridEstimator: public SumEstimator {
 		std::vector<bool>& noneed;
 		int sum_bound;
 		const std::vector<int>& approx_result;
-		Allocator& allocator;
 
 
 		HybridEstimator(const std::vector<std::vector<int>>& _graph, int* _degree,
 				std::vector<bool>& noneed, int sum_bound,
-				const std::vector<int>& _approx_result,
-				Allocator& _allocator);
+				const std::vector<int>& _approx_result);
+
 
 		virtual void init();
 

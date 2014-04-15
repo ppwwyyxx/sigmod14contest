@@ -1,15 +1,14 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Mon Apr 14 17:54:41 2014 +0000
+ * $Date: Tue Apr 15 00:00:50 2014 +0000
  */
 
 #include "query4.h"
 #include "data.h"
 #include "lib/common.h"
-#include "lib/allocator.hh"
 #include "SumEstimator.h"
-#include "search_depth_estimator.h"
+//#include "search_depth_estimator.h"
 #include "lib/hash_lib.h"
 #include <omp.h>
 #include <queue>
@@ -109,8 +108,8 @@ vector<int> Query4Calculator::work() {
 		TotalTimer tttt("estimate random");
 		if (use_estimate) {
 			//	RandomChoiceEstimator estimator1(friends, degree, pow(log(np), 0.333) / (20.2 * pow(np, 0.333)));
-			float perc = 0.002;
-			if (np > 100000) perc = 0.0015;
+			float perc = 0.002f;
+			if (np > 100000) perc = 0.0015f;
 			//if (np > 200000) perc = 0.001;
 			RandomChoiceEstimator estimator1(friends, degree, perc);
 			/*
@@ -175,7 +174,7 @@ vector<int> Query4Calculator::work() {
 	HybridEstimator
 		//	VectorMergeHybridEstimator
 		estimator(friends, degree,
-				noneed, sum_bound, approx_result, allocator);
+				noneed, sum_bound, approx_result);
 
 	{
 		GuardedTimer asdfasdf("estimate s");
@@ -265,8 +264,6 @@ vector<int> Query4Calculator::work() {
 
 
 void Query4Handler::add_query(int k, const string& s, int index) {
-	Allocator allocator;
-	allocator.enter();
 	TotalTimer timer("Q4");
 	// build graph
 	vector<bool> persons = get_tag_persons_hash(s);
@@ -297,33 +294,15 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 			}
 		}
 	}
-	/*
-	 *    {
-	 *        TotalTimer tt("build graph q4");
-	 *#pragma omp parallel for schedule(static) num_threads(4)
-	 *        REP(i, np) {
-	 *            auto& fh = Data::friends[persons[i]];		// sorted by id
-	 *            FOR_ITR(itr, fh) {
-	 *                auto lb_itr = lower_bound(persons.begin(), persons.end(), itr->pid);
-	 *                if (lb_itr != persons.end() and *lb_itr == itr->pid) {
-	 *                    int v = (int)distance(persons.begin(), lb_itr);
-	 *                    friends[i].push_back(v);
-	 *                }
-	 *            }
-	 *
-	 *        }
-	 *    }
-	 */
 	// finish building graph
 
-	Query4Calculator worker(friends, k, allocator);
+	Query4Calculator worker(friends, k);
 	auto now_ans = worker.work();
 	FOR_ITR(itr, now_ans)
 		*itr = old_pid[*itr];
 	ans[index] = move(now_ans);
 	if (Data::nperson > 10000)
 		continuation->cont();
-	allocator.exit();
 }
 
 

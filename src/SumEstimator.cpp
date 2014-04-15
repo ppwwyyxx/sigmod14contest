@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Mon Apr 14 12:03:36 2014 +0000
+//Date: Tue Apr 15 00:01:59 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <queue>

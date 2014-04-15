@@ -1,6 +1,7 @@
 //class : binary read
 
 #pragma once
+#include <string>
 #include <vector>
 
 
@@ -17,6 +18,5 @@ public:
 	void init(const std::string &dir);
 	bool check(int a, int b, int threshold);
 	bool check_oneside(int a, int b, int threshold);
-
 };
 

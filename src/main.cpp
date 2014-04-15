@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Tue Apr 15 17:00:33 2014 +0000
+//Date: Tue Apr 15 18:08:21 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -126,6 +126,8 @@ int main(int argc, char* argv[]) {
 	 *threadpool->add_worker(4);
 	 */
 	WAIT_FOR(q4_finished);
+	PP("deleting...");
+	threadpool->condition.notify_all();
 	delete threadpool;		// will wait to join all thread
 
 	q1.print_result();

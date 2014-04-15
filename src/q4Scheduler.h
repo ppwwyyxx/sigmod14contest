@@ -1,5 +1,5 @@
 //File: q4Scheduler.h
-//Date: Tue Apr 15 17:38:01 2014 +0000
+//Date: Tue Apr 15 17:58:45 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -58,11 +58,8 @@ class Q4Scheduler {
 
 		void work() {
 			std::lock_guard<std::mutex> lg(work_mt);
-			if (jobs.size() == 0) {
-				q4_finished = true;
-				q4_finished_cv.notify_all();
+			if (jobs.size() == 0)
 				return;
-			}
 
 			if (n_free) {
 				for (auto itr = jobs.begin(); itr != jobs.end();) {

@@ -1,7 +1,7 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Tue Apr 15 15:46:07 2014 +0800
+ * $Date: Tue Apr 15 18:02:13 2014 +0000
  */
 
 #include "query4.h"
@@ -287,8 +287,14 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 	FOR_ITR(itr, now_ans)
 		*itr = old_pid[*itr];
 	ans[index] = move(now_ans);
-	if (Data::nperson > 10000)
-		continuation->cont();
+
+	// important!
+	continuation->cont();
+	if (continuation->get_count() == 0) {
+		PP("notifying...");
+		q4_finished = true;
+		q4_finished_cv.notify_all();
+	}
 }
 
 

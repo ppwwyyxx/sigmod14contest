@@ -46,4 +46,4 @@ Techniques Used:
 
 Third Party Code Used:
 	google sparsehash
-	google tcmalloc(third-party/*.a)
+	google tcmalloc in gperftools(depends on liblzma, libunwind in third-party/*.a)

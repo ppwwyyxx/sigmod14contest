@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Wed Apr 16 04:31:31 2014 +0000
+//Date: Wed Apr 16 05:16:26 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -17,8 +17,10 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	}
 
 void HybridEstimator::init() {
-	bfs_depth(3);
-	return;
+	/*
+	 *bfs_depth(3);
+	 *return;
+	 */
 	if (Data::nperson <= 300001)
 		bfs_2_dp_1();
 	else {
@@ -37,7 +39,7 @@ void HybridEstimator::init() {
 
 void HybridEstimator::bfs_depth(int d) {
 	depth = d;
-#pragma omp parallel for schedule(dynamic) num_threads(3)
+#pragma omp parallel for schedule(dynamic) num_threads(2)
 	REP(i, np) {
 		if (not noneed[i])
 			result[i] = d3_estimate(i, d);
@@ -87,7 +89,7 @@ void HybridEstimator::bfs_2_dp_1() {
 	cutcnt = 0;
 	{
 		TotalTimer ttt("depth 2");
-#pragma omp parallel for schedule(dynamic) num_threads(3)
+#pragma omp parallel for schedule(dynamic) num_threads(2)
 		REP(i, np) {
 
 			// depth 0
@@ -136,7 +138,7 @@ void HybridEstimator::bfs_2_dp_1() {
 		int nr_idle = threadpool->get_nr_idle_thread();
 		if (nr_idle) {
 			print_debug("Idle thread: %d\n", nr_idle);
-#pragma omp parallel for schedule(dynamic) num_threads(3)
+#pragma omp parallel for schedule(dynamic) num_threads(2)
 			REP(i, np) {
 				if (noneed[i]) continue;
 				if (result[i] == 0) continue;
@@ -189,7 +191,7 @@ void HybridEstimator::bfs_3_dp_1() {
 	cutcnt = 0;
 	{
 		TotalTimer ttt("bfs depth 3");
-#pragma omp parallel for schedule(dynamic) num_threads(3)
+#pragma omp parallel for schedule(dynamic) num_threads(2)
 		REP(i, np) {
 			std::queue<int> q;
 			q.push(i);
@@ -242,7 +244,7 @@ void HybridEstimator::bfs_3_dp_1() {
 		int nr_idle = threadpool->get_nr_idle_thread();
 		if (nr_idle) {
 			print_debug("Idle thread: %d\n", nr_idle);
-#pragma omp parallel for schedule(dynamic) num_threads(3)
+#pragma omp parallel for schedule(dynamic) num_threads(2)
 			REP(i, np) {
 				if (noneed[i]) continue;
 				if (result[i] == 0) continue;
@@ -334,7 +336,7 @@ void HybridEstimator::bfs_2_dp_more(bool use_4) {
 	BitBoard s(np);
 	depth = 3;
 	TotalTimer ttt("Depth 3+");
-#pragma omp parallel for schedule(dynamic) num_threads(3)
+#pragma omp parallel for schedule(dynamic) num_threads(2)
 	REP(i, np) {
 		s[i].reset(len);
 		FOR_ITR(fr, graph[i])
@@ -355,7 +357,7 @@ void HybridEstimator::bfs_2_dp_more(bool use_4) {
 		depth ++;
 		s.swap(s_prev);
 		s.free();
-#pragma omp parallel for schedule(dynamic) num_threads(3)
+#pragma omp parallel for schedule(dynamic) num_threads(2)
 		REP(i, np) {
 			if (noneed[i]) continue;
 			if (result[i] == 0) continue;

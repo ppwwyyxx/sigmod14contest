@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Wed Apr 16 08:00:32 2014 +0800
+//Date: Wed Apr 16 10:53:41 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -302,7 +302,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		ptr = buffer, buf_end = ptr + 1;
 		READ_TILL_EOL();
 
-		int last_fid = -1; vector<int>* last_ptr = nullptr;
+		int last_fid = -1; vector<int>* last_ptr = NULL;
 		while (true) {
 			READ_INT(fid);
 			if (buffer == buf_end) break;

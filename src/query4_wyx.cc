@@ -1,7 +1,7 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Wed Apr 16 10:20:20 2014 +0800
+ * $Date: Wed Apr 16 10:56:50 2014 +0800
  */
 
 #include "query4.h"
@@ -35,8 +35,9 @@ namespace {
 
 		HeapEle() {}
 		HeapEle(int _vtx, double _centrality) :
-			vtx(_vtx), centrality(_centrality) {
-			}
+			vtx(_vtx), centrality(_centrality)
+		{ }
+
 		bool operator < (const HeapEle& r) const
 		{
 			if (centrality == r.centrality)
@@ -169,7 +170,7 @@ vector<int> Query4Calculator::work() {
 	vector<int> ans;
 	int cnt = 0;
 	{
-		TotalTimer ttt("iterate q4 heap");		// about 6% of total q4 time
+		DEBUG_DECL(TotalTimer, ttt("iterate q4 heap"));		// about 6% of total q4 time
 		DEBUG_DECL(GuardedTimer, tttt(string_format("np: %d iterate q4 heap", np).c_str()));
 		double last_centrality = 1e100;
 		int last_vtx = -1;

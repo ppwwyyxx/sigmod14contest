@@ -1,10 +1,10 @@
-Team Name:
+Team Name: blxlrsmb
 
 Team Member:
 	Yuxin Wu|ppwwyyxxc@gmail.com|Tsinghua University|Dept. of Computer Science and Technology|Bachelor of Engineering
 	Xinyu Zhou|zxytim@gmail.com|Tsinghua University|Dept. of Computer Science and Technology|Bachelor of Engineering
-	Jiawen Liang|taobingxue001@126.com|Tsinghua University|Institute for Interdisciplinary Information Sciences|Bachelor of Engineering
 	Wenbo Tao|thierryhenrytracy@163.com|Tsinghua University|Dept. of Computer Science and Technology|Bachelor of Engineering
+	Jiawen Liang|taobingxue001@126.com|Tsinghua University|Institute for Interdisciplinary Information Sciences|Bachelor of Engineering
 	Junbang Liang|williamm2006@126.com|Tsinghua University|Dept. of Computer Science and Technology|Bachelor of Engineering
 	Han Zhao|nikifor383@gmail.com|Tsinghua University|Dept. of Computer Science and Technology|Bachelor of Engineering
 
@@ -22,6 +22,7 @@ Techniques Used:
 
 	Q3:
 		Build inverted list on tag-person relationship.
+		Quickly find persons who has more than k common tags with respect to a given peron.
 
 	Q4:
 		BFS point p with depth=l, assuming the rest points is (l+1) steps away from p,
@@ -43,6 +44,13 @@ Techniques Used:
 		After searching for the 3rd layers, calculate the average error of current lower bound of
 		all s(p) with respect of the estimation of all s(p).
 		Iff the error is larger than a threshold, go for the 4th layer.
+
+	Others:
+		Use a dynamic programming by a SSE-optimized bitset to replace BFS. This is faster in some cases.
+
+		Use a self-implemented threadpool to manage threads.
+
+		Use mmap to quickly read data files.
 
 Third Party Code Used:
 	google sparsehash

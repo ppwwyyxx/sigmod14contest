@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Wed Apr 16 01:49:45 2014 +0800
+//Date: Wed Apr 16 03:34:19 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -12,32 +12,39 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 		const vector<int>& _approx_result):
 	SumEstimator(_graph), degree(_degree),
 	noneed(_noneed), sum_bound(_sum_bound),
-	approx_result(_approx_result) { }
+	approx_result(_approx_result) {
+		result.resize((size_t)np, 0);
+	}
 
 void HybridEstimator::init() {
 	if (Data::nperson <= 300001)
 		bfs_2_dp_1();
 	else {
-		if (np > 300000)
-			bfs_3();
-		else if (np > 100000)
-			bfs_2_dp_1();
-		else
-			bfs_2_dp_more();
+		if (np > 100000)
+			bfs_depth(3);
+		else {
+			bfs_3_dp_1();
+			/*
+			 *bfs_depth(3);
+			 *if (not good_err(result))
+			 *    bfs_2_dp_more(true);
+			 */
+		}
 	}
 }
 
-void HybridEstimator::bfs_3() {
+void HybridEstimator::bfs_depth(int d) {
+	depth = d;
 #pragma omp parallel for schedule(dynamic) num_threads(4)
 	REP(i, np) {
 		if (not noneed[i])
-			result[i] = d3_estimate(i);
+			result[i] = d3_estimate(i, d);
 		else
 			result[i] = 1e9;
 	}
 }
 
-int HybridEstimator::d3_estimate(int source) {
+int HybridEstimator::d3_estimate(int source, int depth_max) {
 	std::vector<bool> hash(np);
 	std::queue<int> q;
 	hash[source] = true;
@@ -48,9 +55,9 @@ int HybridEstimator::d3_estimate(int source) {
 		int qsize = (int)q.size();
 		s += depth * qsize;
 		nr_remain -= qsize;
-		if (depth == 3)
+		if (depth == depth_max)
 			break;
-		for (int i = 0; i < qsize; i ++) {
+		REP(_, qsize) {
 			int v0 = q.front(); q.pop();
 			FOR_ITR(v1, graph[v0]) {
 				if (hash[*v1])
@@ -60,7 +67,7 @@ int HybridEstimator::d3_estimate(int source) {
 			}
 		}
 	}
-	s += nr_remain * 4;
+	s += nr_remain * (depth_max + 1);
 	return s;
 }
 
@@ -70,7 +77,6 @@ void HybridEstimator::bfs_2_dp_1() {
 	int len = get_len_from_bit(np);
 
 	BitBoard s_prev(np);
-	result.resize((size_t)np, 0);
 	nr_remain.resize(np);
 	REP(i, np)
 		nr_remain[i] = degree[i];
@@ -164,12 +170,114 @@ void HybridEstimator::bfs_2_dp_1() {
 	}
 }
 
-void HybridEstimator::bfs_2_dp_more() {
+void HybridEstimator::bfs_3_dp_1() {
+	depth = 3;
 	Timer init;
 	int len = get_len_from_bit(np);
 
 	BitBoard s_prev(np);
-	result.resize((size_t)np, 0);
+	nr_remain.resize(np);
+	REP(i, np)
+		nr_remain[i] = degree[i];
+
+	vector<int> d3_result(np, 0);
+
+	// bfs 3 depth
+	cutcnt = 0;
+	{
+		TotalTimer ttt("bfs depth 3");
+		REP(i, np) {
+			std::queue<int> q;
+			q.push(i);
+			s_prev[i].set(i);
+			int s = 0;
+			for (int depth = 0; !q.empty(); depth ++) {
+				int qsize = (int)q.size();
+				s += depth * qsize;
+				nr_remain[i] -= qsize;
+				if (depth == 3)
+					break;
+				REP(_, qsize) {
+					int v0 = q.front(); q.pop();
+					FOR_ITR(v1, graph[v0]) {
+						if (s_prev[i].get_and_set(*v1))
+							continue;
+						q.push(*v1);
+					}
+				}
+			}
+			result[i] = s;
+			s += nr_remain[i] * 4;
+			m_assert(s == d3_estimate(i, 3));
+			d3_result[i] = s;
+			/*
+			 *if (not noneed[i]) {
+			 *    // XXX this is wrong
+			 *    int n3_upper = (int)sum_dv2 - (int)sum_dv1 + (int)graph[i].size() + 1;
+			 *    m_assert(n3_upper >= 0);
+			 *    int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
+			 *    if (est_s_lowerbound > sum_bound) {		// cut
+			 *        noneed[i] = true;
+			 *        cutcnt ++;
+			 *        result[i] = 1e9;
+			 *    }
+			 *}
+			 */
+		}
+	}
+
+	if (good_err(d3_result)) {
+		result = move(d3_result);
+		return;
+	}
+	depth = 4;
+
+	// union depth 4
+	{
+		TotalTimer ttt("depth 4");
+		int nr_idle = threadpool->get_nr_idle_thread();
+		if (nr_idle) {
+			print_debug("Idle thread: %d\n", nr_idle);
+#pragma omp parallel for schedule(dynamic) num_threads(3)
+			REP(i, np) {
+				if (noneed[i]) continue;
+				if (result[i] == 0) continue;
+				if (nr_remain[i] == 0) continue;
+				Bitset s(len);
+				FOR_ITR(fr, graph[i])
+					s.or_arr(s_prev[*fr], len);
+				s.and_not_arr(s_prev[i], len);
+
+				int c = s.count(len);
+				result[i] += c * 4;
+				nr_remain[i] -= c;
+				result[i] += nr_remain[i] * 5;
+				s.free();
+			}
+		} else {
+			Bitset s(len);
+			REP(i, np) {
+				if (noneed[i]) continue;
+				if (result[i] == 0) continue;
+				if (nr_remain[i] == 0) continue;
+				s.reset(len);
+				FOR_ITR(fr, graph[i]) s.or_arr(s_prev[*fr], len);
+				s.and_not_arr(s_prev[i], len);
+				int c = s.count(len);
+				result[i] += c * 4;
+				nr_remain[i] -= c;
+				result[i] += nr_remain[i] * 5;
+			}
+			s.free();
+		}
+	}
+}
+
+void HybridEstimator::bfs_2_dp_more(bool use_4) {
+	Timer init;
+	int len = get_len_from_bit(np);
+
+	BitBoard s_prev(np);
 	nr_remain.resize(np);
 	REP(i, np)
 		nr_remain[i] = degree[i];
@@ -221,7 +329,6 @@ void HybridEstimator::bfs_2_dp_more() {
 	vector<int> tmp_result(np);
 	BitBoard s(np);
 	depth = 3;
-	bool use_4 = true;
 	TotalTimer ttt("Depth 3+");
 #pragma omp parallel for schedule(dynamic) num_threads(3)
 	REP(i, np) {
@@ -236,8 +343,9 @@ void HybridEstimator::bfs_2_dp_more() {
 	}
 
 	// judge whether tmp_result is accurate enough
-	if (good_err(tmp_result))
-		use_4 = false;
+
+	if (not use_4 && not good_err(tmp_result))
+		use_4 = true;
 
 	if (use_4) {
 		depth ++;

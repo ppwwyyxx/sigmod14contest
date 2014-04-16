@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Wed Apr 16 01:22:11 2014 +0800
+//Date: Wed Apr 16 03:34:55 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -90,15 +90,19 @@ inline void start_4(int) {
 	Timer timer;
 	size_t s = q4_set.size();
 	q4.continuation = std::make_shared<FinishTimeContinuation>(s, "q4 finish time");
-	if (Data::nperson > 100000) {
-			q4_sched = new Q4Scheduler(4);
-			q4_sched->work();
-	} else {
+	/*
+	 *if (Data::nperson > 300000) {
+	 *        q4_sched = new Q4Scheduler(4);
+	 *        q4_sched->work();
+	 *} else {
+	 */
 			REP(i, s) {
 					threadpool->enqueue(bind(&Query4Handler::add_query,
 											&q4, q4_set[i].k, q4_set[i].tag, i), 10);
 			}
-	}
+	/*
+	 *}
+	 */
 }
 
 // call after read forum

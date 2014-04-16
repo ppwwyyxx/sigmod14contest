@@ -1,5 +1,5 @@
 //File: HybridEstimator.h
-//Date: Wed Apr 16 01:47:08 2014 +0800
+//Date: Wed Apr 16 02:43:41 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -29,10 +29,11 @@ class HybridEstimator: public SumEstimator {
 
 		// bfs 2level, dp 1level
 		void bfs_2_dp_1();
-		void bfs_2_dp_more();
-		void bfs_3();
+		void bfs_3_dp_1();
+		void bfs_2_dp_more(bool use_4 = false);
+		void bfs_depth(int d);
 
-		int d3_estimate(int source);
+		int d3_estimate(int source, int d);
 
 		int estimate(int i) { return result[i]; }
 
@@ -63,7 +64,7 @@ class HybridEstimator: public SumEstimator {
 			}
 			sum /= n_err;
 			print_debug("Graph np=%d, cnt: %d/%d, err: %.4lf\n", np, cnt1, cnt2, sum);
-			if (sum > 0.2 or cnt2 > 2700) {
+			if (sum > 0.25 or cnt2 > 3000) {
 //                fprintf(stderr, "sum: %f cnt2: %d\n", sum, cnt2);
 				return false;
 			}

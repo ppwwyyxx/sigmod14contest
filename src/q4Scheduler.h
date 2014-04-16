@@ -1,5 +1,5 @@
 //File: q4Scheduler.h
-//Date: Wed Apr 16 01:26:20 2014 +0800
+//Date: Wed Apr 16 02:00:49 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -48,9 +48,13 @@ class Q4Scheduler {
 			REP(i, nq4) {
 				std::string & s = q4_set[i].tag;
 				size_t np = cnt_tag_persons_hash(s);
-				int size = np * np / 8 / 1024 / 1024;
-				if (np < 100000 && Data::nperson > 3000000)
-					size *= 2;
+				/*
+				 *int size = np * np / 8 / 1024 / 1024;
+				 *if (np < 100000 && Data::nperson > 3000000)
+				 *    size *= 2;
+				 *else size /= 10;
+				 */
+				int size = np / 100;
 				jobs.insert(Q4Job(q4_set[i].k, i, s, size));
 			}
 			mem_free = Q4Scheduler::get_free_mem();

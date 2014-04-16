@@ -1,5 +1,5 @@
 //File: main.cpp
-//Date: Tue Apr 15 18:31:23 2014 +0800
+//Date: Wed Apr 16 03:35:09 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <cstdio>
@@ -88,7 +88,6 @@ void read_query(const string& fname) {
 int main(int argc, char* argv[]) {
 	globaltimer.reset();
 	threadpool = new ThreadPool(NUM_THREADS);
-	//SIGMODAllocator::init(4, 2lu * 1024 * 1024 * 1024);
 	Timer timer;
 	// initialize global variables...
 #ifdef GOOGLE_HASH

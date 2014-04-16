@@ -1,7 +1,7 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Tue Apr 15 18:02:13 2014 +0000
+ * $Date: Wed Apr 16 03:38:04 2014 +0000
  */
 
 #include "query4.h"
@@ -99,7 +99,7 @@ vector<int> Query4Calculator::work() {
 	vector<bool> noneed(np, false);
 	vector<int> approx_result;
 	vector<int> s_calculated;
-	size_t thres = (size_t)((double)np * 0.51);		// 0.51 is ratio to keep
+	size_t thres = (size_t)((double)np * 0.31);		// 0.51 is ratio to keep
 	vector<PII> approx_result_with_person; approx_result_with_person.reserve(np);
 	int sum_bound = 1e9;
 	std::vector<int> wrong_result;
@@ -151,10 +151,8 @@ vector<int> Query4Calculator::work() {
 					some_real_cent.end());
 
 			sum_bound = exact_s[some_real_cent[nr_sample - k].second];
-			/*
-			 *PP(sum_bound);
-			 *PP(approx_result_with_person[thres].first);
-			 */
+			PP(sum_bound / 0.85 * 1.15);
+			PP(approx_result_with_person[thres].first);
 		}
 	}
 

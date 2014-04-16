@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Wed Apr 16 00:11:12 2014 +0800
+# $Date: Wed Apr 16 03:32:02 2014 +0000
 
 OBJ_DIR = build
 TARGET = ./main
@@ -13,7 +13,7 @@ DEFINES += -DGOOGLE_HASH
 
 OPTFLAGS = -Wno-unused-result -Wno-unused-local-typedefs
 
-#OPTFLAGS += -g -O0 #-fsanitize=address
+#OPTFLAGS += -g -O0 -fsanitize=address
 OPTFLAGS += -O3
 #LDFLAGS += -lprofiler
 

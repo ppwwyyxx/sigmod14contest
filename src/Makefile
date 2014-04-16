@@ -1,5 +1,5 @@
 # $File: Makefile
-# $Date: Wed Apr 16 10:54:55 2014 +0800
+# $Date: Wed Apr 16 11:23:08 2014 +0800
 
 OBJ_DIR = build
 TARGET = ./main
@@ -26,7 +26,7 @@ ifeq ($(BUILD), submit)
 OPTFLAGS = -O3
 #OPTFLAGS += -fnothrow-opt -fno-rtti -march=native -mfpmath=sse -Ofast -flto -funroll-loops
 LDFLAGS += -Wl,--wrap=memcpy
-
+LDFLAGS += -static-libstdc++
 DEFINES += -DNUM_THREADS=4
 else
 DEFINES += -DDEBUG

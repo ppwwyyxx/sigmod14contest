@@ -1,5 +1,5 @@
 //File: SumEstimator.cpp
-//Date: Wed Apr 16 01:42:02 2014 +0800
+//Date: Wed Apr 16 08:01:56 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <queue>
@@ -62,7 +62,7 @@ void RandomChoiceEstimator::work() {
 	vector<int> vst_cnt(np, 0);
 	auto n = samples.size();
 	vector<int> true_result(n);
-#pragma omp parallel for schedule(dynamic) num_threads(4)
+#pragma omp parallel for schedule(dynamic) num_threads(2)
 	REP(i, n)
 		true_result[i] = bfs_all(samples[i], &vst_cnt);
 

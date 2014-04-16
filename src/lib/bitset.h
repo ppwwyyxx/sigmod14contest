@@ -1,5 +1,5 @@
 //File: bitset.h
-//Date: Wed Apr 16 05:30:08 2014 +0800
+//Date: Wed Apr 16 08:04:38 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -203,14 +203,16 @@ class Bitset {
 			return ret;
 		}
 
-		inline bool get(int k) const {
-			uint32_t idx = (uint32_t)(k >> 7),
-					 pos = (uint32_t)(k % 128);
-			bool ret = *(((uint32_t*)(data + idx)) +
-					(pos >> 5U)) & (1U << (pos % 32U));
-			PP(idx);PP(pos);PP(ret);
-			return ret;
-		}
+		/*
+		 *inline bool get(int k) const {
+		 *    uint32_t idx = (uint32_t)(k >> 7),
+		 *             pos = (uint32_t)(k % 128);
+		 *    bool ret = *(((uint32_t*)(data + idx)) +
+		 *            (pos >> 5U)) & (1U << (pos % 32U));
+		 *    PP(idx);PP(pos);PP(ret);
+		 *    return ret;
+		 *}
+		 */
 
 		// data &= ~(r.data)
 		inline void and_not_arr(const Bitset& r, int len) {

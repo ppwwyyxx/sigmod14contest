@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Wed Apr 16 05:16:26 2014 +0800
+//Date: Wed Apr 16 08:25:35 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -17,10 +17,6 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	}
 
 void HybridEstimator::init() {
-	/*
-	 *bfs_depth(3);
-	 *return;
-	 */
 	if (Data::nperson <= 300001)
 		bfs_2_dp_1();
 	else {
@@ -77,7 +73,6 @@ int HybridEstimator::d3_estimate(int source, int depth_max) {
 
 void HybridEstimator::bfs_2_dp_1() {
 	depth = 3;
-	Timer init;
 	int len = get_len_from_bit(np);
 
 	BitBoard s_prev(np);
@@ -89,9 +84,7 @@ void HybridEstimator::bfs_2_dp_1() {
 	cutcnt = 0;
 	{
 		TotalTimer ttt("depth 2");
-#pragma omp parallel for schedule(dynamic) num_threads(2)
 		REP(i, np) {
-
 			// depth 0
 			s_prev[i].set(i);
 			nr_remain[i] -= 1;
@@ -119,7 +112,6 @@ void HybridEstimator::bfs_2_dp_1() {
 			}
 
 			if (not noneed[i]) {
-				// XXX this is wrong
 				int n3_upper = (int)sum_dv2 - (int)sum_dv1 + (int)graph[i].size() + 1;
 				m_assert(n3_upper >= 0);
 				int est_s_lowerbound = result[i] + n3_upper * 3 + (nr_remain[i] - n3_upper) * 4;
@@ -165,7 +157,6 @@ void HybridEstimator::bfs_2_dp_1() {
 				s.and_not_arr(s_prev[i], len);
 
 				int c = s.count(len);
-				//			print_debug("S1: %lu, S2: %d S3: %d\n", graph[i].size(), s_prev[i].count(len) - graph[i].size(), c);
 				result[i] += c * 3;
 				nr_remain[i] -= c;
 				result[i] += nr_remain[i] * 4;
@@ -177,7 +168,6 @@ void HybridEstimator::bfs_2_dp_1() {
 
 void HybridEstimator::bfs_3_dp_1() {
 	depth = 3;
-	Timer init;
 	int len = get_len_from_bit(np);
 
 	BitBoard s_prev(np);
@@ -280,7 +270,6 @@ void HybridEstimator::bfs_3_dp_1() {
 }
 
 void HybridEstimator::bfs_2_dp_more(bool use_4) {
-	Timer init;
 	int len = get_len_from_bit(np);
 
 	BitBoard s_prev(np);

@@ -1,7 +1,7 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Wed Apr 16 04:31:08 2014 +0000
+ * $Date: Wed Apr 16 08:30:09 2014 +0800
  */
 
 #include "query4.h"
@@ -74,32 +74,12 @@ vector<int> Query4Calculator::work() {
 	TotalTimer ttt("q4calculator");
 	Timer timer;
 
-	ManualTotalTimer manual_timer("q4 manual");
-#if 0
-	{
-		std::vector<bool> diameter_hash(np), h2(np);
-		for (int i = 0; i < (int)np; i ++) {
-			if (diameter_hash[i])
-				continue;
-			int fv, d;
-			bfs_diameter(friends, i, fv, d, h2);
-			bfs_diameter(friends, fv, fv, d, diameter_hash);
-			if (d > diameter)
-				diameter = d;
-		}
-
-		est_dist_max = max(2, (int)floor(log((double)diameter) / log(2.0) + 0.5));
-		print_debug("working on graph: %lu diameter: %d\n", np, diameter);
-	}
-#endif
-
-
 	const bool use_estimate = (np > 10000 && k < 20);
 
 	vector<bool> noneed(np, false);
 	vector<int> approx_result;
 	vector<int> s_calculated;
-	int thres = (int)((double)np * 0.31);		// 0.51 is ratio to keep
+	int thres = (int)((double)np * 0.51);		// 0.51 is ratio to keep
 	vector<PII> approx_result_with_person; approx_result_with_person.reserve(np);
 	int sum_bound = 1e9;
 	std::vector<int> wrong_result;
@@ -150,47 +130,31 @@ vector<int> Query4Calculator::work() {
 
 			sum_bound = exact_s[some_real_cent[nr_sample - k].second];
 			double cut_bound = (double)sum_bound / 0.9 * 1.1;
-			auto itr = lower_bound(approx_result_with_person.begin(), approx_result_with_person.end(),
+			auto itr = lower_bound(approx_result_with_person.begin(),
+					approx_result_with_person.end(),
 					PII(cut_bound, 0));
 			thres = std::distance(approx_result_with_person.begin(), itr);
 			thres = max(thres, (int)(np * 0.3));
 			thres = min(thres, (int)(np * 0.5));
-			REPL(i, thres, np)
+			REPL(i, thres, (int)np)
 			    noneed[approx_result_with_person[i].second] = true;
-			PP((float)thres / np);
 		}
 	}
 
-	HybridEstimator
-		estimator(friends, degree,
-				noneed, sum_bound, approx_result);
-
-	{
-		GuardedTimer asdfasdf("estimate s");
-		TotalTimer  asdfasfasfdsadf("estimate s");
-		estimator.init();
-	}
+	HybridEstimator estimator(friends, degree,
+			noneed, sum_bound, approx_result);
+	estimator.init();
 
 	estimated_s = move(estimator.result);
 
 	if (use_estimate) {
-		REPL(i, thres, np)
+		REPL(i, thres, (int)np)
 			estimated_s[approx_result_with_person[i].second] = 1e9;
 		FOR_ITR(itr, s_calculated)
 			estimated_s[*itr] = exact_s[*itr];
 	} else {
 		m_assert(approx_result.size() == 0);		// Hybridestimator assumes this.
 	}
-
-	/*
-	 *auto print = estimated_s;
-	 *string fname = string_format("%lf", timer.get_time());
-	 *ofstream fout("/tmp/" + fname + ".txt");
-	 *sort(print.begin(), print.end());
-	 *FOR_ITR(itr, print)
-	 *    fout << *itr << endl;
-	 *fout.close();
-	 */
 
 	vector<HeapEle> heap_ele_buf; heap_ele_buf.reserve(np);
 	for (int i = 0; i < (int)np; i ++) {
@@ -247,7 +211,6 @@ vector<int> Query4Calculator::work() {
 					sum_bound, estimator.cutcnt);
 		print ++;
 	}
-	manual_timer.record();
 	return move(ans);
 }
 
@@ -272,7 +235,7 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 			}
 		}
 		friends.resize(np);
-#pragma omp parallel for schedule(dynamic) num_threads(4)
+//#pragma omp parallel for schedule(dynamic) num_threads(2)
 		REP(i, Data::nperson) {
 			if (not persons[i]) continue;
 			auto &fs = Data::friends[i];
@@ -291,13 +254,8 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 		*itr = old_pid[*itr];
 	ans[index] = move(now_ans);
 
-	// important!
-	continuation->cont();
-	if (continuation->get_count() == 0) {
-		PP("notifying...");
-		q4_finished = true;
-		q4_finished_cv.notify_all();
-	}
+	if (Data::nperson > 1e4)
+		continuation->cont();
 }
 
 

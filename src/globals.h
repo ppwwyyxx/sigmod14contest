@@ -1,5 +1,5 @@
 //File: globals.h
-//Date: Wed Apr 16 05:14:42 2014 +0800
+//Date: Wed Apr 16 08:26:39 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -28,8 +28,6 @@ extern Timer globaltimer;
 DECLARE_SIGNAL(tag_read)
 DECLARE_SIGNAL(friends_hash_built)
 DECLARE_SIGNAL(q2_finished)
-DECLARE_SIGNAL(q4_finished)
-DECLARE_SIGNAL(comment_read)
 
 #undef DECLARE_SIGNAL
 

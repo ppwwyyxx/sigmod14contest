@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Wed Apr 16 04:37:56 2014 +0800
+//Date: Wed Apr 16 08:00:32 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -623,8 +623,7 @@ void read_comments_tim(const std::string &dir) {
 		buf_end = (char*) mapped + size;
 
 		MMAP_READ_TILL_EOL();
-		if (Data::nperson > 90000) owner.reserve(65000000);
-		else if (Data::nperson > 9000) owner.reserve(20100000);
+		if (Data::nperson > 9000) owner.reserve(20100000);
 		do {
 			do { ptr ++; } while (*ptr != '|');
 			ptr ++;

@@ -1,7 +1,7 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Wed Apr 16 03:38:04 2014 +0000
+ * $Date: Wed Apr 16 04:31:08 2014 +0000
  */
 
 #include "query4.h"
@@ -99,7 +99,7 @@ vector<int> Query4Calculator::work() {
 	vector<bool> noneed(np, false);
 	vector<int> approx_result;
 	vector<int> s_calculated;
-	size_t thres = (size_t)((double)np * 0.31);		// 0.51 is ratio to keep
+	int thres = (int)((double)np * 0.31);		// 0.51 is ratio to keep
 	vector<PII> approx_result_with_person; approx_result_with_person.reserve(np);
 	int sum_bound = 1e9;
 	std::vector<int> wrong_result;
@@ -126,8 +126,6 @@ vector<int> Query4Calculator::work() {
 			REP(i, np)
 				approx_result_with_person.emplace_back(approx_result[i], i);
 			sort(approx_result_with_person.begin(), approx_result_with_person.end());
-			REPL(i, thres, np)		// XXX this is dangerous
-				noneed[approx_result_with_person[i].second] = true;
 
 			vector<PDI> some_real_cent;
 			int nr_sample = 2 * k;// can be x * k
@@ -151,8 +149,15 @@ vector<int> Query4Calculator::work() {
 					some_real_cent.end());
 
 			sum_bound = exact_s[some_real_cent[nr_sample - k].second];
-			PP(sum_bound / 0.85 * 1.15);
-			PP(approx_result_with_person[thres].first);
+			double cut_bound = (double)sum_bound / 0.9 * 1.1;
+			auto itr = lower_bound(approx_result_with_person.begin(), approx_result_with_person.end(),
+					PII(cut_bound, 0));
+			thres = std::distance(approx_result_with_person.begin(), itr);
+			thres = max(thres, (int)(np * 0.3));
+			thres = min(thres, (int)(np * 0.5));
+			REPL(i, thres, np)
+			    noneed[approx_result_with_person[i].second] = true;
+			PP((float)thres / np);
 		}
 	}
 

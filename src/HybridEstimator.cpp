@@ -1,5 +1,5 @@
 //File: HybridEstimator.cpp
-//Date: Wed Apr 16 03:34:19 2014 +0000
+//Date: Wed Apr 16 04:31:31 2014 +0000
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include "HybridEstimator.h"
@@ -17,6 +17,8 @@ HybridEstimator::HybridEstimator(const std::vector<std::vector<int>>& _graph, in
 	}
 
 void HybridEstimator::init() {
+	bfs_depth(3);
+	return;
 	if (Data::nperson <= 300001)
 		bfs_2_dp_1();
 	else {
@@ -35,7 +37,7 @@ void HybridEstimator::init() {
 
 void HybridEstimator::bfs_depth(int d) {
 	depth = d;
-#pragma omp parallel for schedule(dynamic) num_threads(4)
+#pragma omp parallel for schedule(dynamic) num_threads(3)
 	REP(i, np) {
 		if (not noneed[i])
 			result[i] = d3_estimate(i, d);
@@ -85,6 +87,7 @@ void HybridEstimator::bfs_2_dp_1() {
 	cutcnt = 0;
 	{
 		TotalTimer ttt("depth 2");
+#pragma omp parallel for schedule(dynamic) num_threads(3)
 		REP(i, np) {
 
 			// depth 0
@@ -186,6 +189,7 @@ void HybridEstimator::bfs_3_dp_1() {
 	cutcnt = 0;
 	{
 		TotalTimer ttt("bfs depth 3");
+#pragma omp parallel for schedule(dynamic) num_threads(3)
 		REP(i, np) {
 			std::queue<int> q;
 			q.push(i);

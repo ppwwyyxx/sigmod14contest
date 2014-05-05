@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Wed Apr 16 08:27:44 2014 +0800
+//Date: Mon May 05 19:33:47 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -81,7 +81,7 @@ inline void start_3() {
 }
 
 inline void start_4(int) {
-	PP("start4");
+	fprintf(stderr, "start4\n");
 	//std::this_thread::sleep_for(std::chrono::seconds(7));
 	Timer timer;
 	size_t s = q4_set.size();

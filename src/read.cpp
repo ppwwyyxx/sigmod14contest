@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Mon May 05 19:31:51 2014 +0800
+//Date: Mon May 05 23:15:01 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -336,7 +336,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		struct stat s; fstat(fd, &s);
 		size_t size = s.st_size;
 		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, 0);
-		madvise(mapped, size, MADV_WILLNEED);
+		madvise(mapped, size, MADV_SEQUENTIAL);
 
 		ptr = (char*)mapped;
 		buf_end = (char*)mapped + size;
@@ -617,7 +617,6 @@ void read_comments_tim(const std::string &dir) {
 		struct stat s; fstat(fd, &s);
 		size_t size = s.st_size;
 		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, 0);
-		madvise(mapped, size, MADV_WILLNEED);
 
 		ptr = (char*) mapped;
 		buf_end = (char*) mapped + size;
@@ -625,12 +624,12 @@ void read_comments_tim(const std::string &dir) {
 		char* seek = buf_end - 1024;
 		while (*seek++ != '\n');
 		ULL cid = 0;
-		while (*seek != '|')
-			cid = cid * 10 + (*(seek++) - '0');
-		cid = cid / 10 + 1000;
-		fprintf(stderr, "ncmt<%llu\n", cid);
-		owner.reserve(cid);
+		while (*seek != '|') cid = cid * 10 + (*(seek++) - '0');
+		fprintf(stderr, "ncmt<%llu\n", cid); fflush(stderr);
+		madvise(mapped, size, MADV_SEQUENTIAL);
 		MMAP_READ_TILL_EOL();
+		owner.reserve(cid / 10 + 1000);
+
 		do {
 			do { ptr ++; } while (*ptr != '|');
 			ptr ++;
@@ -657,7 +656,7 @@ void read_comments_tim(const std::string &dir) {
 		struct stat s; fstat(fd, &s);
 		size_t size = s.st_size;
 		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, 0);
-		madvise(mapped, size, MADV_WILLNEED);
+		madvise(mapped, size, MADV_SEQUENTIAL);
 
 		ptr = (char*)mapped;
 		buf_end = (char*)mapped + size;

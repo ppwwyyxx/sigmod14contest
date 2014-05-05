@@ -1,5 +1,5 @@
 //File: read.cpp
-//Date: Wed Apr 16 10:53:41 2014 +0800
+//Date: Sun May 04 18:53:33 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #include <stdlib.h>
@@ -171,7 +171,7 @@ void read_comments(const string &dir) {
 		struct stat s; fstat(fd, &s);
 		size_t size = s.st_size;
 		PP(size);
-		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE|MAP_POPULATE, fd, 0);
+		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, 0);
 		madvise(mapped, size, MADV_WILLNEED);
 
 		ptr = (char*)mapped;
@@ -335,7 +335,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		int fd = open((dir + "/forum_hasMember_person.csv").c_str(), O_RDONLY);
 		struct stat s; fstat(fd, &s);
 		size_t size = s.st_size;
-		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE|MAP_POPULATE, fd, 0);
+		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, 0);
 		madvise(mapped, size, MADV_WILLNEED);
 
 		ptr = (char*)mapped;
@@ -616,7 +616,7 @@ void read_comments_tim(const std::string &dir) {
 		int fd = open((dir + "/comment_hasCreator_person.csv").c_str(), O_RDONLY);
 		struct stat s; fstat(fd, &s);
 		size_t size = s.st_size;
-		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE|MAP_POPULATE, fd, 0);
+		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, 0);
 		madvise(mapped, size, MADV_WILLNEED);
 
 		ptr = (char*) mapped;
@@ -649,7 +649,7 @@ void read_comments_tim(const std::string &dir) {
 		int fd = open((dir + "/comment_replyOf_comment.csv").c_str(), O_RDONLY);
 		struct stat s; fstat(fd, &s);
 		size_t size = s.st_size;
-		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE|MAP_POPULATE, fd, 0);
+		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, 0);
 		madvise(mapped, size, MADV_WILLNEED);
 
 		ptr = (char*)mapped;

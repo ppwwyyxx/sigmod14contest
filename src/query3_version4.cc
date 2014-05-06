@@ -1,4 +1,4 @@
-//File: query3.cpp
+//File: query3_version4.cc
 //Author: Wenbo Tao.
 //Method:	Inverted List.
 
@@ -114,6 +114,8 @@ void Query3Calculator::init(const string &p)
 				tmp.begin(), tmp.end(), pset.begin());
 		pset.resize(std::distance(pset.begin(), pset_end));
 	}
+	if (pset.size() > 100000)
+		fprintf(stderr, "psize%lu\n", pset.size());
 
 	people.clear();
 	FOR_ITR(it1, pset)
@@ -176,12 +178,12 @@ void Query3Calculator::calcInvertedList()
 			vector<int> r; r.clear();
 			r.push_back(curTags[i].second);
 			invList[g].push_back(r);
-		} 
+		}
 	}
-	
+
 	for (int i = 0; i < (int) invertedList.size(); i ++)
 		sort(invertedList[i].begin(), invertedList[i].end());
-	
+
 	for (int g = 0; g < (int) people.size(); g ++)
 	{
 		vector<pair<int, int> > cur; cur.clear();
@@ -192,13 +194,13 @@ void Query3Calculator::calcInvertedList()
 			cur.push_back(make_pair((int) (invertedList[curTag].end() - it), curTag));
 		}
 		sort(cur.begin(), cur.end());
-		
+
 		for (int i = 0; i < (int) cur.size(); i ++)
 		{
 			invList[g][i][0] = cur[i].second;
 			invList[g][i].push_back((int) invertedList[cur[i].second].size() - cur[i].first);
 		}
-	}	
+	}
 
 }
 
@@ -354,6 +356,7 @@ void Query3Calculator::work(int k, int h, const string &p, std::vector<Answer3> 
 		dup.insert(make_pair(i->p1, i->p2));
 		moveOneStep(invPeople[i->p1], h, 0);
 		answerHeap.erase(i);
+		heapSize --;
 	}
 
 	for (int i = 0; i < (int) people.size() && (int) tmp.size() < k; i ++)

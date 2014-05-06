@@ -57,8 +57,10 @@ void bread::init(const std::string &dir)
 	 */
 	cache.resize(maxv, 0);
 	c2.resize(Data::nperson);
+#ifdef GOOGLE_HASH
 	FOR_ITR(itr, c2)
 		itr->set_empty_key(-1);
+#endif
 	/*
 	 *FOR_ITR(itr, cache)
 	 *    itr->set_empty_key((1 << (n_offset + 1)) - 1);

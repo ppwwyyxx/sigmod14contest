@@ -336,6 +336,7 @@ void read_forum(const string& dir, unordered_map<int, int>& id_map, const unorde
 		struct stat s; fstat(fd, &s);
 		size_t size = s.st_size;
 		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, 0);
+//		madvise(mapped, size, MADV_WILLNEED);
 		madvise(mapped, size, MADV_SEQUENTIAL);
 
 		ptr = (char*)mapped;
@@ -617,6 +618,14 @@ void read_comments_tim(const std::string &dir) {
 		struct stat s; fstat(fd, &s);
 		size_t size = s.st_size;
 		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, 0);
+//		madvise(mapped, size, MADV_WILLNEED);
+
+//		ptr = (char*) mapped;
+//		buf_end = (char*) mapped + size;
+
+//		MMAP_READ_TILL_EOL();
+//		if (Data::nperson > 9000) owner.reserve(20100000);
+
 
 		ptr = (char*) mapped;
 		buf_end = (char*) mapped + size;
@@ -656,6 +665,7 @@ void read_comments_tim(const std::string &dir) {
 		struct stat s; fstat(fd, &s);
 		size_t size = s.st_size;
 		void* mapped = mmap(0, size, PROT_READ, MAP_FILE|MAP_PRIVATE, fd, 0);
+//		madvise(mapped, size, MADV_WILLNEED);
 		madvise(mapped, size, MADV_SEQUENTIAL);
 
 		ptr = (char*)mapped;

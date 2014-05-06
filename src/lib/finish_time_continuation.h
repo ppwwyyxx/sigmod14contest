@@ -23,6 +23,7 @@ class FinishTimeContinuation {
 			}
 			if (count == 0) {
 				fprintf(stderr, "%s: %f secs\n", prompt.c_str(), globaltimer.get_time());
+			fflush(stderr);
 			}
 		}
 

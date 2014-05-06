@@ -1,5 +1,5 @@
 //File: job_wrapper.h
-//Date: Mon May 05 19:33:47 2014 +0800
+//Date: Tue May 06 11:24:37 2014 +0800
 //Author: Yuxin Wu <ppwwyyxxc@gmail.com>
 
 #pragma once
@@ -38,6 +38,7 @@ inline int do_read_comments(const std::string dir) {
 	read_comments_tim(dir);
 	if (Data::nperson > 11000)
 		fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
+	fflush(stderr);
 	return 0;
 }
 inline int do_read_tags_forums_places(const std::string dir) {
@@ -111,7 +112,7 @@ void destroy_tag_name() {
 void destroy_q3_data() {
 		Data::placeid.clear();
 		Data::placeid = unordered_map<std::string, std::vector<int>, StringHashFunc>();
-		FreeAll(Data::places);;
+		FreeAll(Data::places);
 		WAIT_FOR(q2_finished);
 		FreeAll(Data::tags);
 }

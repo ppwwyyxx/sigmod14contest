@@ -205,6 +205,7 @@ vector<int> Query4Calculator::work() {
 #endif
 			fprintf(stderr, "%lu/%d/%dd%d:%.4lf\n", np, cnt, k,
 					estimator.depth, timer.get_time());
+			fflush(stderr);
 #ifndef DEBUG
 		}
 #endif

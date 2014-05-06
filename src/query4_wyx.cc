@@ -1,7 +1,7 @@
 /*
  * $File: query4.cpp
  * $Author: Xinyu Zhou <zxytim[at]gmail[dot]com>
- * $Date: Wed Apr 16 10:56:50 2014 +0800
+ * $Date: Tue May 06 22:41:16 2014 +0000
  */
 
 #include "query4.h"
@@ -249,6 +249,7 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 			}
 		}
 	}
+	fprintf(stderr, "np%d\n", np);fflush(stderr);
 	// finish building graph
 
 	Query4Calculator worker(friends, k);
@@ -256,6 +257,7 @@ void Query4Handler::add_query(int k, const string& s, int index) {
 	FOR_ITR(itr, now_ans)
 		*itr = old_pid[*itr];
 	ans[index] = move(now_ans);
+	fprintf(stderr, "fnp%d\n", np);fflush(stderr);
 
 	if (Data::nperson > 1e4)
 		continuation->cont();

@@ -70,6 +70,7 @@ class Query3Calculator {
 		std::vector<unordered_map<int, int> > candidate;
 		std::vector<std::vector<std::priority_queue<int> > > pool;
 		std::vector<unordered_set<int> > forsake;
+		std::vector<std::vector<int> > invertedList;		
 //		std::vector<std::set<std::pair<int, int> > > oneHeap;
 
 };

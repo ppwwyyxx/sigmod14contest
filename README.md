@@ -1,14 +1,14 @@
-## This is the source code of team 'blxlrsmb' from Tsinghua University in ACM SIGMOD Programming Contest 2014
+#### This is the source code of team 'blxlrsmb' from Tsinghua University in ACM SIGMOD Programming Contest 2014
 
-## Team Member:
-+ Yuxin Wu|ppwwyyxxc@gmail.com
-+ Xinyu Zhou|zxytim@gmail.com
-+ Wenbo Tao|thierryhenrytracy@163.com
-+ Jiawen Liang|taobingxue001@126.com
-+ Junbang Liang|williamm2006@126.com
-+ Han Zhao|nikifor383@gmail.com
-
-## Advisor: Guoliang Li
+### Member:
++ [Yuxin Wu](mailto:ppwwyyxxc@gmail.com)
++ [Xinyu Zhou](mailto:zxytim@gmail.com)
++ [Wenbo Tao](mailto:thierryhenrytracy@163.com)
++ [Jiawen Liang](mailto:taobingxue001@126.com)
++ [Junbang Liang](mailto:williamm2006@126.com)
++ [Han Zhao](mailto:nikifor383@gmail.com)
++ Advisor: [Guoliang Li](mailto:liguoliang@tsinghua.edu.cn)
++ Special Thanks: [Jian He](mailto:jianhe25@gmail.com)
 
 ## Solutions:
 ### Task Overview

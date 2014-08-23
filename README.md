@@ -1,4 +1,6 @@
-#### This is the source code of team 'blxlrsmb' from Tsinghua University in ACM SIGMOD Programming Contest 2014
+### About
+This is the source code of team 'blxlrsmb' from Tsinghua University, winning the 4th place in ACM SIGMOD Programming Contest 2014, about large social network analysis.
+The code is written only for efficiency. Very ugly! Be careful.
 
 ### Member:
 + [Yuxin Wu](mailto:ppwwyyxxc@gmail.com)
@@ -8,9 +10,13 @@
 + [Junbang Liang](mailto:williamm2006@126.com)
 + [Han Zhao](mailto:nikifor383@gmail.com)
 + Advisor: [Guoliang Li](mailto:liguoliang@tsinghua.edu.cn)
-+ Special Thanks: [Jian He](mailto:jianhe25@gmail.com)
++ Special Thanks to: [Jian He](mailto:jianhe25@gmail.com)
 
 ## Solutions:
+See details in our slides and poster, also presented on ACM SIGMOD/PODS conference in June, 2014 in Snowbird:
++ [Presentation Slides](https://github.com/ppwwyyxx/sigmod14contest/raw/master/doc/Presentation.pdf)
++ [Poster](https://github.com/ppwwyyxx/sigmod14contest/raw/master/doc/poster.pdf)
+
 ### Task Overview
 Implement a social network analysis system.
 Given a huge social network as an undirected weighted graph G(V, E) with the

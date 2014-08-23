@@ -1,0 +1,15 @@
+%File: q3.tex
+%Date: Wed Jun 25 02:54:22 2014 +0800
+%Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
+\section{Query 3}
+\begin{frame}{Query 3}
+Given $k$ , $h$ , $p$ , where $p$ is used to define a subset $V′$ of $V$. Find
+the top-$k$ pairs of vertex $(u, v)$ ordered by $|u_t \cap v_t|$, also
+satisfying: $u, v \in V,  dist (u, v) \le h$.
+
+\textbf{Solution:} Build an inverted
+list for every tag $T$: $L(T) = $ a list of vertex $v \in V′ $where$ T \in v_t $.
+This way, we can quickly find vertices in $V′$ sharing tags with a
+given $v$ by counting \# of occurrences in inverted lists.
+\end{frame}

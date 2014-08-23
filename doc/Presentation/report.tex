@@ -1,0 +1,94 @@
+% $File: report.tex
+% $Date: Thu Jul 03 19:37:21 2014 +0800
+
+\documentclass {beamer}
+%\usetheme{JuanLesPins}
+\usetheme{Copenhagen}
+\setbeamertemplate{itemize items}[ball]
+\setbeamercovered{transparent}
+\setbeamertemplate{itemize subitem}[circle] % if you wnat a circle
+\setbeamertemplate{blocks}[rounded][shadow=true]
+%\usetheme[height=7mm]{Rochester}
+\useoutertheme{infolines}
+\usepackage{fontspec,amsmath,amssymb,zhspacing,verbatim}
+\usepackage[backend=biber]{biblatex}
+
+
+\let\Oldsum\sum
+\renewcommand{\sum}{\displaystyle\Oldsum}
+\let\Oldprod\prod
+\renewcommand{\prod}{\displaystyle\Oldprod}
+
+\theoremstyle{plain}
+
+\usepackage[absolute,overlay]{textpos}
+\newenvironment{reference}[2]{%
+  \begin{textblock*}{\textwidth}(#1,#2)
+      \footnotesize\it\bgroup\color{red!50!black}}{\egroup\end{textblock*}}
+
+\zhspacing
+
+\setbeamertemplate{footline} {
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=2.25ex]{corporatecolor}
+      \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+        \usebeamerfont{author in head/foot}
+        \insertshortauthor
+      \end{beamercolorbox}%
+      \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+        \usebeamerfont{title in head/foot}
+        \insertshorttitle
+      \end{beamercolorbox}%
+      \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+        \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+        \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+      \end{beamercolorbox}
+    \end{beamercolorbox}
+  }%
+  \vskip0pt%
+}
+
+\title{SIGMOD Programming Contest 2014}
+\subtitle{Large Social Network Analysis}
+\author {Team: \textbf{blxlrsmb}\\ Presented by Yuxin Wu}
+\institute{
+  Department of Computer Science and Technology\\
+  Tsinghua University\\
+}
+\date{\today}
+
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+\begin{frame}{Overview}
+\begin{exampleblock}{\textbf{Task}}
+Implement a social network analysis system.
+\end{exampleblock}
+Given a huge social network as an undirected graph,
+we should implement an
+analysis system which reads dataset \& 4 types of queries and
+produce the results.
+\end{frame}
+
+%\begin{frame}{Content}
+%\tableofcontents
+%\end{frame}
+
+\input{q1.tex}
+\input{q2.tex}
+\input{q3.tex}
+\input{q4.tex}
+\input{trick.tex}
+
+
+
+\begin{frame}{}
+  \begin{center}
+  \Huge Thanks!
+\end{center}
+\end{frame}
+
+\end{document}
+

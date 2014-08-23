@@ -1,0 +1,24 @@
+%File: trick.tex
+%Date: Wed Jun 25 00:42:05 2014 +0800
+%Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
+\section{Others}
+\begin{frame}{Other tricks}
+  \begin{enumerate}
+
+    \item Use mmap() to read data files faster.
+
+    \item Implement a thread pool to utilize multi-core processors.
+
+    \item Google's tcmalloc is faster to allocate memory.
+
+    \item
+
+      Another way of BFS in estimating lower bound in query 4
+      is to use a bitset $ B_{\ell}(v)$ of length $ |V|$ whose $ u$th bit
+      is set iff. $ dist(u, v) =\ell$. Then we have:
+      \[ B_{\ell+1}(v)  = \neg B_{\ell}(v) \wedge (\vee_{(u, v) \in E}B_{\ell}(u))\]
+
+      This search can be implemented using SIMD instructions.
+  \end{enumerate}
+\end{frame}

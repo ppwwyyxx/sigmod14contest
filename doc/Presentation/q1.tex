@@ -1,0 +1,18 @@
+%File: q1.tex
+%Date: Wed Jun 25 00:03:04 2014 +0800
+%Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+\section{Query 1}
+\begin{frame}{Query 1}
+Given $x$ and vertex $p_1 ,p_2$ , calculate the length of shortest path
+from $p_1$ to $p_2$ s.t. each edge e on the path has weight $ e_w \ge x$
+
+\begin{center}
+  \includegraphics[width=0.5\textwidth]{res/q1.png}
+\end{center}
+
+\textbf{Solution:} Execute BFS from both $p_1$ and $p_2$.
+Use a bit-array maintaining all the
+visited vertices, to see if they have met
+in the middle.
+
+\end{frame}

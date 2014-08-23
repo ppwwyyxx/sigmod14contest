@@ -1,0 +1,17 @@
+%File: q2.tex
+%Date: Wed Jun 25 00:16:23 2014 +0800
+%Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
+\section{Query 2}
+\begin{frame}{Query 2}
+Given $k$ and $d$, find top-$k$ tags with largest range. Here the
+range of a tag $T$ in graph $G(V, E)$ is defined as the size of the
+largest subgraph $G(V', E')$ s.t. $\forall v \in V ,v_d > d,  T \in v_t $.
+
+\textbf{Solution:} First sort all the queries and vertices by $d$ in descending order.
+Build an empty graph $G_0$ and incrementally insert sorted
+vertices and their corresponding edges to $G_0$ .
+  During the insertion, we maintain the top-$k$ largest connected
+components for each tag using Union-Find Set. A query $q$ would
+finish as soon as all vertices $v$ with $v_d>q_d$ are inserted.
+\end{frame}

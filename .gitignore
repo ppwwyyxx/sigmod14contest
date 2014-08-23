@@ -13,3 +13,4 @@ main
 *.swp
 log
 *.pyc
+output

@@ -1,6 +1,7 @@
 ### About
-This is the source code of team 'blxlrsmb' from Tsinghua University, winning the 4th place in ACM SIGMOD Programming Contest 2014, about large social network analysis.
-The code is written only for efficiency. Very ugly! Be careful.
+This is the source code of team 'blxlrsmb' from Tsinghua University,
+winning the 4th place in [ACM SIGMOD Programming Contest 2014](http://www.cs.albany.edu/~sigmod14contest/index.html)
+about large social network analysis. The code is written only for efficiency. Very ugly! Be careful.
 
 ### Member:
 + [Yuxin Wu](mailto:ppwwyyxxc@gmail.com)
@@ -13,7 +14,8 @@ The code is written only for efficiency. Very ugly! Be careful.
 + Special Thanks to: [Jian He](mailto:jianhe25@gmail.com)
 
 ## Solutions:
-See details in our slides and poster, also presented on ACM SIGMOD/PODS conference in June, 2014 in Snowbird:
+See details in our slides and poster, which are also presented by [Yuxin Wu](mailto:ppwwyyxxc@gmail.com)
+on ACM SIGMOD/PODS conference in June, 2014 in Snowbird:
 + [Presentation Slides](https://github.com/ppwwyyxx/sigmod14contest/raw/master/doc/Presentation.pdf)
 + [Poster](https://github.com/ppwwyyxx/sigmod14contest/raw/master/doc/poster.pdf)
 

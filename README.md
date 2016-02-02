@@ -4,14 +4,14 @@ winning the 4th place in [ACM SIGMOD Programming Contest 2014](http://www.cs.alb
 about large social network analysis. The code is written only for efficiency. Very ugly! Be careful.
 
 ### Member:
-+ [Yuxin Wu](mailto:ppwwyyxxc@gmail.com)
-+ [Xinyu Zhou](mailto:zxytim@gmail.com)
-+ [Wenbo Tao](mailto:thierryhenrytracy@163.com)
-+ [Jiawen Liang](mailto:taobingxue001@126.com)
-+ [Junbang Liang](mailto:williamm2006@126.com)
-+ [Han Zhao](mailto:nikifor383@gmail.com)
-+ Advisor: [Guoliang Li](mailto:liguoliang@tsinghua.edu.cn)
-+ Special Thanks to: [Jian He](mailto:jianhe25@gmail.com)
++ [Yuxin Wu](http://ppwwyyxx.com)
++ Xinyu Zhou
++ Wenbo Tao
++ Jiawen Liang
++ Junbang Liang
++ Han Zhao
++ Advisor: Guoliang Li
++ Special Thanks to: Jian He
 
 ## Solutions:
 See details in our slides and poster, which are also presented by [Yuxin Wu](mailto:ppwwyyxxc@gmail.com)

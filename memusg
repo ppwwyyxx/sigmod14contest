@@ -40,7 +40,7 @@ monpid=$!
 
 TIME=`date "+%m%d-%H:%M:%S"`
 MEMOUTPUT=log/mem-"$TIME".txt
-./src/mem_monitor 1 $MEMOUTPUT > /dev/null &
+#./src/mem_monitor 1 $MEMOUTPUT > /dev/null &
 
 
 # run the given command

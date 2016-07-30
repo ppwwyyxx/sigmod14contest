@@ -1,4 +1,19 @@
-#!/usr/bin/python2
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+
+"""
+A general curve plotter to create curves such as:
+https://github.com/ppwwyyxx/tensorpack/tree/master/examples/ResNet
+
+A simplest example:
+$ cat examples/train_log/mnist-convnet/stat.json \
+        | jq '.[] | .train_error, .validation_error' \
+        | paste - - \
+        | plot-point.py --legend 'train,val' --title 'error'
+
+For more usage, see `plot-point.py -h` or the code.
+"""
+
 
 from math import *
 import numpy as np
@@ -18,7 +33,7 @@ def get_args():
     description = "plot points into graph."
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('-i', '--input',
-            help='input data file, use "-" for stdin. Default stdin. Input
+            help='input data file, use "-" for stdin. Default stdin. Input \
             format is many rows of DELIMIETER-separated data',
             default='-')
     parser.add_argument('-o', '--output',

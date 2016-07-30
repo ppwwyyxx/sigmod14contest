@@ -18,7 +18,8 @@ def get_args():
     description = "plot points into graph."
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('-i', '--input',
-            help='input data file, "-" for stdin, default stdin',
+            help='input data file, use "-" for stdin. Default stdin. Input
+            format is many rows of DELIMIETER-separated data',
             default='-')
     parser.add_argument('-o', '--output',
             help='output image', default='')
@@ -28,8 +29,8 @@ def get_args():
     parser.add_argument('-c', '--column',
             help="describe each column in data, for example 'x,y,y'. \
             Default to 'y' for one column and 'x,y' for two columns. \
-            Plot attributes can be appended after 'y', like 'ythick;cr' \
-            By default, assume all columns are ys. \
+            Plot attributes can be appended after 'y', like 'ythick;cr'. \
+            By default, assume all columns are y. \
             ")
     parser.add_argument('-t', '--title',
             help='title of the graph',
@@ -127,14 +128,14 @@ def annotate_min_max(data_x, data_y, ax):
             (x_min - 0.05 * x_range,
                 y_min + 0.025 * y_range)],
             rect)[0]
-        #ax.annotate('minimum ({:d},{:.3f})' . format(int(x_min), y_min),
-                #xy = (x_min, y_min),
-                #xytext = (text_x, text_y),
-                #arrowprops = dict(arrowstyle = '->'))
-        ax.annotate('{:.3f}' . format(y_min),
+        ax.annotate('minimum ({:d},{:.3f})' . format(int(x_min), y_min),
                 xy = (x_min, y_min),
                 xytext = (text_x, text_y),
                 arrowprops = dict(arrowstyle = '->'))
+        #ax.annotate('{:.3f}' . format(y_min),
+                #xy = (x_min, y_min),
+                #xytext = (text_x, text_y),
+                #arrowprops = dict(arrowstyle = '->'))
 
 def plot_args_from_column_desc(desc):
     if not desc:

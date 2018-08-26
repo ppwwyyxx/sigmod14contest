@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # File: test.sh
 # Date: Tue Apr 08 18:57:08 2014 +0800
-# Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 [[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/" && exit 1)
 

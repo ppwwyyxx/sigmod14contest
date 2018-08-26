@@ -1,6 +1,6 @@
 //File: mem_monitor.cc
 //Date: Thu Apr 10 11:06:08 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include <iostream>
 #include <cstdlib>

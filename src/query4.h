@@ -1,6 +1,6 @@
 //File: query4.h
 //Date: Tue Apr 15 16:59:16 2014 +0000
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #pragma once
 

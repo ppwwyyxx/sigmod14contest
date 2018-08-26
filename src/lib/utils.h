@@ -1,6 +1,6 @@
 // File: utils.h
 
-// Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 
 #pragma once

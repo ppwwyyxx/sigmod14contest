@@ -1,6 +1,6 @@
 //File: ThreadPool.cpp
 //Date: Tue Apr 08 20:11:46 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include "ThreadPool.hh"
 #include "Timer.h"

@@ -1,6 +1,6 @@
 //File: cache.h
 //Date: Sun Mar 16 16:13:32 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #pragma once
 #include <vector>

@@ -1,6 +1,6 @@
 //File: bitset.h
 //Date: Wed Apr 16 08:04:38 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #pragma once
 #include <emmintrin.h>

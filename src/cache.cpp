@@ -1,6 +1,6 @@
 //File: cache.cpp
 //Date: Sun Mar 16 16:20:57 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include "data.h"
 #include "lib/common.h"

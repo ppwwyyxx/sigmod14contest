@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # File: memcheck.sh
 # Date: Wed Mar 12 15:52:04 2014 +0800
-# Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 [[ -z "$1" ]] && (echo "Usage: $0 /path/to/data/directory/" && exit 1)
 DATA_DIRNAME=`basename $1`

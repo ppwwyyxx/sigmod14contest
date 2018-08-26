@@ -1,6 +1,6 @@
 //File: SumEstimator.h
 //Date: Tue Apr 15 15:44:00 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #pragma once
 #include <vector>

@@ -1,6 +1,6 @@
 //File: bitset.cpp
 //Date: Thu Mar 27 20:47:39 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include "bitset.h"
 #include "common.h"

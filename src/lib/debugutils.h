@@ -1,6 +1,6 @@
 // File: debugutils.h
 
-// Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 
 #pragma once

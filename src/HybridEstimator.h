@@ -1,6 +1,6 @@
 //File: HybridEstimator.h
 //Date: Wed Apr 16 02:43:41 2014 +0000
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #pragma once
 #include <cmath>

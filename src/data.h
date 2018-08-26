@@ -1,6 +1,6 @@
 //File: data.h
 //Date: Tue Apr 15 14:31:43 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #pragma once
 #include <vector>

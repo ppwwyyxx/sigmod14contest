@@ -1,6 +1,6 @@
 // File: Timer.h
 
-// Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #pragma once
 #ifdef WIN32   // Windows system specific

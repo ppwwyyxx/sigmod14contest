@@ -1,6 +1,6 @@
 //File: job_wrapper.h
 //Date: Tue May 06 11:24:37 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #pragma once
 #ifndef __HEADER_JOBWRAPPER

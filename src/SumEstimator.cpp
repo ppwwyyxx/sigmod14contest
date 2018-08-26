@@ -1,6 +1,6 @@
 //File: SumEstimator.cpp
 //Date: Wed Apr 16 08:01:56 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include <queue>
 #include <limits>

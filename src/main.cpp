@@ -1,6 +1,6 @@
 //File: main.cpp
 //Date: Wed Apr 16 05:13:03 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include <cstdio>
 #include <string.h>

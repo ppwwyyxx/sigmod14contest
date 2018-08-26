@@ -1,5 +1,5 @@
 // File: Timer.cpp
-// Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 
 #include <cstdlib>

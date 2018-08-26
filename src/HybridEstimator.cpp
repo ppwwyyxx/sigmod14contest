@@ -1,6 +1,6 @@
 //File: HybridEstimator.cpp
 //Date: Wed Apr 16 08:25:35 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include "HybridEstimator.h"
 #include "globals.h"

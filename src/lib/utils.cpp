@@ -1,6 +1,6 @@
 // File: utils.cpp
 
-// Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include "utils.h"
 using namespace std;

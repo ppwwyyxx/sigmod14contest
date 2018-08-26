@@ -1,6 +1,6 @@
 //File: hash_lib.cpp
 //Date: Tue Mar 11 11:18:31 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include <cstdint>
 using namespace std;

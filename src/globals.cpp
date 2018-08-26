@@ -1,6 +1,6 @@
 //File: globals.cpp
 //Date: Wed Apr 16 08:26:48 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include "globals.h"
 #include "lib/common.h"

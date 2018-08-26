@@ -1,6 +1,6 @@
 //File: data.cpp
 //Date: Tue Apr 15 14:31:12 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include "data.h"
 #include "lib/debugutils.h"

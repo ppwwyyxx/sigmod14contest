@@ -1,6 +1,6 @@
 //File: read.cpp
 //Date: Mon May 05 23:15:01 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include <stdlib.h>
 #include <algorithm>

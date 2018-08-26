@@ -1,6 +1,6 @@
 //File: read.h
 //Date: Sat Apr 05 13:21:16 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #pragma once
 #include <string>

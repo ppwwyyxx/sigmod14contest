@@ -1,6 +1,6 @@
 //File: gen_query.cc
 //Date: Tue Apr 15 10:54:38 2014 +0000
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include <cstdio>
 #include <ctime>

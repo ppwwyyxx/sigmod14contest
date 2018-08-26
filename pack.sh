@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # File: pack.sh
 # Date: Wed Apr 09 21:48:56 2014 +0000
-# Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 make clean -C src
 make -C src BUILD=submit

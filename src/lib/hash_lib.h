@@ -1,6 +1,6 @@
 //File: hash_lib.h
 //Date: Thu Apr 03 16:07:51 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #pragma once
 

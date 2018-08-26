@@ -1,6 +1,6 @@
 //File: query4_force.cc
 //Date: Mon Mar 24 23:53:38 2014 +0800
-//Author: Yuxin Wu <ppwwyyxxc@gmail.com>
+
 
 #include "query4.h"
 #include "data.h"
